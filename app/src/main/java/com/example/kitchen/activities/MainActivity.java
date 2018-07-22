@@ -183,7 +183,9 @@ public class MainActivity extends AppCompatActivity
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             public void onComplete(@NonNull Task<Void> task) {
                                 // user is now signed out
-                                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
                                 finish();
                             }
                         });
