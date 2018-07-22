@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_recipes"
+            android:icon="@drawable/ic_menu_recipes"
+            android:title="@string/recipes" />
+        <item
+            android:id="@+id/nav_notebook"
+            android:icon="@drawable/ic_menu_notebook"
+            android:title="@string/notebook" />
+        <item
+            android:id="@+id/nav_suggestions"
+            android:icon="@drawable/ic_menu_suggest"
+            android:title="@string/suggestions" />
+    </group>
+
+    <item android:title="@string/storage">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_food_storage"
+                    android:icon="@drawable/ic_menu_food"
+                    android:title="@string/food" />
+                <item
+                    android:id="@+id/nav_shopping_list"
+                    android:icon="@drawable/ic_menu_shopping"
+                    android:title="@string/shopping_list" />
+            </group>
+        </menu>
+    </item>
+
+    <item android:title="@string/weekly">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_routines"
+                    android:icon="@drawable/ic_menu_routines"
+                    android:title="@string/routines" />
+                <item
+                    android:id="@+id/nav_meal_board"
+                    android:icon="@drawable/ic_menu_board"
+                    android:title="@string/meal_board" />
+            </group>
+        </menu>
+    </item>
+
+    <item android:title="@string/account">
+        <menu>
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_menu_sign_out"
+                android:title="@string/logout" />
+        </menu>
+    </item>
+
+</menu>
