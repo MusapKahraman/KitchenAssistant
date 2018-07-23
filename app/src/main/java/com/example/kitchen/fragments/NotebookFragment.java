@@ -3,9 +3,11 @@ package com.example.kitchen.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,6 +32,8 @@ public class NotebookFragment extends Fragment {
     private LinearLayoutManager mLayoutManager;
     private OnRecipeClickListener mClickListener;
     private int mFirstVisibleItemPos;
+    private View mRootView;
+    private NotebookAdapter mAdapter;
 
     public NotebookFragment() {
         // Required empty public constructor
@@ -56,26 +60,24 @@ public class NotebookFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_recipes, container, false);
-
-        RecyclerView recyclerView = rootView.findViewById(R.id.rv_recipe_steps);
+        mRootView = inflater.inflate(R.layout.fragment_recipes, container, false);
+        RecyclerView recyclerView = mRootView.findViewById(R.id.rv_recipe_steps);
         mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setHasFixedSize(true);
-        final NotebookAdapter adapter = new NotebookAdapter(mClickListener);
-        recyclerView.setAdapter(adapter);
+        mAdapter = new NotebookAdapter(mClickListener);
+        recyclerView.setAdapter(mAdapter);
         Bundle arguments = getArguments();
         if (arguments != null) {
             List<Recipe> recipes = arguments.getParcelableArrayList(KeyUtils.KEY_RECIPES);
-            adapter.setRecipes(recipes);
+            mAdapter.setRecipes(recipes);
             savedInstanceState = arguments.getBundle(KeyUtils.KEY_SAVED_STATE);
             if (savedInstanceState != null) {
                 mFirstVisibleItemPos = savedInstanceState.getInt(FIRST_ITEM);
                 mLayoutManager.scrollToPosition(mFirstVisibleItemPos);
             }
         }
-
-        return rootView;
+        return mRootView;
     }
 
     @Override
@@ -111,7 +113,22 @@ public class NotebookFragment extends Fragment {
         // Clear all current menu items
         menu.clear();
         // Add new menu items
-        inflater.inflate(R.menu.recipes, menu);
+        inflater.inflate(R.menu.menu_list_actions, menu);
+        // Associate searchable configuration with the SearchView
+        SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mAdapter.filter(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mAdapter.filter(newText);
+                return true;
+            }
+        });
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -119,9 +136,13 @@ public class NotebookFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.app_bar_filter:
+                Snackbar.make(mRootView, "Filtering...", Snackbar.LENGTH_SHORT).show();
+                return true;
+            case R.id.app_bar_sort:
+                Snackbar.make(mRootView, "Sorting...", Snackbar.LENGTH_SHORT).show();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

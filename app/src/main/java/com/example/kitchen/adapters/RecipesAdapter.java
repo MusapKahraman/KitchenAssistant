@@ -11,11 +11,13 @@ import android.widget.TextView;
 import com.example.kitchen.R;
 import com.example.kitchen.data.Recipe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCardViewHolder> {
     private final OnRecipeClickListener mRecipeClickListener;
     private List<Recipe> mRecipes;
+    private List<Recipe> mFilteredRecipes;
 
     public RecipesAdapter(OnRecipeClickListener recipeClickListener) {
         mRecipeClickListener = recipeClickListener;
@@ -23,8 +25,8 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
 
     @Override
     public int getItemCount() {
-        if (mRecipes != null) {
-            return mRecipes.size();
+        if (mFilteredRecipes != null) {
+            return mFilteredRecipes.size();
         } else {
             return 0;
         }
@@ -40,14 +42,31 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
 
     @Override
     public void onBindViewHolder(@NonNull RecipeCardViewHolder holder, int position) {
-        if (mRecipes != null) {
+        if (mFilteredRecipes != null) {
             holder.bind(position);
         }
     }
 
     public void setRecipes(List<Recipe> recipes) {
         mRecipes = recipes;
+        mFilteredRecipes = recipes;
         notifyDataSetChanged();
+    }
+
+    public void filter(CharSequence charSequence) {
+        String charString = charSequence.toString();
+        if (!charString.isEmpty()) {
+            List<Recipe> filteredList = new ArrayList<>();
+            for (Recipe row : mRecipes) {
+                if (row.title.toLowerCase().contains(charString.toLowerCase()) || row.writer.contains(charSequence)) {
+                    filteredList.add(row);
+                }
+            }
+            mFilteredRecipes = filteredList;
+            notifyDataSetChanged();
+        } else {
+            setRecipes(mRecipes);
+        }
     }
 
     public class RecipeCardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -64,7 +83,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
         }
 
         private void bind(int position) {
-            Recipe current = mRecipes.get(position);
+            Recipe current = mFilteredRecipes.get(position);
             recipeId = current.id;
             recipeName = current.title;
             recipeNameTextView.setText(recipeName);
