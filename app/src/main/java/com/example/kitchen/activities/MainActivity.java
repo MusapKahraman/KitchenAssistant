@@ -14,7 +14,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.kitchen.R;
 import com.example.kitchen.adapters.OnRecipeClickListener;
 import com.example.kitchen.data.DataPlaceholders;
@@ -25,6 +28,8 @@ import com.example.kitchen.utility.KeyUtils;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +74,17 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        // Populate navigation header with user data.
+        View navHeader = navigationView.getHeaderView(0);
+        ImageView userImage = navHeader.findViewById(R.id.iv_nav_header);
+        TextView userName = navHeader.findViewById(R.id.tv_nav_header_title);
+        TextView userEmail = navHeader.findViewById(R.id.tv_nav_header_subtitle);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            Glide.with(this).load(user.getPhotoUrl()).into(userImage);
+            userName.setText(user.getDisplayName());
+            userEmail.setText(user.getEmail());
+        }
 
         Log.v("MainActivity", "Navigator Index: " + mNavigatorIndex);
         if (savedInstanceState != null) {

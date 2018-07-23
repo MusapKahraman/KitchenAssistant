@@ -12,4 +12,6 @@
     <dimen name="card_height">100dp</dimen>
     <dimen name="space_one_unit">8dp</dimen>
     <dimen name="space_two_units">16dp</dimen>
+    <dimen name="nav_header_user_image_side">72dp</dimen>
+    <dimen name="nav_header_user_image_corner">36dp</dimen>
 </resources>
