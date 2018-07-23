@@ -1,5 +1,6 @@
 # Capstone Project
-A [technical specification](Capstone_Stage1.pdf) for my custom app, including UI mocks and a technical breakdown of components.
+**Stage 1 :** A [technical specification](Capstone_Stage1.pdf) for my custom app, including UI mocks and a technical breakdown of components.
+**Stage 2 :** Kitchen Assistant.
 
 _Part of the Android Developer Nanodegree Program_
 
