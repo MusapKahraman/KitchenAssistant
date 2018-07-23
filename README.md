@@ -1,5 +1,5 @@
 # Capstone Project
-Wrote a [technical specification](Capstone_Stage1.pdf) for my custom app, including UI mocks and a technical breakdown of components.
+A [technical specification](Capstone_Stage1.pdf) for my custom app, including UI mocks and a technical breakdown of components.
 
 _Part of the Android Developer Nanodegree Program_
 
