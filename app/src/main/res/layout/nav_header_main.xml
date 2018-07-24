@@ -14,7 +14,6 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <android.support.v7.widget.CardView
-        android:id="@+id/card_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         card_view:cardCornerRadius="@dimen/nav_header_user_image_corner">

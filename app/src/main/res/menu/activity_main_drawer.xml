@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/group_recipes"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_recipes"
             android:icon="@drawable/ic_menu_recipes"
@@ -12,49 +14,48 @@
             android:id="@+id/nav_notebook"
             android:icon="@drawable/ic_menu_notebook"
             android:title="@string/notebook" />
+    </group>
+
+    <group
+        android:id="@+id/group_suggest"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_suggestions"
             android:icon="@drawable/ic_menu_suggest"
             android:title="@string/suggestions" />
     </group>
 
-    <item android:title="@string/storage">
-        <menu>
-            <group android:checkableBehavior="single">
-                <item
-                    android:id="@+id/nav_food_storage"
-                    android:icon="@drawable/ic_menu_food"
-                    android:title="@string/food" />
-                <item
-                    android:id="@+id/nav_shopping_list"
-                    android:icon="@drawable/ic_menu_shopping"
-                    android:title="@string/shopping_list" />
-            </group>
-        </menu>
-    </item>
+    <group
+        android:id="@+id/group_weekly"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_meal_board"
+            android:icon="@drawable/ic_menu_board"
+            android:title="@string/meal_board" />
+        <item
+            android:id="@+id/nav_routines"
+            android:icon="@drawable/ic_menu_routines"
+            android:title="@string/routines" />
+    </group>
 
-    <item android:title="@string/weekly">
-        <menu>
-            <group android:checkableBehavior="single">
-                <item
-                    android:id="@+id/nav_routines"
-                    android:icon="@drawable/ic_menu_routines"
-                    android:title="@string/routines" />
-                <item
-                    android:id="@+id/nav_meal_board"
-                    android:icon="@drawable/ic_menu_board"
-                    android:title="@string/meal_board" />
-            </group>
-        </menu>
-    </item>
+    <group
+        android:id="@+id/group_storage"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_food_storage"
+            android:icon="@drawable/ic_menu_food"
+            android:title="@string/food" />
+        <item
+            android:id="@+id/nav_shopping_list"
+            android:icon="@drawable/ic_menu_shopping"
+            android:title="@string/shopping_list" />
+    </group>
 
-    <item android:title="@string/account">
-        <menu>
-            <item
-                android:id="@+id/nav_logout"
-                android:icon="@drawable/ic_menu_sign_out"
-                android:title="@string/logout" />
-        </menu>
-    </item>
+    <group>
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_menu_sign_out"
+            android:title="@string/logout" />
+    </group>
 
 </menu>

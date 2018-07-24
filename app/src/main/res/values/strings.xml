@@ -13,13 +13,10 @@
     <string name="recipes">Recipes</string>
     <string name="notebook">Notebook</string>
     <string name="suggestions">Suggestions</string>
-    <string name="weekly">Weekly</string>
     <string name="meal_board">Meal Board</string>
     <string name="routines">Routines</string>
     <string name="shopping_list">Shopping List</string>
-    <string name="storage">Storage</string>
     <string name="food">Food</string>
-    <string name="account">Account</string>
     <string name="logout">Logout</string>
 
     <string name="recipe_image_description">Recipe image</string>
