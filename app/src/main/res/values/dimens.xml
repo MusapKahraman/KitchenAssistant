@@ -14,4 +14,5 @@
     <dimen name="space_two_units">16dp</dimen>
     <dimen name="nav_header_user_image_side">72dp</dimen>
     <dimen name="nav_header_user_image_corner">36dp</dimen>
+    <dimen name="tab_widget_child_width">50dp</dimen>
 </resources>

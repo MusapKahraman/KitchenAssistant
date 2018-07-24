@@ -36,7 +36,7 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
     @Override
     public RecipeCardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.notebook_card_item, parent, false);
+        View view = inflater.inflate(R.layout.item_notebook_card, parent, false);
         return new RecipeCardViewHolder(view);
     }
 

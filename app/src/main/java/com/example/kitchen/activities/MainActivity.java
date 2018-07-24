@@ -22,6 +22,7 @@ import com.example.kitchen.R;
 import com.example.kitchen.adapters.OnRecipeClickListener;
 import com.example.kitchen.data.DataPlaceholders;
 import com.example.kitchen.data.Recipe;
+import com.example.kitchen.fragments.MealBoardFragment;
 import com.example.kitchen.fragments.NotebookFragment;
 import com.example.kitchen.fragments.RecipesFragment;
 import com.example.kitchen.utility.KeyUtils;
@@ -40,8 +41,10 @@ public class MainActivity extends AppCompatActivity
     private static final String KEY_NAV_INDEX = "navigator-index-key";
     private static final String KEY_RECIPES_FRAG = "recipes-fragment-key";
     private static final String KEY_NOTEBOOK_FRAG = "notebook-fragment-key";
+    private static final String KEY_MEAL_BOARD_FRAG = "meal-board-fragment-key";
     private Bundle mRecipesFragmentSavedState;
     private Bundle mNotebookFragmentSavedState;
+    private Bundle mMealBoardFragmentSavedState;
     private int mNavigatorIndex;
 
     @Override
@@ -90,6 +93,7 @@ public class MainActivity extends AppCompatActivity
         if (savedInstanceState != null) {
             mRecipesFragmentSavedState = savedInstanceState.getBundle(KEY_RECIPES_FRAG);
             mNotebookFragmentSavedState = savedInstanceState.getBundle(KEY_NOTEBOOK_FRAG);
+            mMealBoardFragmentSavedState = savedInstanceState.getBundle(KEY_MEAL_BOARD_FRAG);
             mNavigatorIndex = savedInstanceState.getInt(KEY_NAV_INDEX);
         } else if (getIntent() != null) {
             mNavigatorIndex = getIntent().getIntExtra(KeyUtils.EXTRA_NAV_INDEX, 0);
@@ -102,12 +106,12 @@ public class MainActivity extends AppCompatActivity
         super.onSaveInstanceState(outState);
         outState.putBundle(KEY_RECIPES_FRAG, mRecipesFragmentSavedState);
         outState.putBundle(KEY_NOTEBOOK_FRAG, mNotebookFragmentSavedState);
+        outState.putBundle(KEY_MEAL_BOARD_FRAG, mMealBoardFragmentSavedState);
         outState.putInt(KEY_NAV_INDEX, mNavigatorIndex);
     }
 
     private void changeContent() {
         Log.v("MainActivity", "Changing content with Navigator Index: " + mNavigatorIndex);
-        Intent intent;
         switch (mNavigatorIndex) {
             case 0:
                 showRecipes(DataPlaceholders.getRecipes());
@@ -115,13 +119,8 @@ public class MainActivity extends AppCompatActivity
             case 1:
                 showNotebook(DataPlaceholders.getNotebook());
                 break;
-            case 5:
-                intent = new Intent(this, RoutinesActivity.class);
-                startActivity(intent);
-                break;
             case 6:
-                intent = new Intent(this, MealBoardActivity.class);
-                startActivity(intent);
+                showMealBoard(DataPlaceholders.getRecipes());
                 break;
         }
     }
@@ -148,12 +147,27 @@ public class MainActivity extends AppCompatActivity
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, notebookFragment).commit();
     }
 
+    private void showMealBoard(List<Recipe> recipes) {
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(R.string.meal_board);
+        Bundle bundle = new Bundle();
+        bundle.putBundle(KeyUtils.KEY_SAVED_STATE, mMealBoardFragmentSavedState);
+        bundle.putParcelableArrayList(KeyUtils.KEY_RECIPES, (ArrayList<Recipe>) recipes);
+        MealBoardFragment mealBoardFragment = new MealBoardFragment();
+        mealBoardFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mealBoardFragment).commit();
+    }
+
     public void fromRecipesFragment(Bundle fragmentOutState) {
         mRecipesFragmentSavedState = fragmentOutState;
     }
 
     public void fromNotebookFragment(Bundle fragmentOutState) {
         mNotebookFragmentSavedState = fragmentOutState;
+    }
+
+    public void fromMealBoardFragment(Bundle fragmentOutState) {
+        mMealBoardFragmentSavedState = fragmentOutState;
     }
 
     @Override

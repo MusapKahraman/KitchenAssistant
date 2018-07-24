@@ -33,16 +33,6 @@
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.MealBoardActivity"
-            android:label="@string/title_activity_meal_board"
-            android:launchMode="singleTop"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activities.RoutinesActivity"
-            android:label="@string/title_activity_routines"
-            android:launchMode="singleTop"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".activities.RecipeDetailActivity"
             android:label="@string/title_activity_recipe_detail"
             android:launchMode="singleTop"
