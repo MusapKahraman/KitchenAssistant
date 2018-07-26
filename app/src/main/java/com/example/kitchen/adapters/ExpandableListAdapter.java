@@ -1,11 +1,11 @@
 package com.example.kitchen.adapters;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.kitchen.R;
@@ -15,60 +15,63 @@ import java.util.List;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
+    private final Context mContext;
+    private final List<String> mGroupTitles;
+    private final HashMap<String, List<String>> mChildren;
 
-    private final Context _context;
-    private final List<String> _listDataHeader; // header titles
-    // child data in format of header title, child title
-    private final HashMap<String, List<String>> _listDataChild;
-
-    public ExpandableListAdapter(Context context, List<String> listDataHeader,
-                                 HashMap<String, List<String>> listChildData) {
-        this._context = context;
-        this._listDataHeader = listDataHeader;
-        this._listDataChild = listChildData;
+    public ExpandableListAdapter(Context context, List<String> groupTitles, HashMap<String, List<String>> children) {
+        mContext = context;
+        mGroupTitles = groupTitles;
+        mChildren = children;
     }
 
     @Override
-    public Object getChild(int groupPosition, int childPosition) {
-        return this._listDataChild.get(this._listDataHeader.get(groupPosition)).get(childPosition);
-    }
-
-    @Override
-    public long getChildId(int groupPosition, int childPosition) {
-        return childPosition;
-    }
-
-    @Override
-    public View getChildView(int groupPosition, final int childPosition,
-                             boolean isLastChild, View convertView, ViewGroup parent) {
-        final String childText = (String) getChild(groupPosition, childPosition);
+    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+        String groupTitle = (String) getGroup(groupPosition);
         if (convertView == null) {
-            LayoutInflater layoutInflater = (LayoutInflater) this._context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            if (layoutInflater != null)
-                convertView = layoutInflater.inflate(R.layout.list_item, parent, false);
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            if (inflater != null)
+                convertView = inflater.inflate(R.layout.list_group_meal_board, parent, false);
         }
         if (convertView != null) {
-            TextView txtListChild = convertView.findViewById(R.id.tv_list_item);
-            txtListChild.setText(childText);
+            TextView title = convertView.findViewById(R.id.tv_list_group_title);
+            title.setText(groupTitle);
+            Button button = convertView.findViewById(R.id.btn_add);
+            button.setFocusable(false);
+            button.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
+
+                }
+            });
         }
         return convertView;
     }
 
     @Override
-    public int getChildrenCount(int groupPosition) {
-        return this._listDataChild.get(this._listDataHeader.get(groupPosition))
-                .size();
+    public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+        String childText = (String) getChild(groupPosition, childPosition);
+        if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            if (inflater != null)
+                convertView = inflater.inflate(R.layout.list_child_meal_board, parent, false);
+        }
+        if (convertView != null) {
+            TextView text = convertView.findViewById(R.id.tv_list_child);
+            text.setText(childText);
+            Button button = convertView.findViewById(R.id.btn_delete);
+            button.setFocusable(false);
+            button.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
+
+                }
+            });
+        }
+        return convertView;
     }
 
     @Override
     public Object getGroup(int groupPosition) {
-        return this._listDataHeader.get(groupPosition);
-    }
-
-    @Override
-    public int getGroupCount() {
-        return this._listDataHeader.size();
+        return mGroupTitles.get(groupPosition);
     }
 
     @Override
@@ -77,22 +80,23 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getGroupView(int groupPosition, boolean isExpanded,
-                             View convertView, ViewGroup parent) {
-        String headerTitle = (String) getGroup(groupPosition);
-        if (convertView == null) {
-            LayoutInflater layoutInflater = (LayoutInflater) this._context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            if (layoutInflater != null)
-                convertView = layoutInflater.inflate(R.layout.list_group, parent, false);
-        }
-        if (convertView != null) {
-            TextView lblListHeader = convertView
-                    .findViewById(R.id.tv_list_header);
-            lblListHeader.setTypeface(null, Typeface.BOLD);
-            lblListHeader.setText(headerTitle);
-        }
-        return convertView;
+    public int getGroupCount() {
+        return mGroupTitles.size();
+    }
+
+    @Override
+    public Object getChild(int groupPosition, int childPosition) {
+        return mChildren.get(mGroupTitles.get(groupPosition)).get(childPosition);
+    }
+
+    @Override
+    public long getChildId(int groupPosition, int childPosition) {
+        return childPosition;
+    }
+
+    @Override
+    public int getChildrenCount(int groupPosition) {
+        return mChildren.get(mGroupTitles.get(groupPosition)).size();
     }
 
     @Override

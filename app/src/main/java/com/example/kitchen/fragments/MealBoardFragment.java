@@ -1,9 +1,8 @@
 package com.example.kitchen.fragments;
 
-import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -16,41 +15,36 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.HorizontalScrollView;
 import android.widget.TabHost;
-import android.widget.Toast;
 
 import com.example.kitchen.R;
 import com.example.kitchen.activities.MainActivity;
 import com.example.kitchen.adapters.ExpandableListAdapter;
+import com.example.kitchen.data.DataPlaceholders;
 import com.example.kitchen.utility.KeyUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 public class MealBoardFragment extends Fragment {
-
     private static final String TAG = MealBoardFragment.class.getSimpleName();
-    private static final String TAB_STATE = "tab-state";
-    private List<String> listDataHeader;
-    private HashMap<String, List<String>> listDataChild;
-    private TabHost mTabHost;
+    private static final String TAB_LAST = "tab-last_opened";
+    private static final String TAB_MONDAY = "tab-monday";
+    private static final String TAB_TUESDAY = "tab-tuesday";
+    private static final String TAB_WEDNESDAY = "tab-wednesday";
+    private static final String TAB_THURSDAY = "tab-thursday";
+    private static final String TAB_FRIDAY = "tab-friday";
+    private static final String TAB_SATURDAY = "tab-saturday";
+    private static final String TAB_SUNDAY = "tab-sunday";
+    private View mRootView;
     private HorizontalScrollView mHorizontalScrollView;
+    private TabHost mTabHost;
+    private ExpandableListView mMonday;
+    private ExpandableListView mTuesday;
+    private ExpandableListView mWednesday;
+    private ExpandableListView mThursday;
+    private ExpandableListView mFriday;
+    private ExpandableListView mSaturday;
+    private ExpandableListView mSunday;
 
     public MealBoardFragment() {
         // Required empty public constructor
-    }
-
-    @SuppressWarnings("EmptyMethod")
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        /*
-        if (context instanceof OnRecipeClickListener) {
-        } else {
-            throw new ClassCastException(context.toString()
-                    + "must implement OnRecipeClickListener");
-        }
-        */
     }
 
     @Override
@@ -60,43 +54,45 @@ public class MealBoardFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_meal_board, container, false);
-
+        mRootView = inflater.inflate(R.layout.fragment_meal_board, container, false);
         // Set tabs as week days.
-        mHorizontalScrollView = rootView.findViewById(R.id.horizontalScrollView);
-        mTabHost = rootView.findViewById(R.id.tab_host);
+        mHorizontalScrollView = mRootView.findViewById(R.id.horizontalScrollView);
+        mTabHost = mRootView.findViewById(R.id.tab_host);
         mTabHost.setup();
-        mTabHost.addTab(mTabHost.newTabSpec("mon")
-                .setIndicator(getString(R.string.monday))
-                .setContent(R.id.elv_tab_content));
+        setWeekDayTabs();
+        ExpandableListAdapter adapter = new ExpandableListAdapter(getContext(),
+                DataPlaceholders.getGroups(), DataPlaceholders.getChildren());
+        mMonday = mRootView.findViewById(R.id.tab_0);
+        mMonday.setAdapter(adapter);
+        mTuesday = mRootView.findViewById(R.id.tab_1);
+        mTuesday.setAdapter(adapter);
+        mWednesday = mRootView.findViewById(R.id.tab_2);
+        mWednesday.setAdapter(adapter);
+        mThursday = mRootView.findViewById(R.id.tab_3);
+        mThursday.setAdapter(adapter);
+        mFriday = mRootView.findViewById(R.id.tab_4);
+        mFriday.setAdapter(adapter);
+        mSaturday = mRootView.findViewById(R.id.tab_5);
+        mSaturday.setAdapter(adapter);
+        mSunday = mRootView.findViewById(R.id.tab_6);
+        mSunday.setAdapter(adapter);
 
-        mTabHost.addTab(mTabHost.newTabSpec("tue")
-                .setIndicator(getString(R.string.tuesday))
-                .setContent(R.id.elv_tab_content));
-
-        mTabHost.addTab(mTabHost.newTabSpec("wed")
-                .setIndicator(getString(R.string.wednesday))
-                .setContent(R.id.elv_tab_content));
-
-        mTabHost.addTab(mTabHost.newTabSpec("thu")
-                .setIndicator(getString(R.string.thursday))
-                .setContent(R.id.elv_tab_content));
-
-        mTabHost.addTab(mTabHost.newTabSpec("fri")
-                .setIndicator(getString(R.string.friday))
-                .setContent(R.id.elv_tab_content));
-
-        mTabHost.addTab(mTabHost.newTabSpec("sat")
-                .setIndicator(getString(R.string.saturday))
-                .setContent(R.id.elv_tab_content));
-
-        mTabHost.addTab(mTabHost.newTabSpec("sun")
-                .setIndicator(getString(R.string.sunday))
-                .setContent(R.id.elv_tab_content));
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            savedInstanceState = arguments.getBundle(KeyUtils.KEY_SAVED_STATE);
+            if (savedInstanceState != null) {
+                mMonday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_MONDAY));
+                mTuesday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_TUESDAY));
+                mWednesday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_WEDNESDAY));
+                mThursday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_THURSDAY));
+                mFriday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_FRIDAY));
+                mSaturday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_SATURDAY));
+                mSunday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_SUNDAY));
+                mTabHost.setCurrentTab(savedInstanceState.getInt(TAB_LAST));
+            }
+        }
 
         mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
@@ -105,117 +101,36 @@ public class MealBoardFragment extends Fragment {
             }
         });
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            mHorizontalScrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-                @Override
-                public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                    Log.v(TAG, "oldScrollX: " + oldScrollX + "newScrollX : " + scrollX);
-                }
-            });
-        }
-
-        // Refresh layout by switching days back and forth. Without doing this, first tab shows empty.
-        mTabHost.setCurrentTab(1);
-        mTabHost.setCurrentTab(0);
-
-        // get the list view
-        ExpandableListView expListView = rootView.findViewById(R.id.elv_tab_content);
-        // prepare list data
-        prepareListData();
-        // set list adapter
-        ExpandableListAdapter listAdapter = new ExpandableListAdapter(getContext(), listDataHeader, listDataChild);
-        expListView.setAdapter(listAdapter);
-
-        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-
+        mMonday.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
-            public boolean onChildClick(ExpandableListView parent, View v,
-                                        int groupPosition, int childPosition, long id) {
-                Toast.makeText(
-                        getContext(),
-                        listDataHeader.get(groupPosition)
-                                + " : "
-                                + listDataChild.get(
-                                listDataHeader.get(groupPosition)).get(
-                                childPosition), Toast.LENGTH_SHORT)
-                        .show();
+            public void onGroupExpand(int groupPosition) {
+                Snackbar.make(mRootView, DataPlaceholders.getGroups().get(groupPosition)
+                        + " Expanded", Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
+        mMonday.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+            @Override
+            public void onGroupCollapse(int groupPosition) {
+                Snackbar.make(mRootView, DataPlaceholders.getGroups().get(groupPosition)
+                        + " Collapsed", Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
+        mMonday.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                Snackbar.make(mRootView,
+                        DataPlaceholders.getGroups().get(groupPosition) + " : "
+                                + DataPlaceholders.getChildren()
+                                .get(DataPlaceholders.getGroups().get(groupPosition))
+                                .get(childPosition),
+                        Snackbar.LENGTH_SHORT).show();
                 return false;
             }
         });
 
-        expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                Toast.makeText(getContext(),
-                        listDataHeader.get(groupPosition) + " Expanded",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        expListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-                Toast.makeText(getContext(),
-                        listDataHeader.get(groupPosition) + " Collapsed",
-                        Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            savedInstanceState = arguments.getBundle(KeyUtils.KEY_SAVED_STATE);
-            if (savedInstanceState != null) {
-                int tabIndex = savedInstanceState.getInt(TAB_STATE);
-                mTabHost.setCurrentTab(tabIndex);
-                mHorizontalScrollView.setScrollX(getScrollX(tabIndex));
-            }
-        }
-        return rootView;
-    }
-
-    /*
-     * Preparing the list data
-     */
-    private void prepareListData() {
-        listDataHeader = new ArrayList<>();
-        listDataChild = new HashMap<>();
-
-        // Adding child data
-        listDataHeader.add("Top 250");
-        listDataHeader.add("Now Showing");
-        listDataHeader.add("Coming Soon..");
-
-        // Adding child data
-        List<String> top250 = new ArrayList<>();
-        top250.add("The Shawshank Redemption");
-        top250.add("The Godfather");
-        top250.add("The Godfather: Part II");
-        top250.add("Pulp Fiction");
-        top250.add("The Good, the Bad and the Ugly");
-        top250.add("The Dark Knight");
-        top250.add("12 Angry Men");
-
-        List<String> nowShowing = new ArrayList<>();
-        nowShowing.add("The Conjuring");
-        nowShowing.add("Despicable Me 2");
-        nowShowing.add("Turbo");
-        nowShowing.add("Grown Ups 2");
-        nowShowing.add("Red 2");
-        nowShowing.add("The Wolverine");
-
-        List<String> comingSoon = new ArrayList<>();
-        comingSoon.add("2 Guns");
-        comingSoon.add("The Smurfs 2");
-        comingSoon.add("The Spectacular Now");
-        comingSoon.add("The Canyons");
-        comingSoon.add("Europa Report");
-
-        listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), nowShowing);
-        listDataChild.put(listDataHeader.get(2), comingSoon);
+        return mRootView;
     }
 
     /**
@@ -250,7 +165,14 @@ public class MealBoardFragment extends Fragment {
     }
 
     private void sendToActivity(Bundle outState) {
-        outState.putInt(TAB_STATE, mTabHost.getCurrentTab());
+        outState.putInt(TAB_LAST, mTabHost.getCurrentTab());
+        outState.putParcelable(TAB_MONDAY, mMonday.onSaveInstanceState());
+        outState.putParcelable(TAB_TUESDAY, mTuesday.onSaveInstanceState());
+        outState.putParcelable(TAB_WEDNESDAY, mWednesday.onSaveInstanceState());
+        outState.putParcelable(TAB_THURSDAY, mThursday.onSaveInstanceState());
+        outState.putParcelable(TAB_FRIDAY, mFriday.onSaveInstanceState());
+        outState.putParcelable(TAB_SATURDAY, mSaturday.onSaveInstanceState());
+        outState.putParcelable(TAB_SUNDAY, mSunday.onSaveInstanceState());
 
         MainActivity activity = null;
         try {
@@ -273,9 +195,38 @@ public class MealBoardFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @SuppressWarnings("EmptyMethod")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.app_bar_auto_complete:
+                Snackbar.make(mRootView, "Magic happening...", Snackbar.LENGTH_SHORT).show();
+                return true;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setWeekDayTabs() {
+        mTabHost.addTab(mTabHost.newTabSpec("mon")
+                .setIndicator(getString(R.string.monday))
+                .setContent(R.id.tab_0));
+        mTabHost.addTab(mTabHost.newTabSpec("tue")
+                .setIndicator(getString(R.string.tuesday))
+                .setContent(R.id.tab_1));
+        mTabHost.addTab(mTabHost.newTabSpec("wed")
+                .setIndicator(getString(R.string.wednesday))
+                .setContent(R.id.tab_2));
+        mTabHost.addTab(mTabHost.newTabSpec("thu")
+                .setIndicator(getString(R.string.thursday))
+                .setContent(R.id.tab_3));
+        mTabHost.addTab(mTabHost.newTabSpec("fri")
+                .setIndicator(getString(R.string.friday))
+                .setContent(R.id.tab_4));
+        mTabHost.addTab(mTabHost.newTabSpec("sat")
+                .setIndicator(getString(R.string.saturday))
+                .setContent(R.id.tab_5));
+        mTabHost.addTab(mTabHost.newTabSpec("sun")
+                .setIndicator(getString(R.string.sunday))
+                .setContent(R.id.tab_6));
     }
 }

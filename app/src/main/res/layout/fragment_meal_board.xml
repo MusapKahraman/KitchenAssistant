@@ -29,11 +29,42 @@
             android:layout_height="match_parent">
 
             <ExpandableListView
-                android:id="@+id/elv_tab_content"
+                android:id="@+id/tab_0"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:divider="@android:color/darker_gray"
+                android:dividerHeight="0.5dp"
+                android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft" />
 
-            </ExpandableListView>
+            <ExpandableListView
+                android:id="@+id/tab_1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ExpandableListView
+                android:id="@+id/tab_2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ExpandableListView
+                android:id="@+id/tab_3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ExpandableListView
+                android:id="@+id/tab_4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ExpandableListView
+                android:id="@+id/tab_5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ExpandableListView
+                android:id="@+id/tab_6"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
         </FrameLayout>
     </LinearLayout>
 </TabHost>
