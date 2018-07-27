@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#34a3d4</color>
-    <color name="colorPrimaryDark">#2787b1</color>
-    <color name="colorAccent">#ffae00</color>
-    <color name="nav_gradient_start">#74d4fd</color>
-    <color name="nav_gradient_center">#006d9c</color>
-    <color name="nav_gradient_end">#004b6b</color>
+    <color name="colorPrimary">#b71c1c</color>
+    <color name="colorPrimaryDark">#3e2723</color>
+    <color name="colorAccent">#ffc400</color>
+    <color name="nav_gradient_start">#ff80ab</color>
+    <color name="nav_gradient_center">#b71c1c</color>
+    <color name="nav_gradient_end">#3e2723</color>
 </resources>

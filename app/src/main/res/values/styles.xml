@@ -51,8 +51,8 @@
     <style name="CardListItem" parent="CardView">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/card_height</item>
-        <item name="android:layout_gravity">center</item>
-        <item name="android:layout_margin">@dimen/space_two_units</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_margin">@dimen/space_one_unit</item>
         <item name="cardCornerRadius">@dimen/space_one_unit</item>
     </style>
 

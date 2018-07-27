@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,8 +28,8 @@ import java.util.List;
 public class NotebookFragment extends Fragment {
 
     private static final String TAG = NotebookFragment.class.getSimpleName();
-    private static final String FIRST_ITEM = "state";
-    private LinearLayoutManager mLayoutManager;
+    private static final String LAYOUT_STATE = "state";
+    private StaggeredGridLayoutManager mLayoutManager;
     private OnRecipeClickListener mClickListener;
     private int mFirstVisibleItemPos;
     private View mRootView;
@@ -62,7 +62,11 @@ public class NotebookFragment extends Fragment {
         // Inflate the layout for this fragment
         mRootView = inflater.inflate(R.layout.fragment_recipes, container, false);
         RecyclerView recyclerView = mRootView.findViewById(R.id.rv_recipe_steps);
-        mLayoutManager = new LinearLayoutManager(getContext());
+        if (getResources().getBoolean(R.bool.landscape)) {
+            mLayoutManager = new StaggeredGridLayoutManager(1, RecyclerView.HORIZONTAL);
+        } else {
+            mLayoutManager = new StaggeredGridLayoutManager(2, RecyclerView.VERTICAL);
+        }
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setHasFixedSize(true);
         mAdapter = new NotebookAdapter(mClickListener);
@@ -73,8 +77,7 @@ public class NotebookFragment extends Fragment {
             mAdapter.setRecipes(recipes);
             savedInstanceState = arguments.getBundle(KeyUtils.KEY_SAVED_STATE);
             if (savedInstanceState != null) {
-                mFirstVisibleItemPos = savedInstanceState.getInt(FIRST_ITEM);
-                mLayoutManager.scrollToPosition(mFirstVisibleItemPos);
+                mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(LAYOUT_STATE));
             }
         }
         return mRootView;
@@ -93,9 +96,7 @@ public class NotebookFragment extends Fragment {
     }
 
     private void sendToActivity(Bundle outState) {
-        mFirstVisibleItemPos = mLayoutManager.findFirstVisibleItemPosition();
-        outState.putInt(FIRST_ITEM, mFirstVisibleItemPos);
-
+        outState.putParcelable(LAYOUT_STATE, mLayoutManager.onSaveInstanceState());
         MainActivity activity = null;
         try {
             activity = (MainActivity) getActivity();

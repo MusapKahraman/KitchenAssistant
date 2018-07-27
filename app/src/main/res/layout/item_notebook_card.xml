@@ -9,17 +9,36 @@
 
         <ImageView
             android:id="@+id/iv_card_recipe_image"
-            android:layout_width="@dimen/card_height"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/card_image_height"
             android:contentDescription="@string/recipe_image_description" />
 
         <TextView
             android:id="@+id/tv_recipe_name"
-            style="@style/CardTexts"
-            android:layout_marginStart="@dimen/space_two_units"
-            app:layout_constraintBottom_toTopOf="@+id/iv_card_recipe_image"
-            app:layout_constraintStart_toEndOf="@+id/iv_card_recipe_image"
+            style="@style/CardTitle"
+            app:layout_constraintBottom_toTopOf="@+id/btn_delete"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_card_recipe_image" />
+
+        <Button
+            android:id="@+id/btn_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:text="@string/delete"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/btn_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/list_button_size"
+            android:background="@android:color/transparent"
+            android:text="@string/edit"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_delete" />
 
     </android.support.constraint.ConstraintLayout>
 

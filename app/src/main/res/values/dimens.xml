@@ -1,4 +1,5 @@
 <resources>
+    <bool name="landscape">false</bool>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
@@ -13,7 +14,8 @@
     <dimen name="space_two_units">16dp</dimen>
     <dimen name="nav_header_user_image_size">72dp</dimen>
     <dimen name="nav_header_user_image_corner">36dp</dimen>
-    <dimen name="card_height">250dp</dimen>
+    <dimen name="card_height">285dp</dimen>
+    <dimen name="card_width">225dp</dimen>
     <dimen name="card_image_height">160dp</dimen>
     <dimen name="card_title_size">16sp</dimen>
     <dimen name="card_detail_size">12sp</dimen>
