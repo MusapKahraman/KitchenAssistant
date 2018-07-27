@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_recipe"
     style="@style/CardListItem">
 
     <android.support.constraint.ConstraintLayout
@@ -11,33 +12,45 @@
             android:id="@+id/iv_card_recipe_image"
             android:layout_width="match_parent"
             android:layout_height="@dimen/card_image_height"
-            android:contentDescription="@string/recipe_image_description" />
+            android:contentDescription="@string/recipe_image_description"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ingredients" />
 
         <TextView
             android:id="@+id/tv_recipe_name"
             style="@style/CardTitle"
-            app:layout_constraintBottom_toTopOf="@+id/btn_delete"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_card_recipe_image" />
 
         <Button
-            android:id="@+id/btn_delete"
+            android:id="@+id/btn_edit"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/list_button_size"
+            android:layout_height="@dimen/card_button_size"
             android:background="@android:color/transparent"
-            android:text="@string/delete"
+            android:text="@string/edit"
+            android:layout_marginEnd="@dimen/space_one_unit"
             android:textColor="@color/colorAccent"
+            android:textAlignment="viewEnd"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/list_button_size"
-            android:background="@android:color/transparent"
-            android:text="@string/edit"
-            android:textColor="@color/colorAccent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_delete" />
+        <ImageView
+            android:id="@+id/iv_clock"
+            android:layout_width="@dimen/card_timer_icon_size"
+            android:layout_height="@dimen/card_timer_icon_size"
+            android:layout_marginStart="@dimen/space_one_unit"
+            android:contentDescription="@string/timer_icon"
+            android:src="@android:drawable/ic_lock_idle_alarm"
+            app:layout_constraintBottom_toTopOf="@+id/btn_edit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_edit" />
+
+        <TextView
+            android:id="@+id/textView"
+            style="@style/CardCookTime"
+            app:layout_constraintBottom_toTopOf="@+id/btn_edit"
+            app:layout_constraintStart_toEndOf="@+id/iv_clock"
+            app:layout_constraintTop_toBottomOf="@+id/btn_edit" />
 
     </android.support.constraint.ConstraintLayout>
 

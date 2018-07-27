@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.kitchen.R;
 import com.example.kitchen.data.Recipe;
 
@@ -87,21 +89,11 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
             recipeId = current.id;
             recipeName = current.title;
             recipeNameTextView.setText(recipeName);
-            /*
             String url = current.photoUrl;
             if (url != null && url.length() != 0) {
-                Picasso.get()
-                        .load(url)
-                        .centerCrop()
-                        // Placeholder image file is downloaded from http://sweetclipart.com/delicious-pie-clip-art-2028
-                        .placeholder(R.drawable.pie_clip_art)
-                        .error(R.drawable.pie_clip_art)
-                        .into(recipeImageView);
-            } else {
-                recipeImageView.setImageResource(R.drawable.pie_clip_art);
+                RequestOptions options = new RequestOptions();
+                Glide.with(itemView).load(url).apply(options.centerCrop()).into(recipeImageView);
             }
-            */
-            recipeImageView.setImageResource(R.drawable.ic_menu_food);
         }
 
         @Override

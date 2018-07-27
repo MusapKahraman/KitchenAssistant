@@ -36,7 +36,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnRecipeClickListener {
-
     private static final String KEY_NAV_INDEX = "navigator-index-key";
     private static final String KEY_RECIPES_FRAG = "recipes-fragment-key";
     private static final String KEY_NOTEBOOK_FRAG = "notebook-fragment-key";
@@ -59,6 +58,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 if (mNavigatorIndex == 0) {
+                    Intent intent = new Intent(MainActivity.this, NewRecipeActivity.class);
+                    startActivity(intent);
+                } else if (mNavigatorIndex == 1) {
                     Intent intent = new Intent(MainActivity.this, NewRecipeActivity.class);
                     startActivity(intent);
                 }
@@ -228,9 +230,9 @@ public class MainActivity extends AppCompatActivity
         }
         if (mNavigatorIndex != oldNavigatorIndex) {
             mFab.hide();
+            DrawerLayout drawer = findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
         }
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 

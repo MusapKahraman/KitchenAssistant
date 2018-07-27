@@ -15,12 +15,13 @@
     <dimen name="nav_header_user_image_corner">36dp</dimen>
     <dimen name="card_height">285dp</dimen>
     <dimen name="card_width">225dp</dimen>
-    <dimen name="card_image_height">160dp</dimen>
+    <dimen name="card_image_height">185dp</dimen>
     <dimen name="card_title_size">16sp</dimen>
-    <dimen name="card_detail_size">12sp</dimen>
+    <dimen name="card_detail_size">13sp</dimen>
     <dimen name="tab_widget_child_width">50dp</dimen>
     <dimen name="list_item_height">60dp</dimen>
     <dimen name="list_item_image_size">48dp</dimen>
     <dimen name="list_button_size">48dp</dimen>
+    <dimen name="card_button_size">32dp</dimen>
     <dimen name="card_timer_icon_size">20dp</dimen>
 </resources>

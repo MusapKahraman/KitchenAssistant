@@ -124,9 +124,9 @@
     <string name="sunday">Sunday</string>
     <string name="timer_icon">Timer icon</string>
     <string name="delete">Delete</string>
-    <string name="edit">Edit</string>
     <string name="new_recipe">New Recipe</string>
     <string name="overview">Overview</string>
     <string name="ingredients">Ingredients</string>
     <string name="directions">Directions</string>
+    <string name="edit">Edit</string>
 </resources>

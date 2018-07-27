@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_recipe"
     style="@style/CardListItem">
 
     <android.support.constraint.ConstraintLayout
@@ -11,13 +12,13 @@
             android:id="@+id/iv_card_recipe_image"
             android:layout_width="match_parent"
             android:layout_height="@dimen/card_image_height"
-            android:contentDescription="@string/recipe_image_description" />
+            android:contentDescription="@string/recipe_image_description"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ingredients" />
 
         <TextView
             android:id="@+id/tv_recipe_name"
             style="@style/CardTitle"
-            android:layout_marginBottom="@dimen/space_one_unit"
-            app:layout_constraintBottom_toTopOf="@+id/ratingBar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_card_recipe_image" />
 
@@ -31,24 +32,24 @@
             android:numStars="5"
             android:stepSize="0.1"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageView
             android:id="@+id/iv_clock"
             android:layout_width="@dimen/card_timer_icon_size"
             android:layout_height="@dimen/card_timer_icon_size"
-            android:layout_marginEnd="@dimen/space_one_unit"
+            android:layout_marginStart="@dimen/space_one_unit"
             android:contentDescription="@string/timer_icon"
             android:src="@android:drawable/ic_lock_idle_alarm"
             app:layout_constraintBottom_toTopOf="@+id/ratingBar"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
 
         <TextView
             style="@style/CardCookTime"
             android:layout_marginEnd="@dimen/space_one_unit"
             app:layout_constraintBottom_toTopOf="@+id/ratingBar"
-            app:layout_constraintEnd_toStartOf="@+id/iv_clock"
+            app:layout_constraintStart_toEndOf="@+id/iv_clock"
             app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
 
     </android.support.constraint.ConstraintLayout>

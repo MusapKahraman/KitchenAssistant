@@ -1,13 +1,20 @@
 package com.example.kitchen.adapters;
 
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.kitchen.R;
 import com.example.kitchen.data.Recipe;
 
@@ -18,6 +25,39 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
     private final OnRecipeClickListener mRecipeClickListener;
     private List<Recipe> mRecipes;
     private List<Recipe> mFilteredRecipes;
+    private final ArrayList<Recipe> mSelectedRecipes = new ArrayList<>();
+    private boolean mMultiSelect = false;
+    private final ActionMode.Callback mActionModeCallbacks = new ActionMode.Callback() {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mMultiSelect = true;
+            menu.add(R.string.delete);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            if (item.getItemId() == 0) {
+                for (Recipe recipe : mSelectedRecipes) {
+                    mRecipes.remove(recipe);
+                }
+            }
+            mode.finish();
+            return true;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mMultiSelect = false;
+            mSelectedRecipes.clear();
+            notifyDataSetChanged();
+        }
+    };
 
     public NotebookAdapter(OnRecipeClickListener recipeClickListener) {
         mRecipeClickListener = recipeClickListener;
@@ -74,34 +114,60 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
         private final ImageView recipeImageView;
         private int recipeId;
         private String recipeName;
+        private final CardView recipeCard;
 
         private RecipeCardViewHolder(View itemView) {
             super(itemView);
             recipeNameTextView = itemView.findViewById(R.id.tv_recipe_name);
             recipeImageView = itemView.findViewById(R.id.iv_card_recipe_image);
+            recipeCard = itemView.findViewById(R.id.card_recipe);
             itemView.setOnClickListener(this);
         }
 
         private void bind(int position) {
-            Recipe current = mFilteredRecipes.get(position);
+            final Recipe current = mFilteredRecipes.get(position);
             recipeId = current.id;
             recipeName = current.title;
             recipeNameTextView.setText(recipeName);
-            /*
             String url = current.photoUrl;
             if (url != null && url.length() != 0) {
-                Picasso.get()
-                        .load(url)
-                        .centerCrop()
-                        // Placeholder image file is downloaded from http://sweetclipart.com/delicious-pie-clip-art-2028
-                        .placeholder(R.drawable.pie_clip_art)
-                        .error(R.drawable.pie_clip_art)
-                        .into(recipeImageView);
-            } else {
-                recipeImageView.setImageResource(R.drawable.pie_clip_art);
+                RequestOptions options = new RequestOptions();
+                Glide.with(itemView).load(url).apply(options.centerCrop()).into(recipeImageView);
             }
-            */
-            recipeImageView.setImageResource(R.drawable.ic_menu_food);
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    ((AppCompatActivity) view.getContext()).startSupportActionMode(mActionModeCallbacks);
+                    selectRecipe(current);
+                    return true;
+                }
+            });
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    selectRecipe(current);
+                }
+            });
+
+            if (mSelectedRecipes.contains(current)) {
+                recipeCard.setBackgroundColor(itemView.getResources().getColor(R.color.selected_card_back));
+            } else {
+                recipeCard.setBackgroundColor(itemView.getResources().getColor(R.color.card_back));
+            }
+
+        }
+
+        void selectRecipe(Recipe recipe) {
+            if (mMultiSelect) {
+                if (mSelectedRecipes.contains(recipe)) {
+                    mSelectedRecipes.remove(recipe);
+                    recipeCard.setBackgroundColor(itemView.getResources().getColor(R.color.card_back));
+                } else {
+                    mSelectedRecipes.add(recipe);
+                    recipeCard.setBackgroundColor(itemView.getResources().getColor(R.color.selected_card_back));
+                }
+            }
         }
 
         @Override
