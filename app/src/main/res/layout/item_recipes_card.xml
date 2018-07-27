@@ -9,17 +9,48 @@
 
         <ImageView
             android:id="@+id/iv_card_recipe_image"
-            android:layout_width="@dimen/card_height"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/card_image_height"
             android:contentDescription="@string/recipe_image_description" />
 
         <TextView
             android:id="@+id/tv_recipe_name"
-            style="@style/CardTexts"
-            android:layout_marginStart="@dimen/space_two_units"
-            app:layout_constraintBottom_toTopOf="@+id/iv_card_recipe_image"
-            app:layout_constraintStart_toEndOf="@+id/iv_card_recipe_image"
+            style="@style/CardTitle"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_card_recipe_image" />
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/space_one_unit"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:rating="3.3"
+            android:stepSize="0.1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_recipe_name" />
+
+        <ImageView
+            android:id="@+id/iv_clock"
+            android:layout_width="@dimen/card_timer_icon_size"
+            android:layout_height="@dimen/card_timer_icon_size"
+            android:layout_marginEnd="@dimen/space_one_unit"
+            android:contentDescription="@string/timer_icon"
+            android:src="@android:drawable/ic_lock_idle_alarm"
+            app:layout_constraintBottom_toTopOf="@+id/ratingBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
+
+        <TextView
+            android:id="@+id/tv_cook_time"
+            style="@style/CardCookTime"
+            android:layout_marginEnd="@dimen/space_one_unit"
+            app:layout_constraintBottom_toTopOf="@+id/ratingBar"
+            app:layout_constraintEnd_toStartOf="@+id/iv_clock"
+            app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
 
     </android.support.constraint.ConstraintLayout>
 

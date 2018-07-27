@@ -56,13 +56,27 @@
         <item name="cardCornerRadius">@dimen/space_one_unit</item>
     </style>
 
-    <style name="CardTexts">
+    <style name="CardTitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_gravity">center_horizontal|start</item>
+        <item name="android:inputType">textMultiLine</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:textSize">@dimen/card_title_size</item>
+        <item name="android:layout_marginStart">@dimen/space_one_unit</item>
+        <item name="android:layout_marginEnd">@dimen/space_one_unit</item>
+        <item name="android:layout_marginTop">@dimen/space_two_units</item>
+        <item name="android:layout_marginBottom">@dimen/space_two_units</item>
+    </style>
+
+    <style name="CardCookTime">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textAlignment">center</item>
-        <item name="android:layout_gravity">center</item>
-        <item name="android:padding">@dimen/space_two_units</item>
-        <item name="android:textSize">@dimen/card_text_size</item>
+        <item name="android:layout_gravity">center_horizontal|end</item>
+        <item name="android:textSize">@dimen/card_detail_size</item>
+        <item name="android:layout_marginStart">@dimen/space_one_unit</item>
+        <item name="android:layout_marginEnd">@dimen/space_one_unit</item>
     </style>
 
 </resources>
