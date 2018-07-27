@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group
-        android:id="@+id/group_recipes"
-        android:checkableBehavior="single">
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_recipes"
             android:icon="@drawable/ic_menu_recipes"
@@ -16,18 +14,14 @@
             android:title="@string/notebook" />
     </group>
 
-    <group
-        android:id="@+id/group_suggest"
-        android:checkableBehavior="single">
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_suggestions"
             android:icon="@drawable/ic_menu_suggest"
             android:title="@string/suggestions" />
     </group>
 
-    <group
-        android:id="@+id/group_weekly"
-        android:checkableBehavior="single">
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_meal_board"
             android:icon="@drawable/ic_menu_board"
@@ -38,9 +32,7 @@
             android:title="@string/routines" />
     </group>
 
-    <group
-        android:id="@+id/group_storage"
-        android:checkableBehavior="single">
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_food_storage"
             android:icon="@drawable/ic_menu_food"

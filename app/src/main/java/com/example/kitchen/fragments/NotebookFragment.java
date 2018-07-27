@@ -31,7 +31,6 @@ public class NotebookFragment extends Fragment {
     private static final String LAYOUT_STATE = "state";
     private StaggeredGridLayoutManager mLayoutManager;
     private OnRecipeClickListener mClickListener;
-    private int mFirstVisibleItemPos;
     private View mRootView;
     private NotebookAdapter mAdapter;
 

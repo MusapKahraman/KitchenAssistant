@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Kitchen Assistant</string>
-    <string name="action_auto_complete">Autocomplete</string>
-    <string name="title_activity_welcome">Welcome</string>
+    <string name="auto_complete">Autocomplete</string>
+    <string name="welcome">Welcome</string>
     <string name="section_format">Welcome! This is section: %1$d</string>
 
     <!-- Navigation Drawer -->
@@ -22,7 +22,7 @@
     <string name="recipe_image_description">Recipe image</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="title_activity_recipe_detail">RecipeDetailActivity</string>
+    <string name="recipe_detail">Recipe Detail</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -125,4 +125,8 @@
     <string name="timer_icon">Timer icon</string>
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
+    <string name="new_recipe">New Recipe</string>
+    <string name="overview">Overview</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="directions">Directions</string>
 </resources>

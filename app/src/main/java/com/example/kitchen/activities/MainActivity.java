@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -42,6 +41,7 @@ public class MainActivity extends AppCompatActivity
     private static final String KEY_RECIPES_FRAG = "recipes-fragment-key";
     private static final String KEY_NOTEBOOK_FRAG = "notebook-fragment-key";
     private static final String KEY_MEAL_BOARD_FRAG = "meal-board-fragment-key";
+    private FloatingActionButton mFab;
     private Bundle mRecipesFragmentSavedState;
     private Bundle mNotebookFragmentSavedState;
     private Bundle mMealBoardFragmentSavedState;
@@ -54,12 +54,14 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab = findViewById(R.id.fab);
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                if (mNavigatorIndex == 0) {
+                    Intent intent = new Intent(MainActivity.this, NewRecipeActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -114,9 +116,11 @@ public class MainActivity extends AppCompatActivity
         Log.v("MainActivity", "Changing content with Navigator Index: " + mNavigatorIndex);
         switch (mNavigatorIndex) {
             case 0:
+                mFab.show();
                 showRecipes(DataPlaceholders.getRecipes());
                 break;
             case 1:
+                mFab.show();
                 showNotebook(DataPlaceholders.getNotebook());
                 break;
             case 6:
@@ -185,6 +189,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        int oldNavigatorIndex = mNavigatorIndex;
         switch (id) {
             case R.id.nav_recipes:
                 mNavigatorIndex = 0;
@@ -220,6 +225,9 @@ public class MainActivity extends AppCompatActivity
                             }
                         });
                 break;
+        }
+        if (mNavigatorIndex != oldNavigatorIndex) {
+            mFab.hide();
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

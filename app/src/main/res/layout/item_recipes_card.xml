@@ -16,7 +16,7 @@
         <TextView
             android:id="@+id/tv_recipe_name"
             style="@style/CardTitle"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="@dimen/space_one_unit"
             app:layout_constraintBottom_toTopOf="@+id/ratingBar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_card_recipe_image" />
@@ -45,7 +45,6 @@
             app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
 
         <TextView
-            android:id="@+id/tv_cook_time"
             style="@style/CardCookTime"
             android:layout_marginEnd="@dimen/space_one_unit"
             app:layout_constraintBottom_toTopOf="@+id/ratingBar"
