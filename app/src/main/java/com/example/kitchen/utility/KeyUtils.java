@@ -9,4 +9,8 @@ public class KeyUtils {
     public static final String EXTRA_RECIPE_ID = "recipe-id-intent-extra";
     public static final String EXTRA_RECIPE_NAME = "recipe-name-intent-extra";
     public static final String EXTRA_NAV_INDEX = "navigator-index-intent-extra";
+    // Request codes
+    public static final int REQUEST_GALLERY = 1;
+    public static final int REQUEST_CAMERA = 2;
+    public static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 3;
 }

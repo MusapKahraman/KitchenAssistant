@@ -3,21 +3,25 @@ package com.example.kitchen.fragments;
 import android.Manifest;
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
+import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -26,18 +30,17 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.example.kitchen.R;
-import com.example.kitchen.activities.NewRecipeActivity;
 import com.example.kitchen.utility.KeyUtils;
 
-import static android.support.v4.content.PermissionChecker.checkSelfPermission;
+import java.util.Arrays;
+import java.util.List;
 
-public class NewRecipesOverallFragment extends Fragment {
-    private static final String TAG = NewRecipesOverallFragment.class.getSimpleName();
-    private static final String KEY_REQUEST_PERMISSION = "request-permission";
+import static android.support.v4.content.ContextCompat.checkSelfPermission;
+
+public class OverallFragment extends Fragment {
     private static final String KEY_IMAGE_ROTATION = "image-rotation";
-    private static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
+    private static final String KEY_REQUEST_PERMISSION = "request-permission";
     private Context mContext;
-    private View mRootView;
     private String mImageFilePath;
     private ImageView mImageView;
     private boolean mDoNotRequestPermission;
@@ -49,11 +52,10 @@ public class NewRecipesOverallFragment extends Fragment {
         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
             if (mDoNotRequestPermission)
                 return false;
-            if (checkSelfPermission(mContext,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                    && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 try {
-                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            KeyUtils.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
                 } catch (IllegalStateException ex) {
                     ex.fillInStackTrace();
                 }
@@ -68,8 +70,10 @@ public class NewRecipesOverallFragment extends Fragment {
             return false;
         }
     };
+    private View mRootView;
+    private FragmentMessageListener mMessageListener;
 
-    public NewRecipesOverallFragment() {
+    public OverallFragment() {
         // Required empty public constructor
     }
 
@@ -77,15 +81,22 @@ public class NewRecipesOverallFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+        if (context instanceof FragmentMessageListener) {
+            mMessageListener = (FragmentMessageListener) context;
+        } else {
+            throw new ClassCastException(context.toString()
+                    + "must implement FragmentMessageListener");
+        }
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment.
-        mRootView = inflater.inflate(R.layout.fragment_new_recipe_overall, container, false);
+        mRootView = inflater.inflate(R.layout.fragment_overall, container, false);
+
         // Take a picture and load the thumbnail to the image view.
-        mImageView = mRootView.findViewById(R.id.iv_recipe_image);
+        mImageView = mRootView.findViewById(R.id.iv_recipe_picture);
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,16 +108,17 @@ public class NewRecipesOverallFragment extends Fragment {
                 mDoNotRequestPermission = false;
             }
         });
-        // Get savedInstanceState from the activity.
+
+        if (savedInstanceState != null) {
+            mImageView.setRotation(savedInstanceState.getFloat(KEY_IMAGE_ROTATION));
+            mDoNotRequestPermission = savedInstanceState.getBoolean(KEY_REQUEST_PERMISSION);
+        }
+
         Bundle arguments = getArguments();
         if (arguments != null) {
             mImageFilePath = arguments.getString(KeyUtils.KEY_IMAGE_PATH);
-            savedInstanceState = arguments.getBundle(KeyUtils.KEY_SAVED_STATE);
-            if (savedInstanceState != null) {
-                mDoNotRequestPermission = savedInstanceState.getBoolean(KEY_REQUEST_PERMISSION);
-                mImageView.setRotation(savedInstanceState.getFloat(KEY_IMAGE_ROTATION));
-            }
         }
+
         if (mImageFilePath != null) {
             int size = getResources().getInteger(R.integer.thumbnail_size);
             Glide.with(mContext)
@@ -115,6 +127,7 @@ public class NewRecipesOverallFragment extends Fragment {
                     .apply(new RequestOptions().override(size).centerCrop())
                     .into(mImageView);
         }
+
         Button rotate = mRootView.findViewById(R.id.btn_rotate);
         rotate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,41 +136,52 @@ public class NewRecipesOverallFragment extends Fragment {
                 mImageView.setRotation(rotation);
             }
         });
+
+        final TextInputLayout inputLayout = mRootView.findViewById(R.id.input_layout_title);
+        EditText titleText = mRootView.findViewById(R.id.text_edit_title);
+        titleText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (v.getText().length() <= 3) {
+                    inputLayout.setError(getString(R.string.recipe_title_required));
+                }
+                return false;
+            }
+        });
+
+        int layoutItemId = android.R.layout.simple_dropdown_item_1line;
+        String[] mealsArray = getResources().getStringArray(R.array.meals_array);
+        List<String> dogList = Arrays.asList(mealsArray);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, layoutItemId, dogList);
+        AutoCompleteTextView autocompleteView = mRootView.findViewById(R.id.text_edit_course);
+        autocompleteView.setAdapter(adapter);
+
         return mRootView;
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putFloat(KEY_IMAGE_ROTATION, mImageView.getRotation());
+        outState.putBoolean(KEY_REQUEST_PERMISSION, mDoNotRequestPermission);
         sendToActivity(outState);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        sendToActivity(new Bundle());
+        mMessageListener = null;
     }
 
     private void sendToActivity(Bundle outState) {
-        outState.putBoolean(KEY_REQUEST_PERMISSION, mDoNotRequestPermission);
-        outState.putFloat(KEY_IMAGE_ROTATION, mImageView.getRotation());
-
-        NewRecipeActivity activity = null;
-        try {
-            activity = (NewRecipeActivity) getActivity();
-        } catch (ClassCastException e) {
-            Log.e(TAG, e.getMessage());
-        }
-
-        if (activity != null) {
-            activity.fromOverallFragment(outState);
-        }
+        mMessageListener.onFragmentMessage(0, outState);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
-            case PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
+            case KeyUtils.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
                 if (grantResults.length > 0) {
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         int size = getResources().getInteger(R.integer.thumbnail_size);

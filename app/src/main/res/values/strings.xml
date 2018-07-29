@@ -134,8 +134,9 @@
     <string name="no_camera_app">No camera application available.</string>
     <string name="add_a_picture">Add a picture</string>
     <string name="allow_write_external">Can\'t read an image from gallery without permission to external storage.</string>
-    <string-array name="picture_adding_options">
-        <item>Camera</item>
-        <item>Photo Gallery</item>
-    </string-array>
+    <string name="recipe_title">Recipe Title</string>
+    <string name="recipe_title_required">Recipe title is required.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

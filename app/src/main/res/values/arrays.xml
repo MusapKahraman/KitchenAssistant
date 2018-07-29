@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="picture_add_options">
+        <item>Camera</item>
+        <item>Photo Gallery</item>
+    </string-array>
+    <string-array name="meals_array">
+        <item>Appetizer</item>
+        <item>Soup</item>
+        <item>Salad</item>
+        <item>Fish</item>
+        <item>Main course</item>
+        <item>Cheese</item>
+        <item>Nuts</item>
+        <item>Fruit</item>
+        <item>Beverage</item>
+    </string-array>
+</resources>

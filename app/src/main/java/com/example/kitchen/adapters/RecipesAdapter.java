@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCardViewHolder> {
-    private final OnRecipeClickListener mRecipeClickListener;
+    private final RecipeClickListener mRecipeClickListener;
     private List<Recipe> mRecipes;
     private List<Recipe> mFilteredRecipes;
 
-    public RecipesAdapter(OnRecipeClickListener recipeClickListener) {
+    public RecipesAdapter(RecipeClickListener recipeClickListener) {
         mRecipeClickListener = recipeClickListener;
     }
 

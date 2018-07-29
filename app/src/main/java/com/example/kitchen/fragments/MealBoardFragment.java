@@ -158,12 +158,6 @@ public class MealBoardFragment extends Fragment {
         sendToActivity(outState);
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        sendToActivity(new Bundle());
-    }
-
     private void sendToActivity(Bundle outState) {
         outState.putInt(TAB_LAST, mTabHost.getCurrentTab());
         outState.putParcelable(TAB_MONDAY, mMonday.onSaveInstanceState());

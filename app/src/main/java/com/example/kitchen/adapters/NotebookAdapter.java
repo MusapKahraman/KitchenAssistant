@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.RecipeCardViewHolder> {
-    private final OnRecipeClickListener mRecipeClickListener;
+    private final RecipeClickListener mRecipeClickListener;
     private List<Recipe> mRecipes;
     private List<Recipe> mFilteredRecipes;
     private final ArrayList<Recipe> mSelectedRecipes = new ArrayList<>();
@@ -59,7 +59,7 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
         }
     };
 
-    public NotebookAdapter(OnRecipeClickListener recipeClickListener) {
+    public NotebookAdapter(RecipeClickListener recipeClickListener) {
         mRecipeClickListener = recipeClickListener;
     }
 

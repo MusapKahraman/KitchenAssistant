@@ -1,5 +1,5 @@
 package com.example.kitchen.adapters;
 
-public interface OnRecipeClickListener {
+public interface RecipeClickListener {
     void onRecipeClick(int recipeId,String recipeName);
 }

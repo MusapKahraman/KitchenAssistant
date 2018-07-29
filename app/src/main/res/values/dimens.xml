@@ -10,6 +10,9 @@
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="text_margin">16dp</dimen>
 
+    <dimen name="text_auto_size_min">10sp</dimen>
+    <dimen name="text_auto_size_max">16sp</dimen>
+
     <dimen name="space_one_unit">8dp</dimen>
     <dimen name="space_two_units">16dp</dimen>
     <dimen name="nav_header_user_image_size">72dp</dimen>
@@ -25,4 +28,5 @@
     <dimen name="list_button_size">48dp</dimen>
     <dimen name="card_button_size">32dp</dimen>
     <dimen name="card_timer_icon_size">20dp</dimen>
+    <dimen name="text_size_new_recipe">16sp</dimen>
 </resources>

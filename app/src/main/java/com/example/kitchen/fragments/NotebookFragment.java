@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 import com.example.kitchen.R;
 import com.example.kitchen.activities.MainActivity;
 import com.example.kitchen.adapters.NotebookAdapter;
-import com.example.kitchen.adapters.OnRecipeClickListener;
+import com.example.kitchen.adapters.RecipeClickListener;
 import com.example.kitchen.data.Recipe;
 import com.example.kitchen.utility.KeyUtils;
 
@@ -30,7 +30,7 @@ public class NotebookFragment extends Fragment {
     private static final String TAG = NotebookFragment.class.getSimpleName();
     private static final String LAYOUT_STATE = "state";
     private StaggeredGridLayoutManager mLayoutManager;
-    private OnRecipeClickListener mClickListener;
+    private RecipeClickListener mClickListener;
     private View mRootView;
     private NotebookAdapter mAdapter;
 
@@ -41,11 +41,11 @@ public class NotebookFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnRecipeClickListener) {
-            mClickListener = (OnRecipeClickListener) context;
+        if (context instanceof RecipeClickListener) {
+            mClickListener = (RecipeClickListener) context;
         } else {
             throw new ClassCastException(context.toString()
-                    + "must implement OnRecipeClickListener");
+                    + "must implement RecipeClickListener");
         }
     }
 
@@ -91,7 +91,6 @@ public class NotebookFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mClickListener = null;
-        sendToActivity(new Bundle());
     }
 
     private void sendToActivity(Bundle outState) {

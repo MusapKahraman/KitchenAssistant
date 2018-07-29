@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.kitchen.R;
-import com.example.kitchen.adapters.OnRecipeClickListener;
+import com.example.kitchen.adapters.RecipeClickListener;
 import com.example.kitchen.data.DataPlaceholders;
 import com.example.kitchen.data.Recipe;
 import com.example.kitchen.fragments.MealBoardFragment;
@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnRecipeClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, RecipeClickListener {
     private static final String KEY_NAV_INDEX = "navigator-index-key";
     private static final String KEY_RECIPES_FRAG = "recipes-fragment-key";
     private static final String KEY_NOTEBOOK_FRAG = "notebook-fragment-key";
@@ -57,10 +57,10 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 if (mNavigatorIndex == 0) {
-                    Intent intent = new Intent(MainActivity.this, NewRecipeActivity.class);
+                    Intent intent = new Intent(MainActivity.this, RecipeEditActivity.class);
                     startActivity(intent);
                 } else if (mNavigatorIndex == 1) {
-                    Intent intent = new Intent(MainActivity.this, NewRecipeActivity.class);
+                    Intent intent = new Intent(MainActivity.this, RecipeEditActivity.class);
                     startActivity(intent);
                 }
             }
