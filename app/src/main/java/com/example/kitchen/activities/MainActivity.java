@@ -10,7 +10,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -93,7 +92,6 @@ public class MainActivity extends AppCompatActivity
             userEmail.setText(user.getEmail());
         }
 
-        Log.v("MainActivity", "Navigator Index: " + mNavigatorIndex);
         if (savedInstanceState != null) {
             mRecipesFragmentSavedState = savedInstanceState.getBundle(KEY_RECIPES_FRAG);
             mNotebookFragmentSavedState = savedInstanceState.getBundle(KEY_NOTEBOOK_FRAG);
@@ -115,7 +113,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void changeContent() {
-        Log.v("MainActivity", "Changing content with Navigator Index: " + mNavigatorIndex);
         switch (mNavigatorIndex) {
             case 0:
                 mFab.show();

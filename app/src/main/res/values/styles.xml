@@ -76,4 +76,10 @@
         <item name="android:layout_marginEnd">@dimen/space_one_unit</item>
     </style>
 
+    <style name="ButtonLink">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
 </resources>

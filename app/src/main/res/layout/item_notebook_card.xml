@@ -24,12 +24,10 @@
 
         <Button
             android:id="@+id/btn_edit"
-            android:layout_width="wrap_content"
+            style="@style/ButtonLink"
             android:layout_height="@dimen/card_button_size"
-            android:background="@android:color/transparent"
-            android:text="@string/edit"
             android:layout_marginEnd="@dimen/space_one_unit"
-            android:textColor="@color/colorAccent"
+            android:text="@string/edit"
             android:textAlignment="viewEnd"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

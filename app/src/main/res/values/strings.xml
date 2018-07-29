@@ -129,4 +129,13 @@
     <string name="ingredients">Ingredients</string>
     <string name="directions">Directions</string>
     <string name="edit">Edit</string>
+    <string name="click_to_add_a_picture">Click to add a picture</string>
+    <string name="dialog_photo_select">Select how you want to add the picture.</string>
+    <string name="no_camera_app">No camera application available.</string>
+    <string name="add_a_picture">Add a picture</string>
+    <string name="allow_write_external">Can\'t read an image from gallery without permission to external storage.</string>
+    <string-array name="picture_adding_options">
+        <item>Camera</item>
+        <item>Photo Gallery</item>
+    </string-array>
 </resources>

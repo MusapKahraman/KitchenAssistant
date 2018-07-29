@@ -109,7 +109,7 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
         }
     }
 
-    public class RecipeCardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class RecipeCardViewHolder extends RecyclerView.ViewHolder {
         private final TextView recipeNameTextView;
         private final ImageView recipeImageView;
         private int recipeId;
@@ -121,7 +121,6 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
             recipeNameTextView = itemView.findViewById(R.id.tv_recipe_name);
             recipeImageView = itemView.findViewById(R.id.iv_card_recipe_image);
             recipeCard = itemView.findViewById(R.id.card_recipe);
-            itemView.setOnClickListener(this);
         }
 
         private void bind(int position) {
@@ -146,7 +145,11 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    selectRecipe(current);
+                    if (mMultiSelect) {
+                        selectRecipe(current);
+                    } else {
+                        mRecipeClickListener.onRecipeClick(recipeId, recipeName);
+                    }
                 }
             });
 
@@ -168,11 +171,6 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
                     recipeCard.setBackgroundColor(itemView.getResources().getColor(R.color.selected_card_back));
                 }
             }
-        }
-
-        @Override
-        public void onClick(View v) {
-            mRecipeClickListener.onRecipeClick(recipeId, recipeName);
         }
     }
 }
