@@ -255,9 +255,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onRecipeClick(Recipe recipe) {
+    public void onRecipeClick(Recipe recipe, boolean isEditable) {
         Intent intent = new Intent(this, RecipeDetailActivity.class);
         intent.putExtra(AppConstants.EXTRA_RECIPE, recipe);
+        intent.putExtra(AppConstants.EXTRA_EDITABLE, isEditable);
         startActivity(intent);
     }
 }

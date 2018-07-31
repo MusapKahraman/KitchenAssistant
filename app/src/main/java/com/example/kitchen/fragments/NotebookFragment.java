@@ -44,8 +44,7 @@ public class NotebookFragment extends Fragment {
         if (context instanceof RecipeClickListener) {
             mClickListener = (RecipeClickListener) context;
         } else {
-            throw new ClassCastException(context.toString()
-                    + "must implement RecipeClickListener");
+            throw new ClassCastException(context.toString() + "must implement RecipeClickListener");
         }
     }
 
@@ -112,7 +111,7 @@ public class NotebookFragment extends Fragment {
         // Clear all current menu items
         menu.clear();
         // Add new menu items
-        inflater.inflate(R.menu.menu_list_actions, menu);
+        inflater.inflate(R.menu.menu_recipes, menu);
         // Associate searchable configuration with the SearchView
         SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
