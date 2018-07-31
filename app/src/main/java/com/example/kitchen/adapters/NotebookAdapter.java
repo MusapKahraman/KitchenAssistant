@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.kitchen.R;
-import com.example.kitchen.data.Recipe;
+import com.example.kitchen.data.local.entities.Recipe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,7 +112,6 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
     class RecipeCardViewHolder extends RecyclerView.ViewHolder {
         private final TextView recipeNameTextView;
         private final ImageView recipeImageView;
-        private int recipeId;
         private String recipeName;
         private final CardView recipeCard;
 
@@ -125,7 +124,6 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
 
         private void bind(int position) {
             final Recipe current = mFilteredRecipes.get(position);
-            recipeId = current.id;
             recipeName = current.title;
             recipeNameTextView.setText(recipeName);
             String url = current.photoUrl;
@@ -148,7 +146,7 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
                     if (mMultiSelect) {
                         selectRecipe(current);
                     } else {
-                        mRecipeClickListener.onRecipeClick(recipeId, recipeName);
+                        mRecipeClickListener.onRecipeClick(current);
                     }
                 }
             });

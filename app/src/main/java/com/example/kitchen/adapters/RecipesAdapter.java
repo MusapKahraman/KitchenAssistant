@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.kitchen.R;
-import com.example.kitchen.data.Recipe;
+import com.example.kitchen.data.local.entities.Recipe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,8 +74,8 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
     public class RecipeCardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView recipeNameTextView;
         private final ImageView recipeImageView;
-        private int recipeId;
         private String recipeName;
+        private Recipe current;
 
         private RecipeCardViewHolder(View itemView) {
             super(itemView);
@@ -85,8 +85,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
         }
 
         private void bind(int position) {
-            Recipe current = mFilteredRecipes.get(position);
-            recipeId = current.id;
+            current = mFilteredRecipes.get(position);
             recipeName = current.title;
             recipeNameTextView.setText(recipeName);
             String url = current.photoUrl;
@@ -98,7 +97,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
 
         @Override
         public void onClick(View v) {
-            mRecipeClickListener.onRecipeClick(recipeId, recipeName);
+            mRecipeClickListener.onRecipeClick(current);
         }
     }
 }

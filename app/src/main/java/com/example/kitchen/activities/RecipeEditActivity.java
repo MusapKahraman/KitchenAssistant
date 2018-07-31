@@ -1,5 +1,6 @@
 package com.example.kitchen.activities;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -14,6 +15,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.kitchen.R;
 import com.example.kitchen.adapters.RecipeEditAdapter;
+import com.example.kitchen.data.KitchenViewModel;
+import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.fragments.FragmentMessageListener;
 import com.example.kitchen.fragments.PictureDialogListener;
 import com.example.kitchen.utility.AppConstants;
@@ -21,34 +24,40 @@ import com.example.kitchen.utility.BitmapUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 public class RecipeEditActivity extends AppCompatActivity implements PictureDialogListener, FragmentMessageListener {
-    private String mImageFilePath;
     private ViewPager mViewPager;
+    private KitchenViewModel mViewModel;
+    private Recipe mRecipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_edit);
-
+        mViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
         mViewPager = findViewById(R.id.viewPager);
 
         if (savedInstanceState != null) {
-            mImageFilePath = savedInstanceState.getString(AppConstants.KEY_IMAGE_PATH);
+            mRecipe = savedInstanceState.getParcelable(AppConstants.KEY_RECIPE);
+        } else if (getIntent() != null) {
+            mRecipe = getIntent().getParcelableExtra(AppConstants.EXTRA_RECIPE);
         }
-
+        if (mRecipe == null) {
+            mRecipe = new Recipe(getString(R.string.new_recipe), new Date().getTime());
+        }
         updateFragments();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(AppConstants.KEY_IMAGE_PATH, mImageFilePath);
+        outState.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
     }
 
     private void updateFragments() {
         Bundle bundle = new Bundle();
-        bundle.putString(AppConstants.KEY_IMAGE_PATH, mImageFilePath);
+        bundle.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
         FragmentStatePagerAdapter pagerAdapter = new RecipeEditAdapter(this, getSupportFragmentManager(), bundle);
         mViewPager.setAdapter(pagerAdapter);
         TabLayout tabLayout = findViewById(R.id.tabLayout);
@@ -59,12 +68,14 @@ public class RecipeEditActivity extends AppCompatActivity implements PictureDial
     public void onFragmentMessage(int fragmentIndex, Bundle bundle) {
         switch (fragmentIndex) {
             case 0:
+                mRecipe = bundle.getParcelable(AppConstants.KEY_RECIPE);
                 break;
             case 1:
                 break;
             case 2:
                 break;
         }
+        mViewModel.insertRecipes(mRecipe);
     }
 
     @Override
@@ -82,7 +93,7 @@ public class RecipeEditActivity extends AppCompatActivity implements PictureDial
             }
             if (photoFile != null) {
                 // File is successfully created
-                mImageFilePath = photoFile.getAbsolutePath();
+                mRecipe.photoUrl = photoFile.getAbsolutePath();
                 Uri photoURI = FileProvider.getUriForFile(this, "com.example.kitchen.fileprovider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, AppConstants.REQUEST_CAMERA);
@@ -120,7 +131,7 @@ public class RecipeEditActivity extends AppCompatActivity implements PictureDial
                         if (cursor != null) {
                             cursor.moveToFirst();
                             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                            mImageFilePath = cursor.getString(columnIndex);
+                            mRecipe.photoUrl = cursor.getString(columnIndex);
                             cursor.close();
                             // Send mImageFilePath to the fragment.
                             updateFragments();

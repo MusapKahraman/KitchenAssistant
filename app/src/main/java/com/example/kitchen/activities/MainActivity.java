@@ -1,8 +1,11 @@
 package com.example.kitchen.activities;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,8 +21,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.kitchen.R;
 import com.example.kitchen.adapters.RecipeClickListener;
-import com.example.kitchen.data.DataPlaceholders;
-import com.example.kitchen.data.Recipe;
+import com.example.kitchen.data.KitchenViewModel;
+import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.fragments.MealBoardFragment;
 import com.example.kitchen.fragments.NotebookFragment;
 import com.example.kitchen.fragments.RecipesFragment;
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity
     private Bundle mNotebookFragmentSavedState;
     private Bundle mMealBoardFragmentSavedState;
     private int mNavigatorIndex;
+    private KitchenViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
 
         mFab = findViewById(R.id.fab);
         mFab.setOnClickListener(new View.OnClickListener() {
@@ -116,14 +122,29 @@ public class MainActivity extends AppCompatActivity
         switch (mNavigatorIndex) {
             case 0:
                 mFab.show();
-                showRecipes(DataPlaceholders.getRecipes());
+                mViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Recipe> recipes) {
+                        showRecipes(recipes);
+                    }
+                });
                 break;
             case 1:
                 mFab.show();
-                showNotebook(DataPlaceholders.getNotebook());
+                mViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Recipe> recipes) {
+                        showNotebook(recipes);
+                    }
+                });
                 break;
             case 6:
-                showMealBoard(DataPlaceholders.getRecipes());
+                mViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Recipe> recipes) {
+                        showMealBoard(recipes);
+                    }
+                });
                 break;
         }
     }
@@ -234,10 +255,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onRecipeClick(int recipeId, String recipeName) {
+    public void onRecipeClick(Recipe recipe) {
         Intent intent = new Intent(this, RecipeDetailActivity.class);
-        intent.putExtra(AppConstants.EXTRA_RECIPE_ID, recipeId);
-        intent.putExtra(AppConstants.EXTRA_RECIPE_NAME, recipeName);
+        intent.putExtra(AppConstants.EXTRA_RECIPE, recipe);
         startActivity(intent);
     }
 }

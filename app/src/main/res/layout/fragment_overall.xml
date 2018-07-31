@@ -87,16 +87,6 @@
             app:layout_constraintBottom_toBottomOf="@+id/iv_recipe_picture"
             app:layout_constraintStart_toEndOf="@+id/iv_recipe_picture" />
 
-        <Button
-            android:id="@+id/btn_save"
-            android:layout_width="@dimen/list_button_size"
-            android:layout_height="@dimen/list_button_size"
-            android:layout_marginStart="@dimen/space_one_unit"
-            android:background="@android:color/transparent"
-            android:text="@string/save"
-            app:layout_constraintBottom_toTopOf="@+id/btn_rotate"
-            app:layout_constraintStart_toEndOf="@+id/iv_recipe_picture" />
-
         <android.support.design.widget.TextInputLayout
             android:id="@+id/input_layout_course"
             android:layout_width="@dimen/recipe_title_input_width"

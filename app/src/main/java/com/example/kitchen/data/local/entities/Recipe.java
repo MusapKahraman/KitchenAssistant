@@ -1,7 +1,7 @@
-package com.example.kitchen.data;
+package com.example.kitchen.data.local.entities;
 
-import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -11,12 +11,10 @@ import android.support.annotation.NonNull;
 @Entity(tableName = "recipes")
 public class Recipe implements Parcelable {
 
-    public static final Parcelable.Creator<Recipe> CREATOR
-            = new Parcelable.Creator<Recipe>() {
+    public static final Parcelable.Creator<Recipe> CREATOR = new Parcelable.Creator<Recipe>() {
         public Recipe createFromParcel(Parcel in) {
             return new Recipe(in);
         }
-
         public Recipe[] newArray(int size) {
             return new Recipe[size];
         }
@@ -24,8 +22,6 @@ public class Recipe implements Parcelable {
 
     @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "_id")
-    public int id;
     public String title;
     public String photoUrl;
     public int prepTime;
@@ -36,11 +32,26 @@ public class Recipe implements Parcelable {
     public String courseCode;
     public String writer;
     public int servings;
+    public long timeStamp;
 
-    public Recipe(@NonNull int id, String title, String photoUrl, int prepTime, int cookTime,
+    @Ignore
+    public Recipe(@NonNull String title, long timeStamp) {
+        this.title = title;
+        this.photoUrl = "";
+        this.prepTime = 0;
+        this.cookTime = 0;
+        this.rating = 0;
+        this.languageCode = "";
+        this.cuisineCode = "";
+        this.courseCode = "";
+        this.writer = "";
+        this.servings = 1;
+        this.timeStamp = timeStamp;
+    }
+
+    public Recipe(@NonNull String title, String photoUrl, int prepTime, int cookTime,
                   float rating, String languageCode, String cuisineCode, String courseCode,
-                  String writer, int servings) {
-        this.id = id;
+                  String writer, int servings, long timeStamp) {
         this.title = title;
         this.photoUrl = photoUrl;
         this.prepTime = prepTime;
@@ -51,10 +62,10 @@ public class Recipe implements Parcelable {
         this.courseCode = courseCode;
         this.writer = writer;
         this.servings = servings;
+        this.timeStamp = timeStamp;
     }
 
     private Recipe(Parcel in) {
-        id = in.readInt();
         title = in.readString();
         photoUrl = in.readString();
         prepTime = in.readInt();
@@ -65,6 +76,7 @@ public class Recipe implements Parcelable {
         courseCode = in.readString();
         writer = in.readString();
         servings = in.readInt();
+        timeStamp = in.readLong();
     }
 
     @Override
@@ -74,7 +86,6 @@ public class Recipe implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
         dest.writeString(title);
         dest.writeString(photoUrl);
         dest.writeInt(prepTime);
@@ -85,5 +96,6 @@ public class Recipe implements Parcelable {
         dest.writeString(courseCode);
         dest.writeString(writer);
         dest.writeInt(servings);
+        dest.writeLong(timeStamp);
     }
 }

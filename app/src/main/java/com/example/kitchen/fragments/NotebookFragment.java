@@ -20,7 +20,7 @@ import com.example.kitchen.R;
 import com.example.kitchen.activities.MainActivity;
 import com.example.kitchen.adapters.NotebookAdapter;
 import com.example.kitchen.adapters.RecipeClickListener;
-import com.example.kitchen.data.Recipe;
+import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.utility.AppConstants;
 
 import java.util.List;

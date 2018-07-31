@@ -3,11 +3,10 @@ package com.example.kitchen.utility;
 public class AppConstants {
     // Bundle keys
     public static final String KEY_SAVED_STATE = "saved-instance-state-key";
+    public static final String KEY_RECIPE = "recipe-key";
     public static final String KEY_RECIPES = "recipes-list-key";
-    public static final String KEY_IMAGE_PATH = "image-file-path";
     // Intent extras
-    public static final String EXTRA_RECIPE_ID = "recipe-id-intent-extra";
-    public static final String EXTRA_RECIPE_NAME = "recipe-name-intent-extra";
+    public static final String EXTRA_RECIPE = "recipe-intent-extra";
     public static final String EXTRA_NAV_INDEX = "navigator-index-intent-extra";
     // Request codes
     public static final int REQUEST_GALLERY = 1;

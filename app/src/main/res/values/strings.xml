@@ -109,8 +109,6 @@
     <string name="logout">Logout</string>
 
     <string name="recipe_image_description">Recipe image</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="recipe_detail">Recipe Detail</string>
     <string name="search">Search</string>
     <string name="filter">Filter</string>
@@ -143,5 +141,4 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="rotate_image">Rotate image</string>
-    <string name="save">Save recipe</string>
 </resources>

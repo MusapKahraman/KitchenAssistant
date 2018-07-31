@@ -9,7 +9,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.example.kitchen.R;
+import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.utility.AppConstants;
+
+import java.util.Date;
 
 public class RecipeDetailActivity extends AppCompatActivity {
 
@@ -20,14 +23,17 @@ public class RecipeDetailActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Recipe recipe = new Recipe(getString(R.string.new_recipe), new Date().getTime());
+        if (getIntent() != null) {
+            recipe = getIntent().getParcelableExtra(AppConstants.EXTRA_RECIPE);
+        }
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             // Change ActionBar title as the name of the recipe.
-            String recipeName = getIntent().getStringExtra(AppConstants.EXTRA_RECIPE_NAME);
-            if (recipeName != null) {
-                actionBar.setTitle(recipeName);
-            }
+            actionBar.setTitle(recipe.title);
+
         }
 
         FloatingActionButton fab = findViewById(R.id.fab);

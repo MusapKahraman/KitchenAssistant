@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -31,21 +30,23 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.example.kitchen.R;
+import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.utility.AppConstants;
 import com.example.kitchen.utility.BitmapUtils;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.List;
 
 import static android.support.v4.content.ContextCompat.checkSelfPermission;
 
 public class OverallFragment extends Fragment {
+    private static final String LOG_TAG = OverallFragment.class.getSimpleName();
     private static final String KEY_IMAGE_ROTATION = "image-rotation";
     private static final String KEY_REQUEST_PERMISSION = "request-permission";
     private Context mContext;
-    private String mImageFilePath;
     private ImageView mImageView;
+    private Recipe mRecipe;
+    private boolean mDoNotRequestPermission;
     // Deal with write permission to external storage in Glide
     // Reference => https://futurestud.io/tutorials/glide-exceptions-debugging-and-error-handling
     private final RequestListener<Drawable> requestListener = new RequestListener<Drawable>() {
@@ -71,7 +72,6 @@ public class OverallFragment extends Fragment {
             return false;
         }
     };
-    private boolean mDoNotRequestPermission;
     private EditText mTitleView;
     private View mRootView;
     private FragmentMessageListener mMessageListener;
@@ -87,14 +87,12 @@ public class OverallFragment extends Fragment {
         if (context instanceof FragmentMessageListener) {
             mMessageListener = (FragmentMessageListener) context;
         } else {
-            throw new ClassCastException(context.toString()
-                    + "must implement FragmentMessageListener");
+            throw new ClassCastException(context.toString() + "must implement FragmentMessageListener");
         }
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment.
         mRootView = inflater.inflate(R.layout.fragment_overall, container, false);
 
@@ -112,21 +110,21 @@ public class OverallFragment extends Fragment {
             }
         });
 
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            mImageFilePath = arguments.getString(AppConstants.KEY_IMAGE_PATH);
-        }
-
         if (savedInstanceState != null) {
             mImageView.setRotation(savedInstanceState.getFloat(KEY_IMAGE_ROTATION));
             mDoNotRequestPermission = savedInstanceState.getBoolean(KEY_REQUEST_PERMISSION);
-            mImageFilePath = savedInstanceState.getString(AppConstants.KEY_IMAGE_PATH);
+            mRecipe = savedInstanceState.getParcelable(AppConstants.KEY_RECIPE);
+        } else {
+            Bundle arguments = getArguments();
+            if (arguments != null) {
+                mRecipe = arguments.getParcelable(AppConstants.KEY_RECIPE);
+            }
         }
 
-        if (mImageFilePath != null) {
+        if (mRecipe != null && !TextUtils.isEmpty(mRecipe.photoUrl)) {
             int size = getResources().getInteger(R.integer.thumbnail_size);
             Glide.with(mContext)
-                    .load(mImageFilePath)
+                    .load(mRecipe.photoUrl)
                     .listener(requestListener)
                     .apply(new RequestOptions().override(size).centerCrop())
                     .into(mImageView);
@@ -141,24 +139,23 @@ public class OverallFragment extends Fragment {
             }
         });
 
-        Button saveRecipeButton = mRootView.findViewById(R.id.btn_save);
-        saveRecipeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveRecipe();
-            }
-        });
-
         mTitleView = mRootView.findViewById(R.id.text_edit_title);
+        mTitleView.setText(mRecipe.title);
 
         int layoutItemId = android.R.layout.simple_dropdown_item_1line;
-        String[] mealsArray = getResources().getStringArray(R.array.course_array);
-        List<String> dogList = Arrays.asList(mealsArray);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, layoutItemId, dogList);
-        AutoCompleteTextView autocompleteView = mRootView.findViewById(R.id.text_edit_course);
-        autocompleteView.setAdapter(adapter);
+        String[] coursesArray = getResources().getStringArray(R.array.course_array);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, layoutItemId, Arrays.asList(coursesArray));
+        AutoCompleteTextView courseView = mRootView.findViewById(R.id.text_edit_course);
+        courseView.setAdapter(adapter);
+        courseView.setText(mRecipe.courseCode);
 
         return mRootView;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        saveRecipe();
     }
 
     @Override
@@ -166,7 +163,7 @@ public class OverallFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putFloat(KEY_IMAGE_ROTATION, mImageView.getRotation());
         outState.putBoolean(KEY_REQUEST_PERMISSION, mDoNotRequestPermission);
-        outState.putString(AppConstants.KEY_IMAGE_PATH, mImageFilePath);
+        outState.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
         sendToActivity(outState);
     }
 
@@ -176,42 +173,45 @@ public class OverallFragment extends Fragment {
 
     private void saveRecipe() {
         String title = mTitleView.getText().toString();
+        // Do not save if no title is provided for the recipe.
         if (TextUtils.isEmpty(title)) {
             mTitleView.requestFocus();
             mTitleView.setError(getString(R.string.recipe_title_required));
             return;
         }
+        // Take the image from the image view.
         BitmapDrawable drawable = (BitmapDrawable) mImageView.getDrawable();
+        // Create a new file with the image and change value of mImageFilePath to this file. Then delete the older one.
         if (drawable != null) {
-            File oldFile = new File(mImageFilePath);
-            Log.v("OverallFragment", "Title: " + title);
-            Log.v("OverallFragment", "Old file: " + oldFile.getName());
-            Log.v("OverallFragment", "Old file is at: " + oldFile.getAbsolutePath());
-            Log.v("OverallFragment", "Package Name: " + mContext.getPackageName());
+            File oldFile = new File(mRecipe.photoUrl);
             if (!oldFile.getName().equals(title + ".jpg")) {
-                mImageFilePath = BitmapUtils.writeJpegPrivate(mContext, drawable.getBitmap(), title);
-                Log.v("OverallFragment", "New file created at: " + mImageFilePath);
+                mRecipe.photoUrl = BitmapUtils.writeJpegPrivate(mContext, drawable.getBitmap(), title);
                 if (oldFile.getAbsolutePath().contains(mContext.getPackageName())) {
                     Boolean deleted = oldFile.delete();
                     if (deleted)
-                        Log.v("OverallFragment", "Old file is deleted.");
+                        Log.v(LOG_TAG, "Temporary image file is deleted.");
                 }
             }
         }
+        // Send data to activity to be saved in local database.
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
+        sendToActivity(bundle);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case AppConstants.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
                 if (grantResults.length > 0) {
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        int size = getResources().getInteger(R.integer.thumbnail_size);
-                        Glide.with(mContext)
-                                .load(mImageFilePath)
-                                .apply(new RequestOptions().override(size).centerCrop())
-                                .into(mImageView);
+                        if (mRecipe != null && !TextUtils.isEmpty(mRecipe.photoUrl)) {
+                            int size = getResources().getInteger(R.integer.thumbnail_size);
+                            Glide.with(mContext)
+                                    .load(mRecipe.photoUrl)
+                                    .apply(new RequestOptions().override(size).centerCrop())
+                                    .into(mImageView);
+                        }
                     } else {
                         mDoNotRequestPermission = true;
                         Snackbar.make(mRootView, R.string.allow_write_external, Snackbar.LENGTH_LONG).show();
