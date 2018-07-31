@@ -5,14 +5,15 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.view.KeyEvent;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +21,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -30,8 +31,10 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.example.kitchen.R;
-import com.example.kitchen.utility.KeyUtils;
+import com.example.kitchen.utility.AppConstants;
+import com.example.kitchen.utility.BitmapUtils;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,8 +46,6 @@ public class OverallFragment extends Fragment {
     private Context mContext;
     private String mImageFilePath;
     private ImageView mImageView;
-    private boolean mDoNotRequestPermission;
-
     // Deal with write permission to external storage in Glide
     // Reference => https://futurestud.io/tutorials/glide-exceptions-debugging-and-error-handling
     private final RequestListener<Drawable> requestListener = new RequestListener<Drawable>() {
@@ -55,7 +56,7 @@ public class OverallFragment extends Fragment {
             if (checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 try {
                     requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            KeyUtils.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+                            AppConstants.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
                 } catch (IllegalStateException ex) {
                     ex.fillInStackTrace();
                 }
@@ -70,6 +71,8 @@ public class OverallFragment extends Fragment {
             return false;
         }
     };
+    private boolean mDoNotRequestPermission;
+    private EditText mTitleView;
     private View mRootView;
     private FragmentMessageListener mMessageListener;
 
@@ -109,14 +112,15 @@ public class OverallFragment extends Fragment {
             }
         });
 
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            mImageFilePath = arguments.getString(AppConstants.KEY_IMAGE_PATH);
+        }
+
         if (savedInstanceState != null) {
             mImageView.setRotation(savedInstanceState.getFloat(KEY_IMAGE_ROTATION));
             mDoNotRequestPermission = savedInstanceState.getBoolean(KEY_REQUEST_PERMISSION);
-        }
-
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            mImageFilePath = arguments.getString(KeyUtils.KEY_IMAGE_PATH);
+            mImageFilePath = savedInstanceState.getString(AppConstants.KEY_IMAGE_PATH);
         }
 
         if (mImageFilePath != null) {
@@ -128,7 +132,7 @@ public class OverallFragment extends Fragment {
                     .into(mImageView);
         }
 
-        Button rotate = mRootView.findViewById(R.id.btn_rotate);
+        ImageButton rotate = mRootView.findViewById(R.id.btn_rotate);
         rotate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,20 +141,18 @@ public class OverallFragment extends Fragment {
             }
         });
 
-        final TextInputLayout inputLayout = mRootView.findViewById(R.id.input_layout_title);
-        EditText titleText = mRootView.findViewById(R.id.text_edit_title);
-        titleText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        Button saveRecipeButton = mRootView.findViewById(R.id.btn_save);
+        saveRecipeButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (v.getText().length() <= 3) {
-                    inputLayout.setError(getString(R.string.recipe_title_required));
-                }
-                return false;
+            public void onClick(View v) {
+                saveRecipe();
             }
         });
 
+        mTitleView = mRootView.findViewById(R.id.text_edit_title);
+
         int layoutItemId = android.R.layout.simple_dropdown_item_1line;
-        String[] mealsArray = getResources().getStringArray(R.array.meals_array);
+        String[] mealsArray = getResources().getStringArray(R.array.course_array);
         List<String> dogList = Arrays.asList(mealsArray);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, layoutItemId, dogList);
         AutoCompleteTextView autocompleteView = mRootView.findViewById(R.id.text_edit_course);
@@ -164,24 +166,45 @@ public class OverallFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putFloat(KEY_IMAGE_ROTATION, mImageView.getRotation());
         outState.putBoolean(KEY_REQUEST_PERMISSION, mDoNotRequestPermission);
+        outState.putString(AppConstants.KEY_IMAGE_PATH, mImageFilePath);
         sendToActivity(outState);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mMessageListener = null;
     }
 
     private void sendToActivity(Bundle outState) {
         mMessageListener.onFragmentMessage(0, outState);
     }
 
+    private void saveRecipe() {
+        String title = mTitleView.getText().toString();
+        if (TextUtils.isEmpty(title)) {
+            mTitleView.requestFocus();
+            mTitleView.setError(getString(R.string.recipe_title_required));
+            return;
+        }
+        BitmapDrawable drawable = (BitmapDrawable) mImageView.getDrawable();
+        if (drawable != null) {
+            File oldFile = new File(mImageFilePath);
+            Log.v("OverallFragment", "Title: " + title);
+            Log.v("OverallFragment", "Old file: " + oldFile.getName());
+            Log.v("OverallFragment", "Old file is at: " + oldFile.getAbsolutePath());
+            Log.v("OverallFragment", "Package Name: " + mContext.getPackageName());
+            if (!oldFile.getName().equals(title + ".jpg")) {
+                mImageFilePath = BitmapUtils.writeJpegPrivate(mContext, drawable.getBitmap(), title);
+                Log.v("OverallFragment", "New file created at: " + mImageFilePath);
+                if (oldFile.getAbsolutePath().contains(mContext.getPackageName())) {
+                    Boolean deleted = oldFile.delete();
+                    if (deleted)
+                        Log.v("OverallFragment", "Old file is deleted.");
+                }
+            }
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
-            case KeyUtils.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
+            case AppConstants.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
                 if (grantResults.length > 0) {
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         int size = getResources().getInteger(R.integer.thumbnail_size);
@@ -196,5 +219,11 @@ public class OverallFragment extends Fragment {
                 }
             }
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mMessageListener = null;
     }
 }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="picture_add_options">
+    <string-array name="photo_options">
         <item>Camera</item>
-        <item>Photo Gallery</item>
+        <item>Gallery</item>
     </string-array>
-    <string-array name="meals_array">
+    <string-array name="course_array">
         <item>Appetizer</item>
         <item>Soup</item>
         <item>Salad</item>
@@ -14,5 +14,17 @@
         <item>Nuts</item>
         <item>Fruit</item>
         <item>Beverage</item>
+    </string-array>
+    <string-array name="cuisine_array">
+        <item>French</item>
+        <item>Italian </item>
+        <item>Chinese</item>
+        <item>Indian</item>
+        <item>Thai</item>
+        <item>Mexican</item>
+        <item>Japanese</item>
+        <item>Spanish</item>
+        <item>Greek</item>
+        <item>Lebanese</item>
     </string-array>
 </resources>

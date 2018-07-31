@@ -21,7 +21,7 @@ import com.example.kitchen.activities.MainActivity;
 import com.example.kitchen.adapters.RecipeClickListener;
 import com.example.kitchen.adapters.RecipesAdapter;
 import com.example.kitchen.data.Recipe;
-import com.example.kitchen.utility.KeyUtils;
+import com.example.kitchen.utility.AppConstants;
 
 import java.util.List;
 
@@ -72,9 +72,9 @@ public class RecipesFragment extends Fragment {
         recyclerView.setAdapter(mAdapter);
         Bundle arguments = getArguments();
         if (arguments != null) {
-            List<Recipe> recipes = arguments.getParcelableArrayList(KeyUtils.KEY_RECIPES);
+            List<Recipe> recipes = arguments.getParcelableArrayList(AppConstants.KEY_RECIPES);
             mAdapter.setRecipes(recipes);
-            savedInstanceState = arguments.getBundle(KeyUtils.KEY_SAVED_STATE);
+            savedInstanceState = arguments.getBundle(AppConstants.KEY_SAVED_STATE);
             if (savedInstanceState != null) {
                 mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(LAYOUT_STATE));
             }

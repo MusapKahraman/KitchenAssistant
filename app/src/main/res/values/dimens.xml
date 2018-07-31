@@ -20,6 +20,7 @@
     <dimen name="card_height">285dp</dimen>
     <dimen name="card_width">225dp</dimen>
     <dimen name="card_image_height">185dp</dimen>
+    <dimen name="edit_image_size">240dp</dimen>
     <dimen name="card_title_size">16sp</dimen>
     <dimen name="card_detail_size">13sp</dimen>
     <dimen name="tab_widget_child_width">50dp</dimen>
@@ -29,4 +30,6 @@
     <dimen name="card_button_size">32dp</dimen>
     <dimen name="card_timer_icon_size">20dp</dimen>
     <dimen name="text_size_new_recipe">16sp</dimen>
+    <dimen name="empty_frame_outline_thickness">2dp</dimen>
+    <dimen name="recipe_title_input_width">250dp</dimen>
 </resources>

@@ -30,7 +30,7 @@ public class PictureDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.dialog_photo_select)
-                .setItems(R.array.picture_add_options, new DialogInterface.OnClickListener() {
+                .setItems(R.array.photo_options, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0:

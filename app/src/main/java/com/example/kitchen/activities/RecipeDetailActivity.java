@@ -9,7 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.example.kitchen.R;
-import com.example.kitchen.utility.KeyUtils;
+import com.example.kitchen.utility.AppConstants;
 
 public class RecipeDetailActivity extends AppCompatActivity {
 
@@ -24,7 +24,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             // Change ActionBar title as the name of the recipe.
-            String recipeName = getIntent().getStringExtra(KeyUtils.EXTRA_RECIPE_NAME);
+            String recipeName = getIntent().getStringExtra(AppConstants.EXTRA_RECIPE_NAME);
             if (recipeName != null) {
                 actionBar.setTitle(recipeName);
             }

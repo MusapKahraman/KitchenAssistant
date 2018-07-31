@@ -23,7 +23,7 @@ import com.example.kitchen.data.Recipe;
 import com.example.kitchen.fragments.MealBoardFragment;
 import com.example.kitchen.fragments.NotebookFragment;
 import com.example.kitchen.fragments.RecipesFragment;
-import com.example.kitchen.utility.KeyUtils;
+import com.example.kitchen.utility.AppConstants;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity
             mMealBoardFragmentSavedState = savedInstanceState.getBundle(KEY_MEAL_BOARD_FRAG);
             mNavigatorIndex = savedInstanceState.getInt(KEY_NAV_INDEX);
         } else if (getIntent() != null) {
-            mNavigatorIndex = getIntent().getIntExtra(KeyUtils.EXTRA_NAV_INDEX, 0);
+            mNavigatorIndex = getIntent().getIntExtra(AppConstants.EXTRA_NAV_INDEX, 0);
         }
         changeContent();
     }
@@ -132,8 +132,8 @@ public class MainActivity extends AppCompatActivity
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.recipes);
         Bundle bundle = new Bundle();
-        bundle.putBundle(KeyUtils.KEY_SAVED_STATE, mRecipesFragmentSavedState);
-        bundle.putParcelableArrayList(KeyUtils.KEY_RECIPES, (ArrayList<Recipe>) recipes);
+        bundle.putBundle(AppConstants.KEY_SAVED_STATE, mRecipesFragmentSavedState);
+        bundle.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
         RecipesFragment recipesFragment = new RecipesFragment();
         recipesFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, recipesFragment).commit();
@@ -143,8 +143,8 @@ public class MainActivity extends AppCompatActivity
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.notebook);
         Bundle bundle = new Bundle();
-        bundle.putBundle(KeyUtils.KEY_SAVED_STATE, mNotebookFragmentSavedState);
-        bundle.putParcelableArrayList(KeyUtils.KEY_RECIPES, (ArrayList<Recipe>) recipes);
+        bundle.putBundle(AppConstants.KEY_SAVED_STATE, mNotebookFragmentSavedState);
+        bundle.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
         NotebookFragment notebookFragment = new NotebookFragment();
         notebookFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, notebookFragment).commit();
@@ -154,8 +154,8 @@ public class MainActivity extends AppCompatActivity
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.meal_board);
         Bundle bundle = new Bundle();
-        bundle.putBundle(KeyUtils.KEY_SAVED_STATE, mMealBoardFragmentSavedState);
-        bundle.putParcelableArrayList(KeyUtils.KEY_RECIPES, (ArrayList<Recipe>) recipes);
+        bundle.putBundle(AppConstants.KEY_SAVED_STATE, mMealBoardFragmentSavedState);
+        bundle.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
         MealBoardFragment mealBoardFragment = new MealBoardFragment();
         mealBoardFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mealBoardFragment).commit();
@@ -236,8 +236,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onRecipeClick(int recipeId, String recipeName) {
         Intent intent = new Intent(this, RecipeDetailActivity.class);
-        intent.putExtra(KeyUtils.EXTRA_RECIPE_ID, recipeId);
-        intent.putExtra(KeyUtils.EXTRA_RECIPE_NAME, recipeName);
+        intent.putExtra(AppConstants.EXTRA_RECIPE_ID, recipeId);
+        intent.putExtra(AppConstants.EXTRA_RECIPE_NAME, recipeName);
         startActivity(intent);
     }
 }

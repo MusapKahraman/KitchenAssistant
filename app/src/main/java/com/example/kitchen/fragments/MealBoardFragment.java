@@ -20,7 +20,7 @@ import com.example.kitchen.R;
 import com.example.kitchen.activities.MainActivity;
 import com.example.kitchen.adapters.ExpandableListAdapter;
 import com.example.kitchen.data.DataPlaceholders;
-import com.example.kitchen.utility.KeyUtils;
+import com.example.kitchen.utility.AppConstants;
 
 public class MealBoardFragment extends Fragment {
     private static final String TAG = MealBoardFragment.class.getSimpleName();
@@ -81,7 +81,7 @@ public class MealBoardFragment extends Fragment {
 
         Bundle arguments = getArguments();
         if (arguments != null) {
-            savedInstanceState = arguments.getBundle(KeyUtils.KEY_SAVED_STATE);
+            savedInstanceState = arguments.getBundle(AppConstants.KEY_SAVED_STATE);
             if (savedInstanceState != null) {
                 mMonday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_MONDAY));
                 mTuesday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_TUESDAY));
