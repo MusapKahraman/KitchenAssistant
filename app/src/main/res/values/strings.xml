@@ -144,4 +144,5 @@
     <string name="cook_time_min">Cook time (min.)</string>
     <string name="prep_time_min">Prep time (min.)</string>
     <string name="servings">Servings</string>
+    <string name="upload">Upload</string>
 </resources>
