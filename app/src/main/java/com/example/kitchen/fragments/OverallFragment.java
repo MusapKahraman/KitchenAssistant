@@ -18,10 +18,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -35,7 +35,6 @@ import com.example.kitchen.utility.AppConstants;
 import com.example.kitchen.utility.BitmapUtils;
 
 import java.io.File;
-import java.util.Arrays;
 
 import static android.support.v4.content.ContextCompat.checkSelfPermission;
 
@@ -122,7 +121,7 @@ public class OverallFragment extends Fragment {
         }
 
         if (mRecipe != null && !TextUtils.isEmpty(mRecipe.photoUrl)) {
-            int size = getResources().getInteger(R.integer.thumbnail_size);
+            int size = getResources().getInteger(R.integer.image_size_px);
             Glide.with(mContext)
                     .load(mRecipe.photoUrl)
                     .listener(requestListener)
@@ -142,12 +141,23 @@ public class OverallFragment extends Fragment {
         mTitleView = mRootView.findViewById(R.id.text_edit_title);
         mTitleView.setText(mRecipe.title);
 
-        int layoutItemId = android.R.layout.simple_dropdown_item_1line;
-        String[] coursesArray = getResources().getStringArray(R.array.course_array);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, layoutItemId, Arrays.asList(coursesArray));
-        AutoCompleteTextView courseView = mRootView.findViewById(R.id.text_edit_course);
-        courseView.setAdapter(adapter);
-        courseView.setText(mRecipe.courseCode);
+        Spinner courseSpinner = mRootView.findViewById(R.id.spinner_course);
+        ArrayAdapter<CharSequence> courseAdapter = ArrayAdapter.createFromResource(mContext,
+                R.array.course_array, android.R.layout.simple_spinner_item);
+        courseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        courseSpinner.setAdapter(courseAdapter);
+
+        Spinner cuisineSpinner = mRootView.findViewById(R.id.spinner_cuisine);
+        ArrayAdapter<CharSequence> cuisineAdapter = ArrayAdapter.createFromResource(mContext,
+                R.array.cuisine_array, android.R.layout.simple_spinner_item);
+        cuisineAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        cuisineSpinner.setAdapter(cuisineAdapter);
+
+        Spinner languageSpinner = mRootView.findViewById(R.id.spinner_language);
+        ArrayAdapter<CharSequence> languageAdapter = ArrayAdapter.createFromResource(mContext,
+                R.array.language_array, android.R.layout.simple_spinner_item);
+        languageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        languageSpinner.setAdapter(languageAdapter);
 
         return mRootView;
     }
@@ -206,7 +216,7 @@ public class OverallFragment extends Fragment {
                 if (grantResults.length > 0) {
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         if (mRecipe != null && !TextUtils.isEmpty(mRecipe.photoUrl)) {
-                            int size = getResources().getInteger(R.integer.thumbnail_size);
+                            int size = getResources().getInteger(R.integer.image_size_px);
                             Glide.with(mContext)
                                     .load(mRecipe.photoUrl)
                                     .apply(new RequestOptions().override(size).centerCrop())

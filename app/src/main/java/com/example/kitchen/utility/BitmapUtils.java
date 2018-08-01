@@ -38,7 +38,6 @@ public class BitmapUtils {
         // Reference -> https://developer.android.com/training/camera/photobasics
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
         String imageFileName = timeStamp + "_";
-        // TODO: Have to find a way to deal with growing data size with each photo.
         File storageDir;
         if (isExternalStorageWritable())
             storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);

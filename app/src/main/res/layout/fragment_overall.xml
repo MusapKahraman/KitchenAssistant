@@ -10,31 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_title"
-            android:layout_width="@dimen/recipe_title_input_width"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            app:errorEnabled="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <EditText
-                android:id="@+id/text_edit_title"
-                style="@style/RecipeEditTexts"
-                android:hint="@string/recipe_title"
-                android:imeOptions="actionNext" />
-        </android.support.design.widget.TextInputLayout>
-
         <FrameLayout
             android:id="@+id/frame_empty"
             android:layout_width="@dimen/edit_image_size"
             android:layout_height="@dimen/edit_image_size"
-            android:background="@android:color/black"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/input_layout_title">
+            app:layout_constraintTop_toTopOf="parent">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -61,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/space_one_unit"
             android:text="@string/click_to_add_a_picture"
-            android:textSize="@dimen/text_size_new_recipe"
+            android:textSize="@dimen/edit_recipe_texts"
             app:layout_constraintBottom_toBottomOf="@+id/frame_empty"
             app:layout_constraintEnd_toEndOf="@+id/frame_empty"
             app:layout_constraintStart_toStartOf="@+id/frame_empty" />
@@ -88,51 +72,139 @@
             app:layout_constraintStart_toEndOf="@+id/iv_recipe_picture" />
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_course"
-            android:layout_width="@dimen/recipe_title_input_width"
+            android:id="@+id/input_layout_title"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
             app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_recipe_picture">
+            app:layout_constraintTop_toBottomOf="@+id/frame_empty">
 
-            <AutoCompleteTextView
-                android:id="@+id/text_edit_course"
-                style="@style/RecipeEditTexts"
-                android:hint="@string/course"
-                android:imeOptions="actionNext" />
+            <EditText
+                android:id="@+id/text_edit_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/recipe_title"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLength="@integer/max_length_recipe_title"
+                android:selectAllOnFocus="true"
+                android:singleLine="true" />
+        </android.support.design.widget.TextInputLayout>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="@dimen/empty_frame_outline_thickness"
+            android:layout_height="@dimen/recipe_overall_divider_length"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/input_layout_title" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_servings"
+            android:layout_width="@dimen/spinner_width"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@+id/input_layout_title"
+            app:layout_constraintTop_toTopOf="@+id/divider">
+
+            <EditText
+                android:id="@+id/text_edit_servings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/servings"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:maxLength="@integer/max_length_servings"
+                android:selectAllOnFocus="true"
+                android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_cuisine"
-            android:layout_width="@dimen/recipe_title_input_width"
+            android:id="@+id/input_layout_prep_time"
+            android:layout_width="@dimen/spinner_width"
             android:layout_height="wrap_content"
-            app:errorEnabled="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/input_layout_course">
-            <AutoCompleteTextView
-                android:id="@+id/text_edit_cuisine"
-                style="@style/RecipeEditTexts"
-                android:hint="@string/cuisine"
-                android:imeOptions="actionNext" />
+            app:layout_constraintStart_toStartOf="@+id/input_layout_servings"
+            app:layout_constraintTop_toBottomOf="@+id/input_layout_servings">
+
+            <EditText
+                android:id="@+id/text_edit_prep_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/prep_time_min"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:maxLength="@integer/max_length_cook_time"
+                android:selectAllOnFocus="true"
+                android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_language"
-            android:layout_width="@dimen/recipe_title_input_width"
+            android:id="@+id/input_layout_cook_time"
+            android:layout_width="@dimen/spinner_width"
             android:layout_height="wrap_content"
-            app:errorEnabled="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/input_layout_cuisine">
+            app:layout_constraintStart_toStartOf="@+id/input_layout_prep_time"
+            app:layout_constraintTop_toBottomOf="@+id/input_layout_prep_time">
 
-            <AutoCompleteTextView
-                android:id="@+id/text_edit_language"
-                style="@style/RecipeEditTexts"
-                android:hint="@string/language"
-                android:imeOptions="actionNext" />
+            <EditText
+                android:id="@+id/text_edit_cook_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/cook_time_min"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:maxLength="@integer/max_length_cook_time"
+                android:selectAllOnFocus="true"
+                android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:id="@+id/header_course"
+            style="@style/SpinnerHeaders"
+            android:text="@string/course"
+            app:layout_constraintBottom_toTopOf="@+id/spinner_course"
+            app:layout_constraintStart_toStartOf="@+id/spinner_course" />
+
+        <Spinner
+            android:id="@+id/spinner_course"
+            android:layout_width="@dimen/spinner_width"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/input_layout_servings"
+            app:layout_constraintEnd_toEndOf="@+id/input_layout_title"
+            app:layout_constraintTop_toTopOf="@+id/input_layout_servings" />
+
+        <TextView
+            android:id="@+id/header_cuisine"
+            style="@style/SpinnerHeaders"
+            android:text="@string/cuisine"
+            app:layout_constraintBottom_toTopOf="@+id/spinner_cuisine"
+            app:layout_constraintStart_toStartOf="@+id/spinner_cuisine" />
+
+        <Spinner
+            android:id="@+id/spinner_cuisine"
+            android:layout_width="@dimen/spinner_width"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/input_layout_prep_time"
+            app:layout_constraintEnd_toEndOf="@+id/spinner_course"
+            app:layout_constraintTop_toTopOf="@+id/input_layout_prep_time" />
+
+        <TextView
+            android:id="@+id/header_language"
+            style="@style/SpinnerHeaders"
+            android:text="@string/language"
+            app:layout_constraintBottom_toTopOf="@+id/spinner_language"
+            app:layout_constraintStart_toStartOf="@+id/spinner_language" />
+
+        <Spinner
+            android:id="@+id/spinner_language"
+            android:layout_width="@dimen/spinner_width"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/input_layout_cook_time"
+            app:layout_constraintEnd_toEndOf="@+id/spinner_cuisine"
+            app:layout_constraintTop_toTopOf="@+id/input_layout_cook_time" />
 
     </android.support.constraint.ConstraintLayout>
 
