@@ -1,7 +1,7 @@
 <resources>
     <bool name="landscape">false</bool>
     <integer name="image_size_px">300</integer>
-    <integer name="max_length_recipe_title">40</integer>
+    <integer name="max_length_recipe_title">30</integer>
     <integer name="max_length_servings">2</integer>
     <integer name="max_length_cook_time">3</integer>
     <!-- Text sizes. -->
@@ -13,6 +13,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="space_half_unit">4dp</dimen>
     <dimen name="space_one_unit">8dp</dimen>
     <dimen name="space_two_units">16dp</dimen>
     <dimen name="empty_frame_outline_thickness">2dp</dimen>
@@ -21,13 +22,12 @@
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="nav_header_user_image_size">72dp</dimen>
     <dimen name="nav_header_user_image_corner">36dp</dimen>
-    <dimen name="card_height">285dp</dimen>
-    <dimen name="card_width">225dp</dimen>
-    <dimen name="card_image_height">185dp</dimen>
-    <dimen name="edit_image_size">240dp</dimen>
+    <dimen name="card_width">235dp</dimen>
+    <dimen name="card_height">315dp</dimen>
+    <dimen name="card_image_height">200dp</dimen>
+    <dimen name="edit_image_size">250dp</dimen>
     <dimen name="card_title_size">16sp</dimen>
     <dimen name="card_detail_size">13sp</dimen>
-    <dimen name="card_button_size">32dp</dimen>
     <dimen name="card_timer_icon_size">20dp</dimen>
     <dimen name="list_item_height">60dp</dimen>
     <dimen name="list_item_image_size">48dp</dimen>

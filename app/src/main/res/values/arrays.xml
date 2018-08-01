@@ -13,6 +13,7 @@
         <item>@string/cheese</item>
         <item>@string/nuts</item>
         <item>@string/fruit</item>
+        <item>@string/dessert</item>
         <item>@string/beverage</item>
     </string-array>
     <string-array name="cuisine_array">

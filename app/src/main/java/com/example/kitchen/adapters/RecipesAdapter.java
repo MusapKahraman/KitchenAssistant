@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -56,6 +57,8 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
     }
 
     public void filter(CharSequence charSequence) {
+        if (charSequence == null)
+            return;
         String charString = charSequence.toString();
         if (!charString.isEmpty()) {
             List<Recipe> filteredList = new ArrayList<>();
@@ -73,21 +76,27 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
 
     public class RecipeCardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView recipeNameTextView;
+        private final TextView cookTimeTextView;
         private final ImageView recipeImageView;
-        private String recipeName;
+        private final RatingBar ratingBar;
         private Recipe current;
 
         private RecipeCardViewHolder(View itemView) {
             super(itemView);
             recipeNameTextView = itemView.findViewById(R.id.tv_recipe_name);
+            cookTimeTextView = itemView.findViewById(R.id.tv_card_cook_time);
             recipeImageView = itemView.findViewById(R.id.iv_card_recipe_image);
+            ratingBar = itemView.findViewById(R.id.ratingBar);
             itemView.setOnClickListener(this);
         }
 
         private void bind(int position) {
             current = mFilteredRecipes.get(position);
-            recipeName = current.title;
-            recipeNameTextView.setText(recipeName);
+            recipeNameTextView.setText(current.title);
+            int totalTime = current.cookTime + current.prepTime;
+            String cookTime = String.format(itemView.getResources().getString(R.string.minutes_abbreviation), totalTime);
+            cookTimeTextView.setText(cookTime);
+            ratingBar.setRating(current.rating);
             String url = current.photoUrl;
             if (url != null && url.length() != 0) {
                 RequestOptions options = new RequestOptions();

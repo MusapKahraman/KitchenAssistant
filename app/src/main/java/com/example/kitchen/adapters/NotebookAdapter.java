@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -23,9 +24,9 @@ import java.util.List;
 
 public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.RecipeCardViewHolder> {
     private final RecipeClickListener mRecipeClickListener;
+    private final ArrayList<Recipe> mSelectedRecipes = new ArrayList<>();
     private List<Recipe> mRecipes;
     private List<Recipe> mFilteredRecipes;
-    private final ArrayList<Recipe> mSelectedRecipes = new ArrayList<>();
     private boolean mMultiSelect = false;
     private final ActionMode.Callback mActionModeCallbacks = new ActionMode.Callback() {
         @Override
@@ -94,6 +95,8 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
     }
 
     public void filter(CharSequence charSequence) {
+        if (charSequence == null)
+            return;
         String charString = charSequence.toString();
         if (!charString.isEmpty()) {
             List<Recipe> filteredList = new ArrayList<>();
@@ -111,21 +114,27 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
 
     class RecipeCardViewHolder extends RecyclerView.ViewHolder {
         private final TextView recipeNameTextView;
+        private final TextView cookTimeTextView;
         private final ImageView recipeImageView;
-        private String recipeName;
+        private final RatingBar ratingBar;
         private final CardView recipeCard;
 
         private RecipeCardViewHolder(View itemView) {
             super(itemView);
             recipeNameTextView = itemView.findViewById(R.id.tv_recipe_name);
+            cookTimeTextView = itemView.findViewById(R.id.tv_card_cook_time);
             recipeImageView = itemView.findViewById(R.id.iv_card_recipe_image);
+            ratingBar = itemView.findViewById(R.id.ratingBar);
             recipeCard = itemView.findViewById(R.id.card_recipe);
         }
 
         private void bind(int position) {
+            ratingBar.setVisibility(View.GONE);
             final Recipe current = mFilteredRecipes.get(position);
-            recipeName = current.title;
-            recipeNameTextView.setText(recipeName);
+            recipeNameTextView.setText(current.title);
+            int totalTime = current.cookTime + current.prepTime;
+            String cookTime = String.format(itemView.getResources().getString(R.string.minutes_abbreviation), totalTime);
+            cookTimeTextView.setText(cookTime);
             String url = current.photoUrl;
             if (url != null && url.length() != 0) {
                 RequestOptions options = new RequestOptions();

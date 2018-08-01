@@ -33,8 +33,11 @@ import com.example.kitchen.R;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.utility.AppConstants;
 import com.example.kitchen.utility.BitmapUtils;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.File;
+import java.util.Date;
 
 import static android.support.v4.content.ContextCompat.checkSelfPermission;
 
@@ -42,8 +45,18 @@ public class OverallFragment extends Fragment {
     private static final String LOG_TAG = OverallFragment.class.getSimpleName();
     private static final String KEY_IMAGE_ROTATION = "image-rotation";
     private static final String KEY_REQUEST_PERMISSION = "request-permission";
+    private static final String TAG_PICTURE_DIALOG = "picture-dialog";
+    private FragmentMessageListener mMessageListener;
     private Context mContext;
+    private View mRootView;
     private ImageView mImageView;
+    private EditText mTitleView;
+    private EditText servingsView;
+    private EditText prepTimeView;
+    private EditText cookTimeView;
+    private Spinner courseSpinner;
+    private Spinner cuisineSpinner;
+    private Spinner languageSpinner;
     private Recipe mRecipe;
     private boolean mDoNotRequestPermission;
     // Deal with write permission to external storage in Glide
@@ -71,9 +84,6 @@ public class OverallFragment extends Fragment {
             return false;
         }
     };
-    private EditText mTitleView;
-    private View mRootView;
-    private FragmentMessageListener mMessageListener;
 
     public OverallFragment() {
         // Required empty public constructor
@@ -104,8 +114,9 @@ public class OverallFragment extends Fragment {
                 DialogFragment dialogFragment = new PictureDialogFragment();
                 Activity activity = getActivity();
                 if (activity != null)
-                    dialogFragment.show(activity.getFragmentManager(), "picture");
+                    dialogFragment.show(activity.getFragmentManager(), TAG_PICTURE_DIALOG);
                 mDoNotRequestPermission = false;
+                saveRecipe();
             }
         });
 
@@ -138,34 +149,53 @@ public class OverallFragment extends Fragment {
             }
         });
 
+        if (mImageView == null)
+            rotate.setVisibility(View.GONE);
+        else
+            rotate.setVisibility(View.VISIBLE);
+
+        ImageButton publish = mRootView.findViewById(R.id.btn_publish);
+        publish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveRecipe();
+            }
+        });
+
         mTitleView = mRootView.findViewById(R.id.text_edit_title);
         mTitleView.setText(mRecipe.title);
 
-        Spinner courseSpinner = mRootView.findViewById(R.id.spinner_course);
+        servingsView = mRootView.findViewById(R.id.text_edit_servings);
+        servingsView.setText(String.valueOf(mRecipe.servings));
+
+        prepTimeView = mRootView.findViewById(R.id.text_edit_prep_time);
+        prepTimeView.setText(String.valueOf(mRecipe.prepTime));
+
+        cookTimeView = mRootView.findViewById(R.id.text_edit_cook_time);
+        cookTimeView.setText(String.valueOf(mRecipe.cookTime));
+
+        courseSpinner = mRootView.findViewById(R.id.spinner_course);
         ArrayAdapter<CharSequence> courseAdapter = ArrayAdapter.createFromResource(mContext,
                 R.array.course_array, android.R.layout.simple_spinner_item);
         courseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         courseSpinner.setAdapter(courseAdapter);
+        courseSpinner.setSelection(courseAdapter.getPosition(mRecipe.course));
 
-        Spinner cuisineSpinner = mRootView.findViewById(R.id.spinner_cuisine);
+        cuisineSpinner = mRootView.findViewById(R.id.spinner_cuisine);
         ArrayAdapter<CharSequence> cuisineAdapter = ArrayAdapter.createFromResource(mContext,
                 R.array.cuisine_array, android.R.layout.simple_spinner_item);
         cuisineAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         cuisineSpinner.setAdapter(cuisineAdapter);
+        cuisineSpinner.setSelection(cuisineAdapter.getPosition(mRecipe.cuisine));
 
-        Spinner languageSpinner = mRootView.findViewById(R.id.spinner_language);
+        languageSpinner = mRootView.findViewById(R.id.spinner_language);
         ArrayAdapter<CharSequence> languageAdapter = ArrayAdapter.createFromResource(mContext,
                 R.array.language_array, android.R.layout.simple_spinner_item);
         languageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         languageSpinner.setAdapter(languageAdapter);
+        languageSpinner.setSelection(languageAdapter.getPosition(mRecipe.language));
 
         return mRootView;
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        saveRecipe();
     }
 
     @Override
@@ -174,7 +204,6 @@ public class OverallFragment extends Fragment {
         outState.putFloat(KEY_IMAGE_ROTATION, mImageView.getRotation());
         outState.putBoolean(KEY_REQUEST_PERMISSION, mDoNotRequestPermission);
         outState.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
-        sendToActivity(outState);
     }
 
     private void sendToActivity(Bundle outState) {
@@ -189,19 +218,29 @@ public class OverallFragment extends Fragment {
             mTitleView.setError(getString(R.string.recipe_title_required));
             return;
         }
+        mRecipe.title = title;
         // Take the image from the image view.
         BitmapDrawable drawable = (BitmapDrawable) mImageView.getDrawable();
         // Create a new file with the image and change value of mImageFilePath to this file. Then delete the older one.
         if (drawable != null) {
             File oldFile = new File(mRecipe.photoUrl);
-            if (!oldFile.getName().equals(title + ".jpg")) {
-                mRecipe.photoUrl = BitmapUtils.writeJpegPrivate(mContext, drawable.getBitmap(), title);
-                if (oldFile.getAbsolutePath().contains(mContext.getPackageName())) {
-                    Boolean deleted = oldFile.delete();
-                    if (deleted)
-                        Log.v(LOG_TAG, "Temporary image file is deleted.");
-                }
+            mRecipe.photoUrl = BitmapUtils.writeJpegPrivate(mContext, drawable.getBitmap(), title);
+            if (!oldFile.getName().equals(title + ".jpg") && oldFile.getAbsolutePath().contains(mContext.getPackageName())) {
+                Boolean deleted = oldFile.delete();
+                if (deleted)
+                    Log.v(LOG_TAG, "Temporary image file is deleted.");
             }
+        }
+        mRecipe.cookTime = Integer.valueOf(cookTimeView.getText().toString());
+        mRecipe.prepTime = Integer.valueOf(prepTimeView.getText().toString());
+        mRecipe.servings = Integer.valueOf(servingsView.getText().toString());
+        mRecipe.course = courseSpinner.getSelectedItem().toString();
+        mRecipe.cuisine = cuisineSpinner.getSelectedItem().toString();
+        mRecipe.language = languageSpinner.getSelectedItem().toString();
+        mRecipe.timeStamp = new Date().getTime();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            mRecipe.writer = user.getDisplayName();
         }
         // Send data to activity to be saved in local database.
         Bundle bundle = new Bundle();

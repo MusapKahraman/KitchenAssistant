@@ -122,6 +122,7 @@
     <string name="cheese">Cheese</string>
     <string name="nuts">Nuts</string>
     <string name="fruit">Fruit</string>
+    <string name="dessert">Dessert</string>
     <string name="beverage">Beverage</string>
     <string name="chinese">Chinese</string>
     <string name="french">French</string>
@@ -179,7 +180,6 @@
     <string name="overview">Overview</string>
     <string name="ingredients">Ingredients</string>
     <string name="directions">Directions</string>
-    <string name="edit">Edit</string>
     <string name="click_to_add_a_picture">Click to add a picture</string>
     <string name="dialog_photo_select">Select a source for the picture.</string>
     <string name="no_camera_app">No camera application available.</string>
@@ -195,4 +195,5 @@
     <string name="prep_time_min">Prep time (min.)</string>
     <string name="servings">Servings</string>
     <string name="upload">Upload</string>
+    <string name="minutes_abbreviation">%1$d min</string>
 </resources>

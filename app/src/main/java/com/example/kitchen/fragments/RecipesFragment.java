@@ -29,10 +29,12 @@ public class RecipesFragment extends Fragment {
 
     private static final String TAG = RecipesFragment.class.getSimpleName();
     private static final String LAYOUT_STATE = "state";
+    private static final String SEARCH_QUERY = "search-query";
     private StaggeredGridLayoutManager mLayoutManager;
     private RecipeClickListener mClickListener;
     private View mRootView;
     private RecipesAdapter mAdapter;
+    private String mQuery;
 
     public RecipesFragment() {
         // Required empty public constructor
@@ -77,6 +79,8 @@ public class RecipesFragment extends Fragment {
             savedInstanceState = arguments.getBundle(AppConstants.KEY_SAVED_STATE);
             if (savedInstanceState != null) {
                 mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(LAYOUT_STATE));
+                mQuery = savedInstanceState.getString(SEARCH_QUERY);
+                mAdapter.filter(mQuery);
             }
         }
         return mRootView;
@@ -95,6 +99,7 @@ public class RecipesFragment extends Fragment {
 
     private void sendToActivity(Bundle outState) {
         outState.putParcelable(LAYOUT_STATE, mLayoutManager.onSaveInstanceState());
+        outState.putString(SEARCH_QUERY, mQuery);
         MainActivity activity = null;
         try {
             activity = (MainActivity) getActivity();
@@ -119,12 +124,14 @@ public class RecipesFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 mAdapter.filter(query);
+                mQuery = query;
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 mAdapter.filter(newText);
+                mQuery = newText;
                 return true;
             }
         });
