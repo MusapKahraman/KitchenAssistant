@@ -3,6 +3,8 @@
     <color name="colorPrimary">#b71c1c</color>
     <color name="colorPrimaryDark">#3e2723</color>
     <color name="colorAccent">#ffc400</color>
+    <color name="tab_text">#FFFFFF</color>
+    <color name="tab_background">#b71c1c</color>
     <color name="nav_gradient_start">#ff80ab</color>
     <color name="nav_gradient_center">#b71c1c</color>
     <color name="nav_gradient_end">#3e2723</color>

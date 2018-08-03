@@ -20,7 +20,8 @@
             <TabWidget
                 android:id="@android:id/tabs"
                 android:layout_width="@dimen/tab_widget_child_width"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:background="@color/tab_background" />
         </HorizontalScrollView>
 
         <FrameLayout

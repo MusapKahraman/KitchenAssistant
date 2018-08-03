@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.HorizontalScrollView;
 import android.widget.TabHost;
+import android.widget.TextView;
 
 import com.example.kitchen.R;
 import com.example.kitchen.activities.MainActivity;
@@ -78,6 +79,12 @@ public class MealBoardFragment extends Fragment {
         mSaturday.setAdapter(adapter);
         mSunday = mRootView.findViewById(R.id.tab_6);
         mSunday.setAdapter(adapter);
+
+        // Set colors of tab titles
+        for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++) {
+            TextView tv = mTabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+            tv.setTextColor(getResources().getColor(R.color.tab_text));
+        }
 
         Bundle arguments = getArguments();
         if (arguments != null) {

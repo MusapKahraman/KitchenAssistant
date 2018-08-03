@@ -62,12 +62,16 @@ public class MainActivity extends AppCompatActivity
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mNavigatorIndex == 0) {
-                    Intent intent = new Intent(MainActivity.this, RecipeEditActivity.class);
-                    startActivity(intent);
-                } else if (mNavigatorIndex == 1) {
-                    Intent intent = new Intent(MainActivity.this, RecipeEditActivity.class);
-                    startActivity(intent);
+                Intent intent;
+                switch (mNavigatorIndex) {
+                    case 0:
+                        intent = new Intent(MainActivity.this, RecipeEditActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 1:
+                        intent = new Intent(MainActivity.this, RecipeEditActivity.class);
+                        startActivity(intent);
+                        break;
                 }
             }
         });
