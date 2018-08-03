@@ -24,8 +24,7 @@ public class StepsFragment extends Fragment {
         if (context instanceof FragmentMessageListener) {
             mMessageListener = (FragmentMessageListener) context;
         } else {
-            throw new ClassCastException(context.toString()
-                    + "must implement FragmentMessageListener");
+            throw new ClassCastException(context.toString() + "must implement FragmentMessageListener");
         }
     }
 

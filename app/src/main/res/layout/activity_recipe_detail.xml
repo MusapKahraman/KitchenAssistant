@@ -29,7 +29,21 @@
                 android:layout_height="match_parent"
                 android:contentDescription="@string/recipe_image_description"
                 android:scaleType="centerCrop"
-                android:src="@mipmap/ingredients" />
+                android:src="@mipmap/ingredients"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.5" />
+
+            <TextView
+                android:id="@+id/tv_recipe_writer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginBottom="@dimen/space_half_unit"
+                android:layout_marginEnd="@dimen/space_one_unit"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.1" />
 
             <FrameLayout
                 android:layout_width="match_parent"

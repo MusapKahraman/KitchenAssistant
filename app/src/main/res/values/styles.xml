@@ -63,11 +63,12 @@
     <style name="CardTitle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/card_title_text_size</item>
+        <item name="android:textColor">@color/card_title_text_color</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_gravity">center_horizontal|start</item>
         <item name="android:inputType">textMultiLine</item>
         <item name="android:maxLines">2</item>
-        <item name="android:textSize">@dimen/card_title_size</item>
         <item name="android:layout_margin">@dimen/space_one_unit</item>
     </style>
 
@@ -85,6 +86,17 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">@dimen/activity_vertical_margin</item>
         <item name="android:textColor">@color/colorAccent</item>
-        <item name="android:textSize">@dimen/spinner_headers</item>
+        <item name="android:textSize">@dimen/spinner_headers_text_size</item>
+    </style>
+
+    <style name="DataLabels">
+        <item name="android:textSize">@dimen/data_labels_text_size</item>
+        <item name="android:textColor">@color/label_text_color</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="DataTexts">
+        <item name="android:textSize">@dimen/data_texts_text_size</item>
+        <item name="android:textColor">@color/data_text_color</item>
     </style>
 </resources>

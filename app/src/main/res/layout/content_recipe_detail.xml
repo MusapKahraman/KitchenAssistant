@@ -4,14 +4,282 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingEnd="@dimen/activity_horizontal_margin"
+    android:paddingStart="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/recipe_detail_top_padding"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activities.RecipeDetailActivity"
     tools:showIn="@layout/activity_recipe_detail">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="@string/large_text" />
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/label_cuisine"
+            style="@style/DataLabels"
+            android:layout_width="@dimen/quarter_width"
+            android:layout_height="wrap_content"
+            android:text="@string/cuisine"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_cuisine" />
+
+        <TextView
+            android:id="@+id/tv_cuisine"
+            style="@style/DataTexts"
+            android:layout_width="@dimen/quarter_width"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_one_unit"
+            app:layout_constraintBottom_toBottomOf="@+id/label_prep_time"
+            app:layout_constraintStart_toEndOf="@id/label_cuisine"
+            app:layout_constraintTop_toTopOf="@+id/label_prep_time" />
+
+        <TextView
+            android:id="@+id/label_course"
+            style="@style/DataLabels"
+            android:layout_width="@dimen/quarter_width"
+            android:layout_height="wrap_content"
+            android:text="@string/course"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_course" />
+
+        <TextView
+            android:id="@+id/tv_course"
+            style="@style/DataTexts"
+            android:layout_width="@dimen/quarter_width"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_one_unit"
+            app:layout_constraintBottom_toBottomOf="@+id/label_cook_time"
+            app:layout_constraintStart_toEndOf="@+id/label_course"
+            app:layout_constraintTop_toTopOf="@+id/label_cook_time" />
+
+        <TextView
+            android:id="@+id/label_prep_time"
+            style="@style/DataLabels"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/space_one_unit"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:text="@string/prep_time_min"
+            app:layout_constraintEnd_toStartOf="@id/tv_prep_time"
+            app:layout_constraintStart_toEndOf="@+id/tv_cuisine"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_prep_time"
+            style="@style/DataTexts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/label_prep_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/label_prep_time" />
+
+        <TextView
+            android:id="@+id/label_cook_time"
+            style="@style/DataLabels"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/space_one_unit"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/cook_time_min"
+            app:layout_constraintEnd_toStartOf="@+id/tv_cook_time"
+            app:layout_constraintStart_toEndOf="@+id/tv_course"
+            app:layout_constraintTop_toBottomOf="@+id/label_prep_time" />
+
+        <TextView
+            android:id="@+id/tv_cook_time"
+            style="@style/DataTexts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/label_cook_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/label_cook_time" />
+
+        <View
+            android:id="@+id/divider_servings_up"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/empty_frame_outline_thickness"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/label_cook_time" />
+
+        <TextView
+            android:id="@+id/label_servings"
+            style="@style/DataLabels"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/servings"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider_servings_up" />
+
+        <Button
+            android:id="@+id/btn_servings_decrement"
+            android:layout_width="@dimen/recipe_detail_button_heights"
+            android:layout_height="@dimen/recipe_detail_button_heights"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/space_one_unit"
+            android:background="@color/colorAccent"
+            android:text="@string/decrement"
+            android:textColor="@color/btn_text"
+            app:layout_constraintEnd_toStartOf="@id/tv_servings"
+            app:layout_constraintTop_toBottomOf="@+id/label_servings" />
+
+        <TextView
+            android:id="@+id/tv_servings"
+            style="@style/DataTexts"
+            android:layout_width="@dimen/recipe_detail_button_heights"
+            android:layout_height="@dimen/recipe_detail_button_heights"
+            android:gravity="center"
+            app:layout_constraintBottom_toTopOf="@id/btn_servings_decrement"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_servings_decrement" />
+
+        <Button
+            android:id="@+id/btn_servings_increment"
+            android:layout_width="@dimen/recipe_detail_button_heights"
+            android:layout_height="@dimen/recipe_detail_button_heights"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:background="@color/colorAccent"
+            android:text="@string/increment"
+            android:textColor="@color/btn_text"
+            app:layout_constraintStart_toEndOf="@id/tv_servings"
+            app:layout_constraintTop_toTopOf="@id/btn_servings_decrement" />
+
+        <View
+            android:id="@+id/divider_ingredients"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/empty_frame_outline_thickness"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_servings_increment" />
+
+        <TextView
+            android:id="@+id/label_ingredients"
+            style="@style/DataLabels"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/ingredients"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider_ingredients" />
+
+        <TextView
+            android:id="@+id/tv_ingredients"
+            style="@style/DataTexts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_one_unit"
+            android:layout_marginTop="@dimen/space_one_unit"
+            android:text="1 cup of coffee"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_ingredients" />
+
+        <View
+            android:id="@+id/divider_steps"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/empty_frame_outline_thickness"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_ingredients" />
+
+        <TextView
+            android:id="@+id/label_steps"
+            style="@style/DataLabels"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/directions"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider_steps" />
+
+        <TextView
+            android:id="@+id/tv_steps"
+            style="@style/DataTexts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_one_unit"
+            android:layout_marginTop="@dimen/space_one_unit"
+            android:text="1. Pour a glass of water into the bowl."
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_steps" />
+
+        <View
+            android:id="@+id/divider_rating"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/empty_frame_outline_thickness"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_steps" />
+
+        <TextView
+            android:id="@+id/label_rating"
+            style="@style/DataLabels"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/rate_this_recipe"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider_rating" />
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            style="?android:attr/ratingBarStyleIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_one_unit"
+            android:isIndicator="false"
+            android:numStars="5"
+            android:stepSize="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/label_rating" />
+
+        <View
+            android:id="@+id/divider_finish"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/empty_frame_outline_thickness"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ratingBar" />
+
+        <Button
+            android:id="@+id/btn_finished"
+            android:layout_width="@dimen/recipe_detail_button_widths"
+            android:layout_height="@dimen/recipe_detail_button_heights"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="@color/colorAccent"
+            android:text="@string/recipe_finished"
+            android:textAllCaps="false"
+            android:textColor="@color/btn_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_finish" />
+
+        <View
+            android:id="@+id/divider_end"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/empty_frame_outline_thickness"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_finished" />
+
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.v4.widget.NestedScrollView>
