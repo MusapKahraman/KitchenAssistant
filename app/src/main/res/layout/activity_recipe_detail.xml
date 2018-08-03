@@ -23,6 +23,19 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:toolbarId="@+id/toolbar">
 
+            <ImageView
+                android:id="@+id/iv_recipe_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/recipe_image_description"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ingredients" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/recipe_image_tint" />
+
             <!--suppress AndroidDomInspection -->
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"

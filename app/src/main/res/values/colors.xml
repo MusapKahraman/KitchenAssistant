@@ -10,4 +10,7 @@
     <color name="nav_gradient_end">#3e2723</color>
     <color name="selected_card_back">#8d6e63</color>
     <color name="card_back">#FFFFFF</color>
+    <color name="image_tint_gradient_start">#00ffffff</color>
+    <color name="image_tint_gradient_center">#19000000</color>
+    <color name="image_tint_gradient_end">#64000000</color>
 </resources>
