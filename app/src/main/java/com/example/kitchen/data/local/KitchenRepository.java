@@ -1,10 +1,9 @@
-package com.example.kitchen.data;
+package com.example.kitchen.data.local;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
-import com.example.kitchen.data.local.KitchenDatabase;
 import com.example.kitchen.data.local.daos.IngredientsDao;
 import com.example.kitchen.data.local.daos.RecipesDao;
 import com.example.kitchen.data.local.daos.StepsDao;

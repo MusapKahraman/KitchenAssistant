@@ -96,7 +96,6 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
             int totalTime = current.cookTime + current.prepTime;
             String cookTime = String.format(itemView.getResources().getString(R.string.minutes_abbreviation), totalTime);
             cookTimeTextView.setText(cookTime);
-            ratingBar.setRating(current.rating);
             String url = current.photoUrl;
             if (url != null && url.length() != 0) {
                 RequestOptions options = new RequestOptions();

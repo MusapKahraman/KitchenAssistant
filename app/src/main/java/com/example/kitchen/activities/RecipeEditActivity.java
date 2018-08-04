@@ -1,6 +1,5 @@
 package com.example.kitchen.activities;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -15,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.kitchen.R;
 import com.example.kitchen.adapters.RecipeEditAdapter;
-import com.example.kitchen.data.KitchenViewModel;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.fragments.FragmentMessageListener;
 import com.example.kitchen.fragments.PictureDialogListener;
@@ -28,14 +26,12 @@ import java.util.Date;
 
 public class RecipeEditActivity extends AppCompatActivity implements PictureDialogListener, FragmentMessageListener {
     private ViewPager mViewPager;
-    private KitchenViewModel mViewModel;
     private Recipe mRecipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_edit);
-        mViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
         mViewPager = findViewById(R.id.viewPager);
 
         if (savedInstanceState != null) {
@@ -64,6 +60,7 @@ public class RecipeEditActivity extends AppCompatActivity implements PictureDial
         tabLayout.setupWithViewPager(mViewPager);
     }
 
+
     @Override
     public void onFragmentMessage(int fragmentIndex, Bundle bundle) {
         switch (fragmentIndex) {
@@ -75,11 +72,10 @@ public class RecipeEditActivity extends AppCompatActivity implements PictureDial
             case 2:
                 break;
         }
-        mViewModel.insertRecipes(mRecipe);
     }
 
     @Override
-    public void onCameraSelect() {
+    public void onCameraSelected() {
         // Reference -> https://developer.android.com/training/camera/photobasics
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
@@ -104,7 +100,7 @@ public class RecipeEditActivity extends AppCompatActivity implements PictureDial
     }
 
     @Override
-    public void onGallerySelect() {
+    public void onGallerySelected() {
         // Reference -> https://developer.android.com/training/camera/photobasics
         Intent intent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);

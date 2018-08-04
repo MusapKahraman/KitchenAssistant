@@ -34,10 +34,10 @@ public class PictureDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0:
-                                mListener.onCameraSelect();
+                                mListener.onCameraSelected();
                                 break;
                             case 1:
-                                mListener.onGallerySelect();
+                                mListener.onGallerySelected();
                                 break;
                         }
                     }

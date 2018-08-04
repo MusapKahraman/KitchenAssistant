@@ -24,60 +24,64 @@ public class Recipe implements Parcelable {
     @NonNull
     public String title;
     public String photoUrl;
+    public int servings;
     public int prepTime;
     public int cookTime;
-    public float rating;
     public String language;
     public String cuisine;
     public String course;
     public String writer;
-    public int servings;
     public long timeStamp;
+    public String publicKey;
+
+
+    @Ignore
+    public Recipe() {
+    }
 
     @Ignore
     public Recipe(@NonNull String title, long timeStamp) {
         this.title = title;
         this.photoUrl = "";
+        this.servings = 1;
         this.prepTime = 0;
         this.cookTime = 0;
-        this.rating = 0;
         this.language = "";
         this.cuisine = "";
         this.course = "";
         this.writer = "";
-        this.servings = 1;
         this.timeStamp = timeStamp;
+        this.publicKey = "";
     }
 
-    public Recipe(@NonNull String title, String photoUrl, int prepTime, int cookTime,
-                  float rating, String language, String cuisine, String course,
-                  String writer, int servings, long timeStamp) {
+    public Recipe(@NonNull String title, String photoUrl, int prepTime, int cookTime, String language, String cuisine, String course,
+                  String writer, int servings, long timeStamp, String publicKey) {
         this.title = title;
         this.photoUrl = photoUrl;
+        this.servings = servings;
         this.prepTime = prepTime;
         this.cookTime = cookTime;
-        this.rating = rating;
         this.language = language;
         this.cuisine = cuisine;
         this.course = course;
         this.writer = writer;
-        this.servings = servings;
         this.timeStamp = timeStamp;
+        this.publicKey = publicKey;
     }
 
     private Recipe(Parcel in) {
         id = in.readInt();
         title = in.readString();
         photoUrl = in.readString();
+        servings = in.readInt();
         prepTime = in.readInt();
         cookTime = in.readInt();
-        rating = in.readFloat();
         language = in.readString();
         cuisine = in.readString();
         course = in.readString();
         writer = in.readString();
-        servings = in.readInt();
         timeStamp = in.readLong();
+        publicKey = in.readString();
     }
 
     @Override
@@ -90,15 +94,15 @@ public class Recipe implements Parcelable {
         dest.writeInt(id);
         dest.writeString(title);
         dest.writeString(photoUrl);
+        dest.writeInt(servings);
         dest.writeInt(prepTime);
         dest.writeInt(cookTime);
-        dest.writeFloat(rating);
         dest.writeString(language);
         dest.writeString(cuisine);
         dest.writeString(course);
         dest.writeString(writer);
-        dest.writeInt(servings);
         dest.writeLong(timeStamp);
+        dest.writeString(publicKey);
     }
 
     @Override
@@ -107,14 +111,14 @@ public class Recipe implements Parcelable {
                 "\nid: " + id +
                 "\nname: " + title +
                 "\nphotoUrl: " + photoUrl +
+                "\nservings: " + servings +
                 "\nrecipe_id: " + prepTime +
                 "\nfood_id: " + cookTime +
-                "\namount: " + rating +
                 "\nlanguage: " + language +
                 "\ncuisine: " + cuisine +
                 "\ncourse: " + course +
                 "\nwriter: " + writer +
-                "\nservings: " + servings +
-                "\ntimeStamp: " + timeStamp;
+                "\ntimeStamp: " + timeStamp +
+                "\npublicKey: " + publicKey;
     }
 }

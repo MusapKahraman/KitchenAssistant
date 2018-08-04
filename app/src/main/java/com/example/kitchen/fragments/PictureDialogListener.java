@@ -1,7 +1,7 @@
 package com.example.kitchen.fragments;
 
 public interface PictureDialogListener {
-    void onCameraSelect();
+    void onCameraSelected();
 
-    void onGallerySelect();
+    void onGallerySelected();
 }

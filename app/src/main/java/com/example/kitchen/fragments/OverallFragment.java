@@ -3,10 +3,12 @@ package com.example.kitchen.fragments;
 import android.Manifest;
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 import com.bumptech.glide.Glide;
@@ -30,11 +33,19 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.example.kitchen.R;
+import com.example.kitchen.data.firebase.RecipeViewModel;
+import com.example.kitchen.data.local.KitchenViewModel;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.utility.AppConstants;
 import com.example.kitchen.utility.BitmapUtils;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.util.Date;
@@ -57,6 +68,8 @@ public class OverallFragment extends Fragment {
     private Spinner courseSpinner;
     private Spinner cuisineSpinner;
     private Spinner languageSpinner;
+    private ImageButton publish;
+    private ProgressBar progressBar;
     private Recipe mRecipe;
     private boolean mDoNotRequestPermission;
     // Deal with write permission to external storage in Glide
@@ -116,7 +129,6 @@ public class OverallFragment extends Fragment {
                 if (activity != null)
                     dialogFragment.show(activity.getFragmentManager(), TAG_PICTURE_DIALOG);
                 mDoNotRequestPermission = false;
-                saveRecipe();
             }
         });
 
@@ -154,14 +166,15 @@ public class OverallFragment extends Fragment {
         else
             rotate.setVisibility(View.VISIBLE);
 
-        ImageButton publish = mRootView.findViewById(R.id.btn_publish);
+        publish = mRootView.findViewById(R.id.btn_publish);
         publish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveRecipe();
+                publishRecipe();
             }
         });
 
+        progressBar = mRootView.findViewById(R.id.progress_bar);
         mTitleView = mRootView.findViewById(R.id.text_edit_title);
         mTitleView.setText(mRecipe.title);
 
@@ -199,15 +212,17 @@ public class OverallFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        saveRecipe();
+        super.onPause();
+    }
+
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putFloat(KEY_IMAGE_ROTATION, mImageView.getRotation());
         outState.putBoolean(KEY_REQUEST_PERMISSION, mDoNotRequestPermission);
         outState.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
-    }
-
-    private void sendToActivity(Bundle outState) {
-        mMessageListener.onFragmentMessage(0, outState);
     }
 
     private void saveRecipe() {
@@ -242,10 +257,45 @@ public class OverallFragment extends Fragment {
         if (user != null) {
             mRecipe.writer = user.getDisplayName();
         }
-        // Send data to activity to be saved in local database.
         Bundle bundle = new Bundle();
         bundle.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
-        sendToActivity(bundle);
+        mMessageListener.onFragmentMessage(0, bundle);
+        KitchenViewModel viewModel;
+        viewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
+        viewModel.insertRecipes(mRecipe);
+    }
+
+    private void publishRecipe() {
+        publish.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+        Snackbar.make(progressBar, "Uploading...", Snackbar.LENGTH_SHORT).show();
+        saveRecipe();
+        final StorageReference ref = FirebaseStorage.getInstance().getReference("images/" + mRecipe.title + ".jpg");
+        Uri file = Uri.fromFile(new File(mRecipe.photoUrl));
+        ref.putFile(file).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    //noinspection ConstantConditions
+                    throw task.getException();
+                }
+                // Continue with the task to get the download URL
+                return ref.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    RecipeViewModel viewModel = ViewModelProviders.of(OverallFragment.this).get(RecipeViewModel.class);
+                    viewModel.writeNewRecipe(mRecipe.title, task.getResult().toString(), mRecipe.servings,
+                            mRecipe.prepTime, mRecipe.cookTime, mRecipe.language,
+                            mRecipe.cuisine, mRecipe.course, mRecipe.writer);
+                }
+                publish.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                Snackbar.make(progressBar, "Recipe is now public.", Snackbar.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

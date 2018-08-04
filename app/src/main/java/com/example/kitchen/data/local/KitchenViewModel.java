@@ -1,4 +1,4 @@
-package com.example.kitchen.data;
+package com.example.kitchen.data.local;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;

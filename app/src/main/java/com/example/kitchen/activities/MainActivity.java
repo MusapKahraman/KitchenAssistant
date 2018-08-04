@@ -21,7 +21,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.kitchen.R;
 import com.example.kitchen.adapters.RecipeClickListener;
-import com.example.kitchen.data.KitchenViewModel;
+import com.example.kitchen.data.firebase.RecipeViewModel;
+import com.example.kitchen.data.local.KitchenViewModel;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.fragments.MealBoardFragment;
 import com.example.kitchen.fragments.NotebookFragment;
@@ -32,6 +33,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +49,8 @@ public class MainActivity extends AppCompatActivity
     private Bundle mNotebookFragmentSavedState;
     private Bundle mMealBoardFragmentSavedState;
     private int mNavigatorIndex;
-    private KitchenViewModel mViewModel;
+    private KitchenViewModel kitchenViewModel;
+    private RecipeViewModel recipeViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +59,8 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
+        kitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
+        recipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
 
         mFab = findViewById(R.id.fab);
         mFab.setOnClickListener(new View.OnClickListener() {
@@ -126,16 +130,26 @@ public class MainActivity extends AppCompatActivity
         switch (mNavigatorIndex) {
             case 0:
                 mFab.show();
-                mViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
+                recipeViewModel.getDataSnapshotLiveData().observe(this, new Observer<DataSnapshot>() {
                     @Override
-                    public void onChanged(@Nullable List<Recipe> recipes) {
+                    public void onChanged(@Nullable DataSnapshot dataSnapshot) {
+                        List<Recipe> recipes = new ArrayList<>();
+                        if (dataSnapshot != null) {
+                            for (DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
+                                com.example.kitchen.data.firebase.models.Recipe recipe =
+                                        recipeSnapshot.getValue(com.example.kitchen.data.firebase.models.Recipe.class);
+                                if (recipe != null)
+                                    recipes.add(new Recipe(recipe.title, recipe.photoUrl, recipe.prepTime, recipe.cookTime, recipe.language,
+                                            recipe.cuisine, recipe.course, recipe.writer, recipe.servings, 0, recipeSnapshot.getKey()));
+                            }
+                        }
                         showRecipes(recipes);
                     }
                 });
                 break;
             case 1:
                 mFab.show();
-                mViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
+                kitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
                     @Override
                     public void onChanged(@Nullable List<Recipe> recipes) {
                         showNotebook(recipes);
@@ -143,7 +157,7 @@ public class MainActivity extends AppCompatActivity
                 });
                 break;
             case 6:
-                mViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
+                kitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
                     @Override
                     public void onChanged(@Nullable List<Recipe> recipes) {
                         showMealBoard(recipes);
