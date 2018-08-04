@@ -4,7 +4,9 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 
+import com.example.kitchen.data.local.entities.Ingredient;
 import com.example.kitchen.data.local.entities.Recipe;
+import com.example.kitchen.data.local.entities.Step;
 
 import java.util.List;
 
@@ -23,6 +25,27 @@ public class KitchenViewModel extends AndroidViewModel {
 
     // In the ViewModel, use LiveData for changeable data that the UI will use or display.
 
+
+    public LiveData<Recipe> getRecipe(int id) {
+        return mRepository.getRecipe(id);
+    }
+
+    public LiveData<List<Recipe>> getAllRecipes() {
+        return mRepository.getAllRecipes();
+    }
+
+    public LiveData<List<Ingredient>> getIngredientsByRecipe(int recipeId) {
+        return mRepository.getIngredientsByRecipe(recipeId);
+    }
+
+    public LiveData<List<Ingredient>> getIngredientsByFood(int foodId) {
+        return mRepository.getIngredientsByFood(foodId);
+    }
+
+    public LiveData<List<Step>> getStepsByRecipe(int recipeId) {
+        return mRepository.getStepsByRecipe(recipeId);
+    }
+
     public void insertRecipes(Recipe... recipes) {
         mRepository.insertRecipes(recipes);
     }
@@ -31,11 +54,19 @@ public class KitchenViewModel extends AndroidViewModel {
         mRepository.deleteRecipes(recipes);
     }
 
-    public LiveData<Recipe> getRecipe(String title) {
-        return mRepository.getRecipe(title);
+    public void insertIngredients(Ingredient... ingredients) {
+        mRepository.insertIngredients(ingredients);
     }
 
-    public LiveData<List<Recipe>> getAllRecipes() {
-        return mRepository.getAllRecipes();
+    public void deleteIngredients(Ingredient... ingredients) {
+        mRepository.deleteIngredients(ingredients);
+    }
+
+    public void insertSteps(Step... steps) {
+        mRepository.insertSteps(steps);
+    }
+
+    public void deleteSteps(Step... steps) {
+        mRepository.deleteSteps(steps);
     }
 }

@@ -7,23 +7,20 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
-import com.example.kitchen.data.local.entities.Recipe;
+import com.example.kitchen.data.local.entities.Step;
 
 import java.util.List;
 
 @Dao
-public interface RecipesDao {
+public interface StepsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertRecipe(Recipe recipe);
+    void insertStep(Step step);
 
     @Delete
-    void deleteRecipe(Recipe recipe);
+    void deleteStep(Step step);
 
-    @Query("SELECT * from recipes WHERE id = :id")
-    LiveData<Recipe> getRecipe(int id);
-
-    @Query("SELECT * from recipes ORDER BY timeStamp")
-    LiveData<List<Recipe>> getAll();
+    @Query("SELECT * from steps WHERE recipe_id = :recipeId")
+    LiveData<List<Step>> getStepsByRecipe(int recipeId);
 
 }
