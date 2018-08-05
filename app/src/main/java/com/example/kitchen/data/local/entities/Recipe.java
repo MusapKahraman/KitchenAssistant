@@ -33,6 +33,7 @@ public class Recipe implements Parcelable {
     public String writer;
     public long timeStamp;
     public String publicKey;
+    public float rating;
 
 
     @Ignore
@@ -52,10 +53,11 @@ public class Recipe implements Parcelable {
         this.writer = "";
         this.timeStamp = timeStamp;
         this.publicKey = "";
+        this.rating = 0;
     }
 
     public Recipe(@NonNull String title, String photoUrl, int prepTime, int cookTime, String language, String cuisine, String course,
-                  String writer, int servings, long timeStamp, String publicKey) {
+                  String writer, int servings, long timeStamp, String publicKey, float rating) {
         this.title = title;
         this.photoUrl = photoUrl;
         this.servings = servings;
@@ -67,6 +69,7 @@ public class Recipe implements Parcelable {
         this.writer = writer;
         this.timeStamp = timeStamp;
         this.publicKey = publicKey;
+        this.rating = rating;
     }
 
     private Recipe(Parcel in) {
@@ -82,6 +85,7 @@ public class Recipe implements Parcelable {
         writer = in.readString();
         timeStamp = in.readLong();
         publicKey = in.readString();
+        rating = in.readFloat();
     }
 
     @Override
@@ -103,6 +107,7 @@ public class Recipe implements Parcelable {
         dest.writeString(writer);
         dest.writeLong(timeStamp);
         dest.writeString(publicKey);
+        dest.writeFloat(rating);
     }
 
     @Override
@@ -119,6 +124,7 @@ public class Recipe implements Parcelable {
                 "\ncourse: " + course +
                 "\nwriter: " + writer +
                 "\ntimeStamp: " + timeStamp +
-                "\npublicKey: " + publicKey;
+                "\npublicKey: " + publicKey +
+                "\nrating: " + rating;
     }
 }

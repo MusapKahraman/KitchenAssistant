@@ -271,7 +271,7 @@ public class OverallFragment extends Fragment {
         }
         publishButton.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
-        Snackbar.make(progressBar, "Uploading...", Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(progressBar, R.string.publishing, Snackbar.LENGTH_SHORT).show();
         final StorageReference ref = FirebaseStorage.getInstance().getReference("images/" + mRecipe.title + ".jpg");
         Uri file = Uri.fromFile(new File(mRecipe.photoUrl));
         ref.putFile(file).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -289,13 +289,14 @@ public class OverallFragment extends Fragment {
             public void onComplete(@NonNull Task<Uri> task) {
                 if (task.isSuccessful()) {
                     RecipeViewModel viewModel = ViewModelProviders.of(OverallFragment.this).get(RecipeViewModel.class);
-                    viewModel.writeNewRecipe(mRecipe.title, task.getResult().toString(), mRecipe.servings,
-                            mRecipe.prepTime, mRecipe.cookTime, mRecipe.language,
-                            mRecipe.cuisine, mRecipe.course, mRecipe.writer);
+                    mRecipe.publicKey = viewModel.writeNewRecipe(mRecipe.title, task.getResult().toString(), mRecipe.servings,
+                            mRecipe.prepTime, mRecipe.cookTime, mRecipe.language, mRecipe.cuisine, mRecipe.course, mRecipe.writer);
+                    KitchenViewModel kitchenViewModel = ViewModelProviders.of(OverallFragment.this).get(KitchenViewModel.class);
+                    kitchenViewModel.insertRecipes(mRecipe);
                 }
                 publishButton.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
-                Snackbar.make(progressBar, "Recipe is now public.", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(progressBar, R.string.publish_succesful, Snackbar.LENGTH_SHORT).show();
             }
         });
     }

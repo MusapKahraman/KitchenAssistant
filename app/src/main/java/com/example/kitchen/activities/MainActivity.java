@@ -25,6 +25,7 @@ import com.bumptech.glide.Glide;
 import com.example.kitchen.R;
 import com.example.kitchen.adapters.RecipeClickListener;
 import com.example.kitchen.data.firebase.RecipeViewModel;
+import com.example.kitchen.data.firebase.models.RecipeModel;
 import com.example.kitchen.data.local.KitchenViewModel;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.fragments.MealBoardFragment;
@@ -37,6 +38,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity
     private KitchenViewModel kitchenViewModel;
     private RecipeViewModel recipeViewModel;
     private SharedPreferences sharedPref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,11 +143,21 @@ public class MainActivity extends AppCompatActivity
                         List<Recipe> recipes = new ArrayList<>();
                         if (dataSnapshot != null) {
                             for (DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
-                                com.example.kitchen.data.firebase.models.Recipe recipe =
-                                        recipeSnapshot.getValue(com.example.kitchen.data.firebase.models.Recipe.class);
-                                if (recipe != null)
-                                    recipes.add(new Recipe(recipe.title, recipe.photoUrl, recipe.prepTime, recipe.cookTime, recipe.language,
-                                            recipe.cuisine, recipe.course, recipe.writer, recipe.servings, 0, recipeSnapshot.getKey()));
+                                RecipeModel recipe = null;
+                                try {
+                                    recipe = recipeSnapshot.getValue(RecipeModel.class);
+                                } catch (DatabaseException e) {
+                                    Log.e("MainActivity", e.getMessage());
+                                }
+                                if (recipe != null) {
+                                    int total = recipe.totalRating;
+                                    int count = recipe.ratingCount;
+                                    float rating = 0;
+                                    if (count != 0) rating = (float) total / (float) count;
+                                    recipes.add(new Recipe(recipe.title, recipe.photoUrl, recipe.prepTime, recipe.cookTime,
+                                            recipe.language, recipe.cuisine, recipe.course, recipe.writer, recipe.servings,
+                                            0, recipeSnapshot.getKey(), rating));
+                                }
                             }
                         }
                         showRecipes(recipes);

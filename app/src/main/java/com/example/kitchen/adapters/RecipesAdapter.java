@@ -101,7 +101,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
                 RequestOptions options = new RequestOptions();
                 Glide.with(itemView).load(url).apply(options.centerCrop()).into(recipeImageView);
             }
-            ratingBar.setRating(2.5f);
+            ratingBar.setRating(current.rating);
         }
 
         @Override

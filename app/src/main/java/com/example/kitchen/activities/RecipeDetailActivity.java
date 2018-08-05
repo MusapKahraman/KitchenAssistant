@@ -1,7 +1,9 @@
 package com.example.kitchen.activities;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -23,21 +25,27 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.kitchen.R;
+import com.example.kitchen.data.firebase.RecipeViewModel;
 import com.example.kitchen.data.local.KitchenViewModel;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.utility.AppConstants;
 
-public class RecipeDetailActivity extends AppCompatActivity {
+public class RecipeDetailActivity extends AppCompatActivity implements RecipeViewModel.RatingPostListener {
 
     private static final String KEY_SERVINGS = "servings-key";
+    private static final String KEY_RATING_TRANSACTION = "rating-transaction-status-key";
     private Recipe mRecipe;
     private int mServings;
+    private boolean mIsRatingProcessing;
     private AppBarLayout mAppBarLayout;
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
+
+        sharedPref = getPreferences(Context.MODE_PRIVATE);
 
         boolean isEditable;
         if (getIntent() != null) {
@@ -92,6 +100,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
             mServings = mRecipe.servings;
         } else {
             mServings = savedInstanceState.getInt(KEY_SERVINGS);
+            mIsRatingProcessing = savedInstanceState.getBoolean(KEY_RATING_TRANSACTION);
         }
         final TextView servingsTextView = findViewById(R.id.tv_servings);
         servingsTextView.setText(String.valueOf(mServings));
@@ -115,10 +124,18 @@ public class RecipeDetailActivity extends AppCompatActivity {
         });
 
         RatingBar ratingBar = findViewById(R.id.ratingBar);
+        int rating = sharedPref.getInt(mRecipe.publicKey, 0);
+        ratingBar.setRating(rating);
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                Snackbar.make(mAppBarLayout, "Rating is: " + rating, Snackbar.LENGTH_SHORT).show();
+                if (!mIsRatingProcessing) {
+                    mIsRatingProcessing = true;
+                    int currentRating = (int) rating;
+                    int lastRating = sharedPref.getInt(mRecipe.publicKey, 0);
+                    RecipeViewModel viewModel = ViewModelProviders.of(RecipeDetailActivity.this).get(RecipeViewModel.class);
+                    viewModel.postRating(mRecipe.publicKey, currentRating, lastRating, RecipeDetailActivity.this);
+                }
             }
         });
 
@@ -132,20 +149,20 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         LinearLayout ingredientListLayout = findViewById(R.id.container_ingredients);
         LayoutInflater inflater = LayoutInflater.from(this);
-        for (int x = 0; x < 9; x++) {
+        for (int x = 0; x < 3; x++) {
             View view = inflater.inflate(R.layout.item_ingredient, ingredientListLayout, false);
             TextView ingredientView = view.findViewById(R.id.tv_ingredient);
-            ingredientView.setText("Wwwwwwww wwwwwwwwwww  ww");
+            ingredientView.setText("Wwwwwwww www");
             ingredientListLayout.addView(view);
         }
 
         LinearLayout stepListLayout = findViewById(R.id.container_steps);
-        for (int x = 0; x < 99; x++) {
+        for (int x = 0; x < 3; x++) {
             View view = inflater.inflate(R.layout.item_step, stepListLayout, false);
             TextView stepNumberView = view.findViewById(R.id.tv_step_number);
             stepNumberView.setText(String.valueOf(x + 1));
             TextView stepView = view.findViewById(R.id.tv_step);
-            stepView.setText("Wwwwwwww wwwwwwwwwww wwwwwwwwwwww wwwwwwwwwwww wwwwwwwwwwww wwwwwwwwwwww wwwwwwwwwwww wwwwww wwwwwwww wwwwwwww ww");
+            stepView.setText("Wwwwwwww wwwwwwwwwww wwwwwww");
             stepListLayout.addView(view);
         }
     }
@@ -154,6 +171,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_SERVINGS, mServings);
+        outState.putBoolean(KEY_RATING_TRANSACTION, mIsRatingProcessing);
     }
 
     @Override
@@ -180,5 +198,13 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRatingTransactionSuccessful(int rating) {
+        mIsRatingProcessing = false;
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(mRecipe.publicKey, rating);
+        editor.apply();
     }
 }

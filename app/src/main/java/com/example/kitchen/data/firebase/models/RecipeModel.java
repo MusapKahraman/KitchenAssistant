@@ -3,7 +3,7 @@ package com.example.kitchen.data.firebase.models;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 @IgnoreExtraProperties
-public class Recipe {
+public class RecipeModel {
     public String title;
     public String photoUrl;
     public int servings;
@@ -13,13 +13,15 @@ public class Recipe {
     public String cuisine;
     public String course;
     public String writer;
+    public int totalRating;
+    public int ratingCount;
 
-    public Recipe() {
+    public RecipeModel() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public Recipe(String title, String photoUrl, int servings, int prepTime, int cookTime,
-                  String language, String cuisine, String course, String writer) {
+    public RecipeModel(String title, String photoUrl, int servings, int prepTime, int cookTime, String language,
+                       String cuisine, String course, String writer) {
         this.title = title;
         this.photoUrl = photoUrl;
         this.servings = servings;
@@ -29,5 +31,7 @@ public class Recipe {
         this.cuisine = cuisine;
         this.course = course;
         this.writer = writer;
+        this.totalRating = 0;
+        this.ratingCount = 0;
     }
 }

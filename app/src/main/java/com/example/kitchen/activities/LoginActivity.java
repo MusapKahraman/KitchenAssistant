@@ -26,8 +26,6 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             // already signed in
-            Log.v(TAG, "Email: " + user.getEmail());
-            Log.v(TAG, "Name: " + user.getDisplayName());
             // This is an existing user.
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
@@ -57,11 +55,8 @@ public class LoginActivity extends AppCompatActivity {
                 // Successfully signed in
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if (user != null) {
-                    Log.v(TAG, "Email: " + user.getEmail());
                     if (idpResponse != null) {
                         Intent intent;
-                        Log.v(TAG, "Email: " + idpResponse.getEmail());
-                        Log.v(TAG, "Name: " + user.getDisplayName());
                         if (idpResponse.isNewUser()) {
                             // The user is new, show them a fancy intro screen!
                             intent = new Intent(this, WelcomeActivity.class);
