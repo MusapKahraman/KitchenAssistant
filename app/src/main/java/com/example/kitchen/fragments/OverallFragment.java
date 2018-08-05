@@ -236,6 +236,21 @@ public class OverallFragment extends Fragment {
             mTitleView.setError(getString(R.string.recipe_title_required));
             return false;
         }
+        title = title.trim().toLowerCase();
+        String[] words = title.split(" ");
+        title = "";
+        for (int j = 0; j < words.length; j++) {
+            char[] chars = words[j].toCharArray();
+            for (int i = 0; i < chars.length; i++) {
+                if (i == 0) {
+                    chars[i] = Character.toUpperCase(chars[i]);
+                }
+            }
+            title = title.concat(String.valueOf(chars));
+            if (j != words.length - 1) {
+                title = title.concat(" ");
+            }
+        }
         mRecipe.title = title;
         // Take the image from the image view.
         BitmapDrawable drawable = (BitmapDrawable) mImageView.getDrawable();
