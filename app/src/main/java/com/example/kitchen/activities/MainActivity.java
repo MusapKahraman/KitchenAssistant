@@ -141,6 +141,10 @@ public class MainActivity extends AppCompatActivity
                 recipeViewModel.getDataSnapshotLiveData().observe(this, new Observer<DataSnapshot>() {
                     @Override
                     public void onChanged(@Nullable DataSnapshot dataSnapshot) {
+                        if (mNavigatorIndex != 0) {
+                            // Prevent turning back to online recipes fragment after publishing a recipe.
+                            return;
+                        }
                         List<Recipe> recipes = new ArrayList<>();
                         if (dataSnapshot != null) {
                             for (DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
@@ -242,10 +246,8 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
         int oldNavigatorIndex = mNavigatorIndex;
         switch (id) {
