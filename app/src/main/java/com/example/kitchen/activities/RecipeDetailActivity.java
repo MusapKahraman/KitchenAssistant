@@ -92,12 +92,33 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
                 finish();
             }
         });
+
+        View ratingDivider = findViewById(R.id.divider_rating);
+        TextView ratingLabel = findViewById(R.id.label_rating);
+        RatingBar ratingBar = findViewById(R.id.ratingBar);
+        int rating = sharedPref.getInt(mRecipe.publicKey, 0);
+        ratingBar.setRating(rating);
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                if (!mIsRatingProcessing) {
+                    mIsRatingProcessing = true;
+                    int currentRating = (int) rating;
+                    int lastRating = sharedPref.getInt(mRecipe.publicKey, 0);
+                    RecipeViewModel viewModel = ViewModelProviders.of(RecipeDetailActivity.this).get(RecipeViewModel.class);
+                    viewModel.postRating(mRecipe.publicKey, currentRating, lastRating, RecipeDetailActivity.this);
+                }
+            }
+        });
         if (!isEditable) {
             fab.setVisibility(View.GONE);
             TextView writerView = findViewById(R.id.tv_recipe_writer);
             writerView.setText(mRecipe.writer);
+        } else {
+            ratingBar.setVisibility(View.GONE);
+            ratingLabel.setVisibility(View.GONE);
+            ratingDivider.setVisibility(View.GONE);
         }
-
         TextView courseTextView = findViewById(R.id.tv_course);
         courseTextView.setText(mRecipe.course);
         TextView cuisineTextView = findViewById(R.id.tv_cuisine);
@@ -130,22 +151,6 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
             public void onClick(View v) {
                 mServings++;
                 servingsTextView.setText(String.valueOf(mServings));
-            }
-        });
-
-        RatingBar ratingBar = findViewById(R.id.ratingBar);
-        int rating = sharedPref.getInt(mRecipe.publicKey, 0);
-        ratingBar.setRating(rating);
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                if (!mIsRatingProcessing) {
-                    mIsRatingProcessing = true;
-                    int currentRating = (int) rating;
-                    int lastRating = sharedPref.getInt(mRecipe.publicKey, 0);
-                    RecipeViewModel viewModel = ViewModelProviders.of(RecipeDetailActivity.this).get(RecipeViewModel.class);
-                    viewModel.postRating(mRecipe.publicKey, currentRating, lastRating, RecipeDetailActivity.this);
-                }
             }
         });
 
