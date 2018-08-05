@@ -26,8 +26,8 @@ public class KitchenViewModel extends AndroidViewModel {
     // In the ViewModel, use LiveData for changeable data that the UI will use or display.
 
 
-    public LiveData<Recipe> getRecipe(int id) {
-        return mRepository.getRecipe(id);
+    public LiveData<Recipe> getRecipe(String title) {
+        return mRepository.getRecipe(title);
     }
 
     public LiveData<List<Recipe>> getAllRecipes() {

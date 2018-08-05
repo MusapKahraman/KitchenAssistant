@@ -145,10 +145,13 @@ public class OverallFragment extends Fragment {
 
         if (mRecipe != null && !TextUtils.isEmpty(mRecipe.photoUrl)) {
             int size = getResources().getInteger(R.integer.image_size_px);
+            RequestOptions options = new RequestOptions()
+                    .centerCrop()
+                    .override(size);
             Glide.with(mContext)
                     .load(mRecipe.photoUrl)
                     .listener(requestListener)
-                    .apply(new RequestOptions().override(size).centerCrop())
+                    .apply(options)
                     .into(mImageView);
         }
 
@@ -309,9 +312,12 @@ public class OverallFragment extends Fragment {
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         if (mRecipe != null && !TextUtils.isEmpty(mRecipe.photoUrl)) {
                             int size = getResources().getInteger(R.integer.image_size_px);
+                            RequestOptions options = new RequestOptions()
+                                    .centerCrop()
+                                    .override(size);
                             Glide.with(mContext)
                                     .load(mRecipe.photoUrl)
-                                    .apply(new RequestOptions().override(size).centerCrop())
+                                    .apply(options)
                                     .into(mImageView);
                         }
                     } else {

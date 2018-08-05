@@ -1,3 +1,7 @@
+/*
+ * Reference
+ * https://stackoverflow.com/questions/45677230/android-room-persistence-library-upsert/48641762#48641762
+ */
 package com.example.kitchen.data.local.daos;
 
 import android.arch.lifecycle.LiveData;
@@ -6,6 +10,7 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import com.example.kitchen.data.local.entities.Recipe;
 
@@ -14,14 +19,17 @@ import java.util.List;
 @Dao
 public interface RecipesDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertRecipe(Recipe recipe);
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    long insert(Recipe recipe);
+
+    @Update
+    void update(Recipe recipe);
 
     @Delete
-    void deleteRecipe(Recipe recipe);
+    void delete(Recipe recipe);
 
-    @Query("SELECT * from recipes WHERE id = :id")
-    LiveData<Recipe> getRecipe(int id);
+    @Query("SELECT * from recipes WHERE title = :title")
+    LiveData<Recipe> getRecipe(String title);
 
     @Query("SELECT * from recipes ORDER BY timeStamp")
     LiveData<List<Recipe>> getAll();

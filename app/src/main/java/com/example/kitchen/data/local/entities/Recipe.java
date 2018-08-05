@@ -19,8 +19,7 @@ public class Recipe implements Parcelable {
             return new Recipe[size];
         }
     };
-    @PrimaryKey(autoGenerate = true)
-    public int id;
+    @PrimaryKey
     @NonNull
     public String title;
     public String photoUrl;
@@ -73,7 +72,6 @@ public class Recipe implements Parcelable {
     }
 
     private Recipe(Parcel in) {
-        id = in.readInt();
         title = in.readString();
         photoUrl = in.readString();
         servings = in.readInt();
@@ -95,7 +93,6 @@ public class Recipe implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
         dest.writeString(title);
         dest.writeString(photoUrl);
         dest.writeInt(servings);
@@ -113,7 +110,6 @@ public class Recipe implements Parcelable {
     @Override
     public String toString() {
         return super.toString() +
-                "\nid: " + id +
                 "\nname: " + title +
                 "\nphotoUrl: " + photoUrl +
                 "\nservings: " + servings +

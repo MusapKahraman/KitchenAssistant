@@ -23,6 +23,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.kitchen.R;
 import com.example.kitchen.data.firebase.RecipeViewModel;
@@ -68,8 +70,16 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
         ImageView recipeImageView = findViewById(R.id.iv_recipe_image);
         String url = mRecipe.photoUrl;
         if (url != null && url.length() != 0) {
-            RequestOptions options = new RequestOptions();
-            Glide.with(this).load(url).apply(options.centerCrop()).into(recipeImageView);
+            RequestOptions options = new RequestOptions()
+                    .centerCrop()
+                    .placeholder(R.mipmap.ingredients)
+                    .error(R.mipmap.ingredients)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .priority(Priority.HIGH);
+            Glide.with(this)
+                    .load(url)
+                    .apply(options)
+                    .into(recipeImageView);
         }
 
         FloatingActionButton fab = findViewById(R.id.fab);

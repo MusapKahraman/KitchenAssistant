@@ -1,3 +1,7 @@
+/*
+ * Reference
+ * https://stackoverflow.com/questions/45677230/android-room-persistence-library-upsert/48641762#48641762
+ */
 package com.example.kitchen.data.local;
 
 import android.app.Application;
@@ -29,8 +33,8 @@ class KitchenRepository {
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
 
-    LiveData<Recipe> getRecipe(int id) {
-        return mRecipesDao.getRecipe(id);
+    LiveData<Recipe> getRecipe(String title) {
+        return mRecipesDao.getRecipe(title);
     }
 
     LiveData<List<Recipe>> getAllRecipes() {
@@ -85,8 +89,12 @@ class KitchenRepository {
         @Override
         protected Void doInBackground(Recipe... recipes) {
             for (Recipe recipe : recipes) {
-                if (recipe != null)
-                    mAsyncTaskDao.insertRecipe(recipe);
+                if (recipe != null) {
+                    long id = mAsyncTaskDao.insert(recipe);
+                    if (id == -1) {
+                        mAsyncTaskDao.update(recipe);
+                    }
+                }
             }
             return null;
         }
@@ -103,7 +111,7 @@ class KitchenRepository {
         protected Void doInBackground(Recipe... recipes) {
             for (Recipe recipe : recipes) {
                 if (recipe != null)
-                    mAsyncTaskDao.deleteRecipe(recipe);
+                    mAsyncTaskDao.delete(recipe);
             }
             return null;
         }

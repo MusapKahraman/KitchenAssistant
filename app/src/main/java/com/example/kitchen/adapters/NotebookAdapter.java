@@ -18,6 +18,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.kitchen.R;
 import com.example.kitchen.data.local.KitchenViewModel;
@@ -150,8 +152,16 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
             cookTimeTextView.setText(cookTime);
             String url = current.photoUrl;
             if (url != null && url.length() != 0) {
-                RequestOptions options = new RequestOptions();
-                Glide.with(itemView).load(url).apply(options.centerCrop()).into(recipeImageView);
+                RequestOptions options = new RequestOptions()
+                        .centerCrop()
+                        .placeholder(R.mipmap.ingredients)
+                        .error(R.mipmap.ingredients)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .priority(Priority.HIGH);
+                Glide.with(itemView)
+                        .load(url)
+                        .apply(options)
+                        .into(recipeImageView);
             }
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
