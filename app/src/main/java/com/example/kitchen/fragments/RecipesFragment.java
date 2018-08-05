@@ -26,14 +26,14 @@ import com.example.kitchen.utility.AppConstants;
 import java.util.List;
 
 public class RecipesFragment extends Fragment {
-
     private static final String TAG = RecipesFragment.class.getSimpleName();
     private static final String LAYOUT_STATE = "state";
     private static final String SEARCH_QUERY = "search-query";
-    private StaggeredGridLayoutManager mLayoutManager;
+    private FragmentScrollListener fragmentScrollListener;
     private RecipeClickListener mClickListener;
-    private View mRootView;
+    private StaggeredGridLayoutManager mLayoutManager;
     private RecipesAdapter mAdapter;
+    private View mRootView;
     private String mQuery;
 
     public RecipesFragment() {
@@ -46,8 +46,12 @@ public class RecipesFragment extends Fragment {
         if (context instanceof RecipeClickListener) {
             mClickListener = (RecipeClickListener) context;
         } else {
-            throw new ClassCastException(context.toString()
-                    + "must implement RecipeClickListener");
+            throw new ClassCastException(context.toString() + "must implement RecipeClickListener");
+        }
+        if (context instanceof FragmentScrollListener) {
+            fragmentScrollListener = (FragmentScrollListener) context;
+        } else {
+            throw new ClassCastException(context.toString() + "must implement FragmentScrollListener");
         }
     }
 
@@ -72,6 +76,17 @@ public class RecipesFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         mAdapter = new RecipesAdapter(mClickListener);
         recyclerView.setAdapter(mAdapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dx > 0 || dy > 0) {
+                    fragmentScrollListener.onScrollDown();
+                } else if (dx < 0 || dy < 0) {
+                    fragmentScrollListener.onScrollUp();
+                }
+            }
+        });
         Bundle arguments = getArguments();
         if (arguments != null) {
             List<Recipe> recipes = arguments.getParcelableArrayList(AppConstants.KEY_RECIPES);
@@ -93,8 +108,9 @@ public class RecipesFragment extends Fragment {
 
     @Override
     public void onDetach() {
-        super.onDetach();
         mClickListener = null;
+        fragmentScrollListener = null;
+        super.onDetach();
     }
 
     private void sendToActivity(Bundle outState) {

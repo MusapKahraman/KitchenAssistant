@@ -28,6 +28,7 @@ import com.example.kitchen.data.firebase.RecipeViewModel;
 import com.example.kitchen.data.firebase.models.RecipeModel;
 import com.example.kitchen.data.local.KitchenViewModel;
 import com.example.kitchen.data.local.entities.Recipe;
+import com.example.kitchen.fragments.FragmentScrollListener;
 import com.example.kitchen.fragments.MealBoardFragment;
 import com.example.kitchen.fragments.NotebookFragment;
 import com.example.kitchen.fragments.RecipesFragment;
@@ -44,7 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, RecipeClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, RecipeClickListener, FragmentScrollListener {
     private static final String KEY_NAV_INDEX = "navigator-index-key";
     private static final String KEY_RECIPES_FRAG = "recipes-fragment-key";
     private static final String KEY_NOTEBOOK_FRAG = "notebook-fragment-key";
@@ -297,5 +298,15 @@ public class MainActivity extends AppCompatActivity
         intent.putExtra(AppConstants.EXTRA_RECIPE, recipe);
         intent.putExtra(AppConstants.EXTRA_EDITABLE, isEditable);
         startActivity(intent);
+    }
+
+    @Override
+    public void onScrollDown() {
+        mFab.hide();
+    }
+
+    @Override
+    public void onScrollUp() {
+        mFab.show();
     }
 }
