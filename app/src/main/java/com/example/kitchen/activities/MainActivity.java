@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity
     private static final String KEY_NOTEBOOK_FRAG = "notebook-fragment-key";
     private static final String KEY_MEAL_BOARD_FRAG = "meal-board-fragment-key";
     private FloatingActionButton mFab;
+    private ProgressBar progressBar;
     private Bundle mRecipesFragmentSavedState;
     private Bundle mNotebookFragmentSavedState;
     private Bundle mMealBoardFragmentSavedState;
@@ -87,6 +89,8 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+
+        progressBar = findViewById(R.id.progress_bar_recipes_fragment);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -138,6 +142,7 @@ public class MainActivity extends AppCompatActivity
         switch (mNavigatorIndex) {
             case 0:
                 mFab.show();
+                progressBar.setVisibility(View.VISIBLE);
                 recipeViewModel.getDataSnapshotLiveData().observe(this, new Observer<DataSnapshot>() {
                     @Override
                     public void onChanged(@Nullable DataSnapshot dataSnapshot) {
@@ -166,6 +171,7 @@ public class MainActivity extends AppCompatActivity
                             }
                         }
                         showRecipes(recipes);
+                        progressBar.setVisibility(View.GONE);
                     }
                 });
                 break;

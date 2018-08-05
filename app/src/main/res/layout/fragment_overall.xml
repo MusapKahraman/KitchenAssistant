@@ -84,7 +84,7 @@
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <ImageButton
-                    android:id="@+id/btn_publish"
+                    android:id="@+id/btn_publish_recipe"
                     android:layout_width="@dimen/list_button_size"
                     android:layout_height="@dimen/list_button_size"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
@@ -95,7 +95,7 @@
                     app:layout_constraintStart_toStartOf="@+id/btn_rotate" />
 
                 <ProgressBar
-                    android:id="@+id/progress_bar"
+                    android:id="@+id/progress_bar_publish_recipe"
                     android:layout_width="@dimen/list_button_size"
                     android:layout_height="@dimen/list_button_size"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"

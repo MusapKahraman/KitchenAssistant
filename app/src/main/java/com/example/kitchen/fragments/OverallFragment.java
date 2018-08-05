@@ -169,7 +169,7 @@ public class OverallFragment extends Fragment {
         else
             rotate.setVisibility(View.VISIBLE);
 
-        publishButton = mRootView.findViewById(R.id.btn_publish);
+        publishButton = mRootView.findViewById(R.id.btn_publish_recipe);
         publishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,7 +177,7 @@ public class OverallFragment extends Fragment {
             }
         });
 
-        progressBar = mRootView.findViewById(R.id.progress_bar);
+        progressBar = mRootView.findViewById(R.id.progress_bar_publish_recipe);
         mTitleView = mRootView.findViewById(R.id.text_edit_title);
         mTitleView.setText(mRecipe.title);
 
