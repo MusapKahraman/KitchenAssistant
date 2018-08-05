@@ -10,6 +10,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.kitchen.R;
@@ -40,7 +41,11 @@ public class RecipeEditActivity extends AppCompatActivity implements PictureDial
             mRecipe = getIntent().getParcelableExtra(AppConstants.EXTRA_RECIPE);
         }
         if (mRecipe == null) {
-            mRecipe = new Recipe(getString(R.string.new_recipe), new Date().getTime());
+            mRecipe = new Recipe(new Date().getTime());
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setTitle(getString(R.string.new_recipe));
+            }
         }
         updateFragments();
     }

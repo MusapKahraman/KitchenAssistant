@@ -68,7 +68,6 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             // This is an existing user.
                             intent = new Intent(this, MainActivity.class);
-                            intent.putExtra("my_token", idpResponse.getIdpToken());
                         }
                         startActivity(intent);
                         finish();

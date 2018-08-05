@@ -2,7 +2,9 @@ package com.example.kitchen.activities;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -52,7 +54,7 @@ public class MainActivity extends AppCompatActivity
     private int mNavigatorIndex;
     private KitchenViewModel kitchenViewModel;
     private RecipeViewModel recipeViewModel;
-
+    private SharedPreferences sharedPref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        sharedPref = getPreferences(Context.MODE_PRIVATE);
         kitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
         recipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
 
@@ -87,6 +90,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putInt(KEY_NAV_INDEX, mNavigatorIndex);
+                editor.apply();
                 changeContent();
             }
         };
@@ -111,9 +117,6 @@ public class MainActivity extends AppCompatActivity
             mRecipesFragmentSavedState = savedInstanceState.getBundle(KEY_RECIPES_FRAG);
             mNotebookFragmentSavedState = savedInstanceState.getBundle(KEY_NOTEBOOK_FRAG);
             mMealBoardFragmentSavedState = savedInstanceState.getBundle(KEY_MEAL_BOARD_FRAG);
-            mNavigatorIndex = savedInstanceState.getInt(KEY_NAV_INDEX);
-        } else if (getIntent() != null) {
-            mNavigatorIndex = getIntent().getIntExtra(AppConstants.EXTRA_NAV_INDEX, 0);
         }
         changeContent();
     }
@@ -124,10 +127,10 @@ public class MainActivity extends AppCompatActivity
         outState.putBundle(KEY_RECIPES_FRAG, mRecipesFragmentSavedState);
         outState.putBundle(KEY_NOTEBOOK_FRAG, mNotebookFragmentSavedState);
         outState.putBundle(KEY_MEAL_BOARD_FRAG, mMealBoardFragmentSavedState);
-        outState.putInt(KEY_NAV_INDEX, mNavigatorIndex);
     }
 
     private void changeContent() {
+        mNavigatorIndex = sharedPref.getInt(KEY_NAV_INDEX, 0);
         switch (mNavigatorIndex) {
             case 0:
                 mFab.show();

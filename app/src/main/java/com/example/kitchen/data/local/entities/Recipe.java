@@ -40,8 +40,8 @@ public class Recipe implements Parcelable {
     }
 
     @Ignore
-    public Recipe(@NonNull String title, long timeStamp) {
-        this.title = title;
+    public Recipe(long timeStamp) {
+        this.title = "";
         this.photoUrl = "";
         this.servings = 1;
         this.prepTime = 0;

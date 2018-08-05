@@ -7,7 +7,6 @@ public class AppConstants {
     public static final String KEY_RECIPES = "recipes-list-key";
     // Intent extras
     public static final String EXTRA_RECIPE = "recipe-intent-extra";
-    public static final String EXTRA_NAV_INDEX = "navigator-index-intent-extra";
     public static final String EXTRA_EDITABLE = "recipe-editable";
     // Request codes
     public static final int REQUEST_GALLERY = 1;

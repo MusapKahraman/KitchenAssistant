@@ -1,5 +1,6 @@
 package com.example.kitchen.activities;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -22,14 +23,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.kitchen.R;
+import com.example.kitchen.data.local.KitchenViewModel;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.utility.AppConstants;
-
-import java.util.Date;
 
 public class RecipeDetailActivity extends AppCompatActivity {
 
     private static final String KEY_SERVINGS = "servings-key";
+    private Recipe mRecipe;
     private int mServings;
     private AppBarLayout mAppBarLayout;
 
@@ -38,25 +39,26 @@ public class RecipeDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
 
+        boolean isEditable;
+        if (getIntent() != null) {
+            mRecipe = getIntent().getParcelableExtra(AppConstants.EXTRA_RECIPE);
+            isEditable = getIntent().getBooleanExtra(AppConstants.EXTRA_EDITABLE, false);
+        } else {
+            return;
+        }
+
         mAppBarLayout = findViewById(R.id.app_bar);
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        boolean isEditable = false;
-        Recipe recipe = new Recipe(getString(R.string.new_recipe), new Date().getTime());
-        if (getIntent() != null) {
-            recipe = getIntent().getParcelableExtra(AppConstants.EXTRA_RECIPE);
-            isEditable = getIntent().getBooleanExtra(AppConstants.EXTRA_EDITABLE, false);
-        }
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             // Change ActionBar title as the name of the recipe.
-            actionBar.setTitle(recipe.title);
+            actionBar.setTitle(mRecipe.title);
         }
         ImageView recipeImageView = findViewById(R.id.iv_recipe_image);
-        String url = recipe.photoUrl;
+        String url = mRecipe.photoUrl;
         if (url != null && url.length() != 0) {
             RequestOptions options = new RequestOptions();
             Glide.with(this).load(url).apply(options.centerCrop()).into(recipeImageView);
@@ -67,6 +69,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(RecipeDetailActivity.this, RecipeEditActivity.class);
+                intent.putExtra(AppConstants.EXTRA_RECIPE, mRecipe);
                 startActivity(intent);
                 finish();
             }
@@ -74,19 +77,19 @@ public class RecipeDetailActivity extends AppCompatActivity {
         if (!isEditable) {
             fab.setVisibility(View.GONE);
             TextView writerView = findViewById(R.id.tv_recipe_writer);
-            writerView.setText(recipe.writer);
+            writerView.setText(mRecipe.writer);
         }
 
         TextView courseTextView = findViewById(R.id.tv_course);
-        courseTextView.setText(recipe.course);
+        courseTextView.setText(mRecipe.course);
         TextView cuisineTextView = findViewById(R.id.tv_cuisine);
-        cuisineTextView.setText(recipe.cuisine);
+        cuisineTextView.setText(mRecipe.cuisine);
         TextView prepTimeTextView = findViewById(R.id.tv_prep_time);
-        prepTimeTextView.setText(String.valueOf(recipe.prepTime));
+        prepTimeTextView.setText(String.valueOf(mRecipe.prepTime));
         TextView cookTimeTextView = findViewById(R.id.tv_cook_time);
-        cookTimeTextView.setText(String.valueOf(recipe.cookTime));
+        cookTimeTextView.setText(String.valueOf(mRecipe.cookTime));
         if (savedInstanceState == null) {
-            mServings = recipe.servings;
+            mServings = mRecipe.servings;
         } else {
             mServings = savedInstanceState.getInt(KEY_SERVINGS);
         }
@@ -168,7 +171,9 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 Snackbar.make(mAppBarLayout, "Boarding...", Snackbar.LENGTH_SHORT).show();
                 return true;
             case R.id.app_bar_bookmark:
-                Snackbar.make(mAppBarLayout, "Bookmarking...: ", Snackbar.LENGTH_SHORT).show();
+                KitchenViewModel viewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
+                viewModel.insertRecipes(mRecipe);
+                Snackbar.make(mAppBarLayout, R.string.recipe_bookmarked, Snackbar.LENGTH_SHORT).show();
                 return true;
             case R.id.app_bar_share:
                 Snackbar.make(mAppBarLayout, "Sharing...", Snackbar.LENGTH_SHORT).show();
