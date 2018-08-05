@@ -29,6 +29,7 @@ public class NotebookFragment extends Fragment {
     private static final String TAG = NotebookFragment.class.getSimpleName();
     private static final String LAYOUT_STATE = "state";
     private static final String SEARCH_QUERY = "search-query";
+    private Context mContext;
     private FragmentScrollListener fragmentScrollListener;
     private RecipeClickListener mClickListener;
     private StaggeredGridLayoutManager mLayoutManager;
@@ -43,6 +44,7 @@ public class NotebookFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mContext = context;
         if (context instanceof RecipeClickListener) {
             mClickListener = (RecipeClickListener) context;
         } else {
@@ -74,7 +76,7 @@ public class NotebookFragment extends Fragment {
         }
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setHasFixedSize(true);
-        mAdapter = new NotebookAdapter(mClickListener);
+        mAdapter = new NotebookAdapter(mContext, mClickListener);
         recyclerView.setAdapter(mAdapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

@@ -1,6 +1,9 @@
 package com.example.kitchen.adapters;
 
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.CardView;
@@ -17,6 +20,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.kitchen.R;
+import com.example.kitchen.data.local.KitchenViewModel;
 import com.example.kitchen.data.local.entities.Recipe;
 
 import java.util.ArrayList;
@@ -28,6 +32,7 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
     private List<Recipe> mRecipes;
     private List<Recipe> mFilteredRecipes;
     private boolean mMultiSelect = false;
+    private Context mContext;
     private final ActionMode.Callback mActionModeCallbacks = new ActionMode.Callback() {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -45,7 +50,14 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             if (item.getItemId() == 0) {
                 for (Recipe recipe : mSelectedRecipes) {
+                    int position = mRecipes.indexOf(recipe);
                     mRecipes.remove(recipe);
+                    if (mContext instanceof FragmentActivity) {
+                        FragmentActivity activity = (FragmentActivity) mContext;
+                        KitchenViewModel kitchenViewModel = ViewModelProviders.of(activity).get(KitchenViewModel.class);
+                        kitchenViewModel.deleteRecipes(recipe);
+                    }
+                    notifyItemRemoved(position);
                 }
             }
             mode.finish();
@@ -60,7 +72,8 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
         }
     };
 
-    public NotebookAdapter(RecipeClickListener recipeClickListener) {
+    public NotebookAdapter(Context context, RecipeClickListener recipeClickListener) {
+        mContext = context;
         mRecipeClickListener = recipeClickListener;
     }
 
