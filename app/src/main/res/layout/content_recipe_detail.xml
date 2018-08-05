@@ -161,26 +161,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btn_servings_increment" />
 
-        <TextView
-            android:id="@+id/label_ingredients"
-            style="@style/DataLabels"
+        <LinearLayout
+            android:id="@+id/container_ingredients"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="@string/ingredients"
+            android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider_ingredients" />
+            app:layout_constraintTop_toBottomOf="@+id/divider_ingredients">
 
-        <TextView
-            android:id="@+id/tv_ingredients"
-            style="@style/DataTexts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/space_one_unit"
-            android:layout_marginTop="@dimen/space_one_unit"
-            android:text="1 cup of coffee"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/label_ingredients" />
+            <TextView
+                android:id="@+id/label_ingredients"
+                style="@style/DataLabels"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="@string/ingredients" />
+        </LinearLayout>
 
         <View
             android:id="@+id/divider_steps"
@@ -190,28 +186,24 @@
             android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_ingredients" />
+            app:layout_constraintTop_toBottomOf="@id/container_ingredients" />
 
-        <TextView
-            android:id="@+id/label_steps"
-            style="@style/DataLabels"
+        <LinearLayout
+            android:id="@+id/container_steps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="@string/directions"
+            android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider_steps" />
+            app:layout_constraintTop_toBottomOf="@+id/divider_steps">
 
-        <TextView
-            android:id="@+id/tv_steps"
-            style="@style/DataTexts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/space_one_unit"
-            android:layout_marginTop="@dimen/space_one_unit"
-            android:text="1. Pour a glass of water into the bowl."
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/label_steps" />
+            <TextView
+                android:id="@+id/label_steps"
+                style="@style/DataLabels"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="@string/directions" />
+        </LinearLayout>
 
         <View
             android:id="@+id/divider_rating"
@@ -221,7 +213,7 @@
             android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_steps" />
+            app:layout_constraintTop_toBottomOf="@id/container_steps" />
 
         <TextView
             android:id="@+id/label_rating"

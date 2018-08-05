@@ -66,7 +66,7 @@ public class RecipesFragment extends Fragment {
         if (getResources().getBoolean(R.bool.landscape)) {
             mLayoutManager = new StaggeredGridLayoutManager(1, RecyclerView.HORIZONTAL);
         } else {
-            mLayoutManager = new StaggeredGridLayoutManager(2, RecyclerView.VERTICAL);
+            mLayoutManager = new StaggeredGridLayoutManager(1, RecyclerView.VERTICAL);
         }
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setHasFixedSize(true);

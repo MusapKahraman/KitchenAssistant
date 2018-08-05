@@ -8,12 +8,14 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -124,6 +126,25 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 Snackbar.make(mAppBarLayout, "Finished.", Snackbar.LENGTH_SHORT).show();
             }
         });
+
+        LinearLayout ingredientListLayout = findViewById(R.id.container_ingredients);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        for (int x = 0; x < 9; x++) {
+            View view = inflater.inflate(R.layout.item_ingredient, ingredientListLayout, false);
+            TextView ingredientView = view.findViewById(R.id.tv_ingredient);
+            ingredientView.setText("Wwwwwwww wwwwwwwwwww  ww");
+            ingredientListLayout.addView(view);
+        }
+
+        LinearLayout stepListLayout = findViewById(R.id.container_steps);
+        for (int x = 0; x < 99; x++) {
+            View view = inflater.inflate(R.layout.item_step, stepListLayout, false);
+            TextView stepNumberView = view.findViewById(R.id.tv_step_number);
+            stepNumberView.setText(String.valueOf(x + 1));
+            TextView stepView = view.findViewById(R.id.tv_step);
+            stepView.setText("Wwwwwwww wwwwwwwwwww wwwwwwwwwwww wwwwwwwwwwww wwwwwwwwwwww wwwwwwwwwwww wwwwwwwwwwww wwwwww wwwwwwww wwwwwwww ww");
+            stepListLayout.addView(view);
+        }
     }
 
     @Override

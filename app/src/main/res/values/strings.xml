@@ -112,4 +112,5 @@
     <string name="recipe_finished">The meal is ready!</string>
     <string name="decrement">-</string>
     <string name="increment">+</string>
+    <string name="bullet">Bullet</string>
 </resources>

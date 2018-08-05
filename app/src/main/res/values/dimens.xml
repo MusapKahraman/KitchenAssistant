@@ -10,6 +10,7 @@
     <dimen name="data_labels_text_size">16sp</dimen>
     <dimen name="data_texts_text_size">16sp</dimen>
     <dimen name="card_title_text_size">16sp</dimen>
+    <dimen name="bullet_text_size">14sp</dimen>
     <!-- Spaces. -->
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
@@ -40,4 +41,5 @@
     <dimen name="recipe_detail_top_padding">32dp</dimen>
     <dimen name="recipe_detail_button_widths">256dp</dimen>
     <dimen name="recipe_detail_button_heights">48dp</dimen>
+    <dimen name="bullet_size">16dp</dimen>
 </resources>
