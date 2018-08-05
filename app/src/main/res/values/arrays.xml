@@ -17,27 +17,27 @@
         <item>@string/beverage</item>
     </string-array>
     <string-array name="cuisine_array">
-        <item>@string/chinese</item>
-        <item>@string/french</item>
+        <item>@string/turkish</item>
         <item>@string/greek</item>
+        <item>@string/italian</item>
+        <item>@string/french</item>
+        <item>@string/spanish</item>
         <item>@string/indian</item>
         <item>@string/indonesian</item>
-        <item>@string/italian</item>
+        <item>@string/chinese</item>
         <item>@string/japanese</item>
-        <item>@string/lebanese</item>
         <item>@string/mexican</item>
-        <item>@string/spanish</item>
         <item>@string/thai</item>
-        <item>@string/turkish</item>
     </string-array>
     <string-array name="language_array">
+        <item>@string/english</item>
+        <item>@string/turkish</item>
         <item>@string/arabic</item>
         <item>@string/azerbaijani</item>
         <item>@string/bengali</item>
         <item>@string/cantonese</item>
         <item>@string/czech</item>
         <item>@string/dutch</item>
-        <item>@string/english</item>
         <item>@string/french</item>
         <item>@string/german</item>
         <item>@string/greek</item>
@@ -57,7 +57,6 @@
         <item>@string/russian</item>
         <item>@string/spanish</item>
         <item>@string/swedish</item>
-        <item>@string/turkish</item>
         <item>@string/urdu</item>
         <item>@string/ukrainian</item>
         <item>@string/vietnamese</item>

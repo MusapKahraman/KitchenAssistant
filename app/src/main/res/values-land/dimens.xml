@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <bool name="landscape">true</bool>
-    <dimen name="card_image_height">235dp</dimen>
+    <dimen name="card_width">235dp</dimen>
     <dimen name="app_bar_height">300dp</dimen>
 </resources>

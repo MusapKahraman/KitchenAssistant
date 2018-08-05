@@ -21,8 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import java.util.ArrayList;
 
 public class IngredientsFragment extends Fragment {
-    private static final String LOG_TAG = IngredientsFragment.class.getSimpleName();
-    ArrayList<String> mFoods;
+    private ArrayList<String> mFoods;
     private FragmentMessageListener mMessageListener;
 
     public IngredientsFragment() {

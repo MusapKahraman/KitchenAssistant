@@ -5,6 +5,7 @@
     <integer name="max_length_servings">2</integer>
     <integer name="max_length_cook_time">3</integer>
     <!-- Text sizes. -->
+    <dimen name="card_cook_time_text_size">13sp</dimen>
     <dimen name="edit_recipe_text_size">14sp</dimen>
     <dimen name="spinner_headers_text_size">12sp</dimen>
     <dimen name="data_labels_text_size">16sp</dimen>
@@ -25,20 +26,15 @@
     <dimen name="app_bar_height">360dp</dimen>
     <dimen name="nav_header_user_image_size">72dp</dimen>
     <dimen name="nav_header_user_image_corner">36dp</dimen>
-    <dimen name="card_width">235dp</dimen>
     <dimen name="card_height">315dp</dimen>
-    <dimen name="card_image_height">200dp</dimen>
     <dimen name="edit_image_size">250dp</dimen>
-    <dimen name="card_detail_size">13sp</dimen>
     <dimen name="card_timer_icon_size">20dp</dimen>
     <dimen name="list_item_height">60dp</dimen>
     <dimen name="list_item_image_size">48dp</dimen>
     <dimen name="list_button_size">48dp</dimen>
     <dimen name="tab_widget_child_width">50dp</dimen>
-    <dimen name="spinner_width">170dp</dimen>
+    <dimen name="spinner_width">140dp</dimen>
     <dimen name="recipe_overall_divider_length">200dp</dimen>
-    <dimen name="quarter_width">80dp</dimen>
-    <dimen name="recipe_detail_top_padding">32dp</dimen>
     <dimen name="recipe_detail_button_widths">256dp</dimen>
     <dimen name="recipe_detail_button_heights">48dp</dimen>
     <dimen name="bullet_size">16dp</dimen>

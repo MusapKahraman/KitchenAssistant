@@ -121,7 +121,7 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
 
         private RecipeCardViewHolder(View itemView) {
             super(itemView);
-            recipeNameTextView = itemView.findViewById(R.id.tv_recipe_name);
+            recipeNameTextView = itemView.findViewById(R.id.tv_recipe_title);
             cookTimeTextView = itemView.findViewById(R.id.tv_card_cook_time);
             recipeImageView = itemView.findViewById(R.id.iv_card_recipe_image);
             ratingBar = itemView.findViewById(R.id.ratingBar);

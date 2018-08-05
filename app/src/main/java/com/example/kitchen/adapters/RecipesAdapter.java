@@ -83,7 +83,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
 
         private RecipeCardViewHolder(View itemView) {
             super(itemView);
-            recipeNameTextView = itemView.findViewById(R.id.tv_recipe_name);
+            recipeNameTextView = itemView.findViewById(R.id.tv_recipe_title);
             cookTimeTextView = itemView.findViewById(R.id.tv_card_cook_time);
             recipeImageView = itemView.findViewById(R.id.iv_card_recipe_image);
             ratingBar = itemView.findViewById(R.id.ratingBar);
@@ -101,6 +101,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
                 RequestOptions options = new RequestOptions();
                 Glide.with(itemView).load(url).apply(options.centerCrop()).into(recipeImageView);
             }
+            ratingBar.setRating(2.5f);
         }
 
         @Override

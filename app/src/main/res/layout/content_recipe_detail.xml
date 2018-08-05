@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:paddingEnd="@dimen/activity_horizontal_margin"
     android:paddingStart="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/recipe_detail_top_padding"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activities.RecipeDetailActivity"
     tools:showIn="@layout/activity_recipe_detail">
@@ -16,85 +15,77 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/label_cuisine"
-            style="@style/DataLabels"
-            android:layout_width="@dimen/quarter_width"
-            android:layout_height="wrap_content"
-            android:text="@string/cuisine"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_cuisine" />
-
-        <TextView
-            android:id="@+id/tv_cuisine"
-            style="@style/DataTexts"
-            android:layout_width="@dimen/quarter_width"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/space_one_unit"
-            app:layout_constraintBottom_toBottomOf="@+id/label_prep_time"
-            app:layout_constraintStart_toEndOf="@id/label_cuisine"
-            app:layout_constraintTop_toTopOf="@+id/label_prep_time" />
-
-        <TextView
-            android:id="@+id/label_course"
-            style="@style/DataLabels"
-            android:layout_width="@dimen/quarter_width"
-            android:layout_height="wrap_content"
-            android:text="@string/course"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_course" />
-
-        <TextView
-            android:id="@+id/tv_course"
-            style="@style/DataTexts"
-            android:layout_width="@dimen/quarter_width"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/space_one_unit"
-            app:layout_constraintBottom_toBottomOf="@+id/label_cook_time"
-            app:layout_constraintStart_toEndOf="@+id/label_course"
-            app:layout_constraintTop_toTopOf="@+id/label_cook_time" />
-
-        <TextView
             android:id="@+id/label_prep_time"
             style="@style/DataLabels"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/space_one_unit"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:text="@string/prep_time_min"
-            app:layout_constraintEnd_toStartOf="@id/tv_prep_time"
-            app:layout_constraintStart_toEndOf="@+id/tv_cuisine"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_prep_time"
-            style="@style/DataTexts"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/label_prep_time"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/label_prep_time" />
 
         <TextView
             android:id="@+id/label_cook_time"
             style="@style/DataLabels"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/space_one_unit"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:text="@string/cook_time_min"
-            app:layout_constraintEnd_toStartOf="@+id/tv_cook_time"
-            app:layout_constraintStart_toEndOf="@+id/tv_course"
-            app:layout_constraintTop_toBottomOf="@+id/label_prep_time" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/label_prep_time" />
+
+        <TextView
+            android:id="@+id/label_course"
+            style="@style/DataLabels"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/course"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_cook_time" />
+
+        <TextView
+            android:id="@+id/label_cuisine"
+            style="@style/DataLabels"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/cuisine"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_course" />
+
+        <TextView
+            android:id="@+id/tv_prep_time"
+            style="@style/DataTexts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            app:layout_constraintStart_toEndOf="@id/label_prep_time"
+            app:layout_constraintTop_toTopOf="@id/label_prep_time" />
 
         <TextView
             android:id="@+id/tv_cook_time"
             style="@style/DataTexts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/label_cook_time"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/label_cook_time" />
+            app:layout_constraintStart_toStartOf="@id/tv_prep_time"
+            app:layout_constraintTop_toTopOf="@id/label_cook_time" />
+
+        <TextView
+            android:id="@+id/tv_course"
+            style="@style/DataTexts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/tv_prep_time"
+            app:layout_constraintTop_toTopOf="@id/label_course" />
+
+        <TextView
+            android:id="@+id/tv_cuisine"
+            style="@style/DataTexts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/tv_prep_time"
+            app:layout_constraintTop_toTopOf="@+id/label_cuisine" />
 
         <View
             android:id="@+id/divider_servings_up"
@@ -104,7 +95,7 @@
             android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/label_cook_time" />
+            app:layout_constraintTop_toBottomOf="@id/label_cuisine" />
 
         <TextView
             android:id="@+id/label_servings"

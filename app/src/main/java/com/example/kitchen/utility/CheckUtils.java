@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-public class CheckUtils {
+class CheckUtils {
     /**
      * Checks if the user is online
      *
