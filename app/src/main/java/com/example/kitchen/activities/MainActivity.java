@@ -164,9 +164,9 @@ public class MainActivity extends AppCompatActivity
                                     int count = recipe.ratingCount;
                                     float rating = 0;
                                     if (count != 0) rating = (float) total / (float) count;
-                                    recipes.add(new Recipe(recipe.title, recipe.photoUrl, recipe.prepTime, recipe.cookTime,
-                                            recipe.language, recipe.cuisine, recipe.course, recipe.writer, recipe.servings,
-                                            0, recipeSnapshot.getKey(), rating));
+                                    recipes.add(new Recipe(recipe.title, recipe.imageUrl, recipe.prepTime, recipe.cookTime,
+                                            recipe.language, recipe.cuisine, recipe.course, recipe.writerUid, recipe.writerName,
+                                            recipe.servings, 0, recipeSnapshot.getKey(), rating));
                                 }
                             }
                         }

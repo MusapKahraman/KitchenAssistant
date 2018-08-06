@@ -15,6 +15,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.kitchen.R;
 import com.example.kitchen.data.local.entities.Recipe;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +67,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
         if (!charString.isEmpty()) {
             List<Recipe> filteredList = new ArrayList<>();
             for (Recipe row : mRecipes) {
-                if (row.title.toLowerCase().contains(charString.toLowerCase()) || row.writer.contains(charSequence)) {
+                if (row.title.toLowerCase().contains(charString.toLowerCase()) || row.writerUid.contains(charSequence)) {
                     filteredList.add(row);
                 }
             }
@@ -98,7 +100,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
             int totalTime = current.cookTime + current.prepTime;
             String cookTime = String.format(itemView.getResources().getString(R.string.minutes_abbreviation), totalTime);
             cookTimeTextView.setText(cookTime);
-            String url = current.photoUrl;
+            String url = current.imagePath;
             if (url != null && url.length() != 0) {
                 RequestOptions options = new RequestOptions()
                         .centerCrop()
@@ -116,7 +118,12 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
 
         @Override
         public void onClick(View v) {
-            mRecipeClickListener.onRecipeClick(current, false);
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            boolean isEditable = false;
+            if (current.writerUid != null && user != null) {
+                isEditable = current.writerUid.equals(user.getUid());
+            }
+            mRecipeClickListener.onRecipeClick(current, isEditable);
         }
     }
 }

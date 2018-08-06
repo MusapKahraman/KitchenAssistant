@@ -68,7 +68,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
             actionBar.setTitle(mRecipe.title);
         }
         ImageView recipeImageView = findViewById(R.id.iv_recipe_image);
-        String url = mRecipe.photoUrl;
+        String url = mRecipe.imagePath;
         if (url != null && url.length() != 0) {
             RequestOptions options = new RequestOptions()
                     .centerCrop()
@@ -113,7 +113,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
         if (!isEditable) {
             fab.setVisibility(View.GONE);
             TextView writerView = findViewById(R.id.tv_recipe_writer);
-            writerView.setText(mRecipe.writer);
+            writerView.setText(mRecipe.writerName);
         } else {
             ratingBar.setVisibility(View.GONE);
             ratingLabel.setVisibility(View.GONE);

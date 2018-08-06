@@ -32,10 +32,10 @@ public class RecipeViewModel extends ViewModel {
     }
 
     public String writeNewRecipe(String title, String photoUrl, int servings, int prepTime, int cookTime,
-                                 String language, String cuisine, String course, String writer) {
+                                 String language, String cuisine, String course, String writerUid, String writerName) {
 
         String key = RECIPE_REF.push().getKey();
-        RecipeModel recipe = new RecipeModel(title, photoUrl, servings, prepTime, cookTime, language, cuisine, course, writer);
+        RecipeModel recipe = new RecipeModel(title, photoUrl, servings, prepTime, cookTime, language, cuisine, course, writerUid, writerName);
         if (key != null)
             RECIPE_REF.child(key).setValue(recipe);
 

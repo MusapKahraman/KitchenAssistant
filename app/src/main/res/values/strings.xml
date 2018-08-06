@@ -114,6 +114,7 @@
     <string name="increment">+</string>
     <string name="bullet">Bullet</string>
     <string name="recipe_bookmarked">Recipe is saved in the notebook.</string>
-    <string name="publish_succesful">Recipe is now public.</string>
+    <string name="publish_successful">Recipe is now public.</string>
     <string name="publishing">Publishing recipe.</string>
+    <string name="missing_picture">Not published due to missing picture.</string>
 </resources>

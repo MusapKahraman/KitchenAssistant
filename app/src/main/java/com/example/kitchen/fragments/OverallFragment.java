@@ -68,8 +68,8 @@ public class OverallFragment extends Fragment {
     private Spinner courseSpinner;
     private Spinner cuisineSpinner;
     private Spinner languageSpinner;
-    private ImageButton publishButton;
-    private ProgressBar progressBar;
+    private ImageButton mPublishButton;
+    private ProgressBar mProgressBar;
     private Recipe mRecipe;
     private boolean mDoNotRequestPermission;
     // Deal with write permission to external storage in Glide
@@ -143,13 +143,13 @@ public class OverallFragment extends Fragment {
             }
         }
 
-        if (mRecipe != null && !TextUtils.isEmpty(mRecipe.photoUrl)) {
+        if (mRecipe != null && !TextUtils.isEmpty(mRecipe.imagePath)) {
             int size = getResources().getInteger(R.integer.image_size_px);
             RequestOptions options = new RequestOptions()
                     .centerCrop()
                     .override(size);
             Glide.with(mContext)
-                    .load(mRecipe.photoUrl)
+                    .load(mRecipe.imagePath)
                     .listener(requestListener)
                     .apply(options)
                     .into(mImageView);
@@ -169,15 +169,15 @@ public class OverallFragment extends Fragment {
         else
             rotate.setVisibility(View.VISIBLE);
 
-        publishButton = mRootView.findViewById(R.id.btn_publish_recipe);
-        publishButton.setOnClickListener(new View.OnClickListener() {
+        mPublishButton = mRootView.findViewById(R.id.btn_publish_recipe);
+        mPublishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 publishRecipe();
             }
         });
 
-        progressBar = mRootView.findViewById(R.id.progress_bar_publish_recipe);
+        mProgressBar = mRootView.findViewById(R.id.progress_bar_publish_recipe);
         mTitleView = mRootView.findViewById(R.id.text_edit_title);
         mTitleView.setText(mRecipe.title);
 
@@ -228,6 +228,48 @@ public class OverallFragment extends Fragment {
         outState.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
     }
 
+    private String validateRecipeTitle(String title) {
+        // Separate each character of the input title.
+        char[] chars = title.toCharArray();
+        // Empty outcome string.
+        title = "";
+        // Reserve a little box for preventing adjacent spaces.
+        char previous = '.';
+        // For each character...
+        for (char aChar : chars) {
+            // Allow letters and spaces; prevent adjacent spaces.
+            if (Character.isLetter(aChar) || (aChar == ' ' && previous != ' ')) {
+                title = title.concat(String.valueOf(aChar));
+                previous = aChar;
+            }
+        }
+        // Delete surrounding spaces and make all characters lower case.
+        title = title.trim().toLowerCase();
+        // Separate each word.
+        String[] words = title.split(" ");
+        // Empty outcome string.
+        title = "";
+        // For each word...
+        for (int i = 0; i < words.length; i++) {
+            // Separate each character.
+            chars = words[i].toCharArray();
+            // For each character...
+            for (int j = 0; j < chars.length; j++) {
+                // Make first letters of each word a capital letter.
+                // There is not any one-letter word to be a capital letter in the middle of a sentence.
+                if ((i == 0 && j == 0) || (i != 0 && j == 0 && chars.length > 1)) {
+                    chars[j] = Character.toUpperCase(chars[j]);
+                }
+            }
+            // Combine filtered characters.
+            title = title.concat(String.valueOf(chars));
+            if (i != words.length - 1) {
+                title = title.concat(" ");
+            }
+        }
+        return title;
+    }
+
     private boolean saveRecipe() {
         String title = mTitleView.getText().toString();
         // Do not save if no title is provided for the recipe.
@@ -236,28 +278,14 @@ public class OverallFragment extends Fragment {
             mTitleView.setError(getString(R.string.recipe_title_required));
             return false;
         }
-        title = title.trim().toLowerCase();
-        String[] words = title.split(" ");
-        title = "";
-        for (int j = 0; j < words.length; j++) {
-            char[] chars = words[j].toCharArray();
-            for (int i = 0; i < chars.length; i++) {
-                if (i == 0) {
-                    chars[i] = Character.toUpperCase(chars[i]);
-                }
-            }
-            title = title.concat(String.valueOf(chars));
-            if (j != words.length - 1) {
-                title = title.concat(" ");
-            }
-        }
-        mRecipe.title = title;
+        mRecipe.title = validateRecipeTitle(title);
+        mTitleView.setText(mRecipe.title);
         // Take the image from the image view.
         BitmapDrawable drawable = (BitmapDrawable) mImageView.getDrawable();
         // Create a new file with the image and change value of mImageFilePath to this file. Then delete the older one.
         if (drawable != null) {
-            File oldFile = new File(mRecipe.photoUrl);
-            mRecipe.photoUrl = BitmapUtils.writeJpegPrivate(mContext, drawable.getBitmap(), title);
+            File oldFile = new File(mRecipe.imagePath);
+            mRecipe.imagePath = BitmapUtils.writeJpegPrivate(mContext, drawable.getBitmap(), title);
             if (!oldFile.getName().equals(title + ".jpg") && oldFile.getAbsolutePath().contains(mContext.getPackageName())) {
                 Boolean deleted = oldFile.delete();
                 if (deleted)
@@ -273,7 +301,8 @@ public class OverallFragment extends Fragment {
         mRecipe.timeStamp = new Date().getTime();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            mRecipe.writer = user.getDisplayName();
+            mRecipe.writerName = user.getDisplayName();
+            mRecipe.writerUid = user.getUid();
         }
         Bundle bundle = new Bundle();
         bundle.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
@@ -287,11 +316,17 @@ public class OverallFragment extends Fragment {
         if (!saveRecipe()) {
             return;
         }
-        publishButton.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
-        Snackbar.make(progressBar, R.string.publishing, Snackbar.LENGTH_SHORT).show();
+        final String path = mRecipe.imagePath;
+        if (path == null || TextUtils.isEmpty(path)) {
+            Log.e(LOG_TAG, getString(R.string.missing_picture));
+            Snackbar.make(mProgressBar, R.string.missing_picture, Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+        mPublishButton.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.VISIBLE);
+        Snackbar.make(mProgressBar, R.string.publishing, Snackbar.LENGTH_SHORT).show();
+        Uri file = Uri.fromFile(new File(path));
         final StorageReference ref = FirebaseStorage.getInstance().getReference("images/" + mRecipe.title + ".jpg");
-        Uri file = Uri.fromFile(new File(mRecipe.photoUrl));
         ref.putFile(file).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -307,14 +342,15 @@ public class OverallFragment extends Fragment {
             public void onComplete(@NonNull Task<Uri> task) {
                 if (task.isSuccessful()) {
                     RecipeViewModel viewModel = ViewModelProviders.of(OverallFragment.this).get(RecipeViewModel.class);
-                    mRecipe.publicKey = viewModel.writeNewRecipe(mRecipe.title, task.getResult().toString(), mRecipe.servings,
-                            mRecipe.prepTime, mRecipe.cookTime, mRecipe.language, mRecipe.cuisine, mRecipe.course, mRecipe.writer);
+                    mRecipe.publicKey = viewModel.writeNewRecipe(mRecipe.title, task.getResult().toString(),
+                            mRecipe.servings, mRecipe.prepTime, mRecipe.cookTime, mRecipe.language,
+                            mRecipe.cuisine, mRecipe.course, mRecipe.writerUid, mRecipe.writerName);
                     KitchenViewModel kitchenViewModel = ViewModelProviders.of(OverallFragment.this).get(KitchenViewModel.class);
                     kitchenViewModel.insertRecipes(mRecipe);
                 }
-                publishButton.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
-                Snackbar.make(progressBar, R.string.publish_succesful, Snackbar.LENGTH_SHORT).show();
+                mPublishButton.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.GONE);
+                Snackbar.make(mProgressBar, R.string.publish_succesful, Snackbar.LENGTH_SHORT).show();
             }
         });
     }
@@ -325,13 +361,13 @@ public class OverallFragment extends Fragment {
             case AppConstants.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
                 if (grantResults.length > 0) {
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        if (mRecipe != null && !TextUtils.isEmpty(mRecipe.photoUrl)) {
+                        if (mRecipe != null && !TextUtils.isEmpty(mRecipe.imagePath)) {
                             int size = getResources().getInteger(R.integer.image_size_px);
                             RequestOptions options = new RequestOptions()
                                     .centerCrop()
                                     .override(size);
                             Glide.with(mContext)
-                                    .load(mRecipe.photoUrl)
+                                    .load(mRecipe.imagePath)
                                     .apply(options)
                                     .into(mImageView);
                         }

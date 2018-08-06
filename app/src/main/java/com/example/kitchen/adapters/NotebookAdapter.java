@@ -116,7 +116,7 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
         if (!charString.isEmpty()) {
             List<Recipe> filteredList = new ArrayList<>();
             for (Recipe row : mRecipes) {
-                if (row.title.toLowerCase().contains(charString.toLowerCase()) || row.writer.contains(charSequence)) {
+                if (row.title.toLowerCase().contains(charString.toLowerCase()) || row.writerName.contains(charSequence)) {
                     filteredList.add(row);
                 }
             }
@@ -150,7 +150,7 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
             int totalTime = current.cookTime + current.prepTime;
             String cookTime = String.format(itemView.getResources().getString(R.string.minutes_abbreviation), totalTime);
             cookTimeTextView.setText(cookTime);
-            String url = current.photoUrl;
+            String url = current.imagePath;
             if (url != null && url.length() != 0) {
                 RequestOptions options = new RequestOptions()
                         .centerCrop()

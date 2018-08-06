@@ -94,7 +94,7 @@ public class RecipeEditActivity extends AppCompatActivity implements PictureDial
             }
             if (photoFile != null) {
                 // File is successfully created
-                mRecipe.photoUrl = photoFile.getAbsolutePath();
+                mRecipe.imagePath = photoFile.getAbsolutePath();
                 Uri photoURI = FileProvider.getUriForFile(this, "com.example.kitchen.fileprovider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, AppConstants.REQUEST_CAMERA);
@@ -132,7 +132,7 @@ public class RecipeEditActivity extends AppCompatActivity implements PictureDial
                         if (cursor != null) {
                             cursor.moveToFirst();
                             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                            mRecipe.photoUrl = cursor.getString(columnIndex);
+                            mRecipe.imagePath = cursor.getString(columnIndex);
                             cursor.close();
                             // Send mImageFilePath to the fragment.
                             updateFragments();

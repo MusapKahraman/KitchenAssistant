@@ -22,14 +22,15 @@ public class Recipe implements Parcelable {
     @PrimaryKey
     @NonNull
     public String title;
-    public String photoUrl;
+    public String imagePath;
     public int servings;
     public int prepTime;
     public int cookTime;
     public String language;
     public String cuisine;
     public String course;
-    public String writer;
+    public String writerUid;
+    public String writerName;
     public long timeStamp;
     public String publicKey;
     public float rating;
@@ -42,30 +43,32 @@ public class Recipe implements Parcelable {
     @Ignore
     public Recipe(long timeStamp) {
         this.title = "";
-        this.photoUrl = "";
+        this.imagePath = "";
         this.servings = 1;
         this.prepTime = 0;
         this.cookTime = 0;
         this.language = "";
         this.cuisine = "";
         this.course = "";
-        this.writer = "";
+        this.writerUid = "";
+        this.writerName = "";
         this.timeStamp = timeStamp;
         this.publicKey = "";
         this.rating = 0;
     }
 
-    public Recipe(@NonNull String title, String photoUrl, int prepTime, int cookTime, String language, String cuisine, String course,
-                  String writer, int servings, long timeStamp, String publicKey, float rating) {
+    public Recipe(@NonNull String title, String imagePath, int prepTime, int cookTime, String language, String cuisine, String course,
+                  String writerUid, String writerName, int servings, long timeStamp, String publicKey, float rating) {
         this.title = title;
-        this.photoUrl = photoUrl;
+        this.imagePath = imagePath;
         this.servings = servings;
         this.prepTime = prepTime;
         this.cookTime = cookTime;
         this.language = language;
         this.cuisine = cuisine;
         this.course = course;
-        this.writer = writer;
+        this.writerUid = writerUid;
+        this.writerName = writerName;
         this.timeStamp = timeStamp;
         this.publicKey = publicKey;
         this.rating = rating;
@@ -73,14 +76,15 @@ public class Recipe implements Parcelable {
 
     private Recipe(Parcel in) {
         title = in.readString();
-        photoUrl = in.readString();
+        imagePath = in.readString();
         servings = in.readInt();
         prepTime = in.readInt();
         cookTime = in.readInt();
         language = in.readString();
         cuisine = in.readString();
         course = in.readString();
-        writer = in.readString();
+        writerUid = in.readString();
+        writerName = in.readString();
         timeStamp = in.readLong();
         publicKey = in.readString();
         rating = in.readFloat();
@@ -94,14 +98,15 @@ public class Recipe implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
-        dest.writeString(photoUrl);
+        dest.writeString(imagePath);
         dest.writeInt(servings);
         dest.writeInt(prepTime);
         dest.writeInt(cookTime);
         dest.writeString(language);
         dest.writeString(cuisine);
         dest.writeString(course);
-        dest.writeString(writer);
+        dest.writeString(writerUid);
+        dest.writeString(writerName);
         dest.writeLong(timeStamp);
         dest.writeString(publicKey);
         dest.writeFloat(rating);
@@ -111,14 +116,15 @@ public class Recipe implements Parcelable {
     public String toString() {
         return super.toString() +
                 "\nname: " + title +
-                "\nphotoUrl: " + photoUrl +
+                "\nimagePath: " + imagePath +
                 "\nservings: " + servings +
                 "\nrecipe_id: " + prepTime +
                 "\nfood_id: " + cookTime +
                 "\nlanguage: " + language +
                 "\ncuisine: " + cuisine +
                 "\ncourse: " + course +
-                "\nwriter: " + writer +
+                "\nwriterUid: " + writerUid +
+                "\nwriterName: " + writerName +
                 "\ntimeStamp: " + timeStamp +
                 "\npublicKey: " + publicKey +
                 "\nrating: " + rating;
