@@ -49,6 +49,7 @@
 
             <RatingBar
                 android:id="@+id/ratingBar"
+                android:theme="@style/RatingBar"
                 style="?android:attr/ratingBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -61,4 +62,9 @@
 
         </android.support.constraint.ConstraintLayout>
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/card_recipe_tint"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </android.support.v7.widget.CardView>

@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#b71c1c</color>
-    <color name="colorPrimaryDark">#3e2723</color>
-    <color name="colorAccent">#ffc400</color>
+    <color name="primary">#009688</color>
+    <color name="primary_dark">#00796B</color>
+    <color name="primary_light">#B2DFDB</color>
+    <color name="accent">#00BCD4</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#757575</color>
+    <color name="rating_stars_active">#ffd600</color>
+    <color name="rating_stars_passive">#9b9b9b</color>
     <color name="tab_text">#FFFFFF</color>
     <color name="btn_text">#FFFFFF</color>
-    <color name="tab_background">#b71c1c</color>
-    <color name="nav_gradient_start">#ff80ab</color>
-    <color name="nav_gradient_center">#b71c1c</color>
-    <color name="nav_gradient_end">#3e2723</color>
-    <color name="selected_card_back">#8d6e63</color>
-    <color name="card_back">#FFFFFF</color>
+    <color name="card_selected_tint">#96646464</color>
+    <color name="card_normal_tint">#00ffffff</color>
     <color name="image_tint_gradient_start">#00ffffff</color>
-    <color name="image_tint_gradient_center">#19000000</color>
-    <color name="image_tint_gradient_end">#64000000</color>
-    <color name="label_text_color">#000000</color>
-    <color name="data_text_color">#000000</color>
-    <color name="card_title_text_color">#000000</color>
+    <color name="image_tint_gradient_center">#32000000</color>
+    <color name="image_tint_gradient_end">#96000000</color>
 </resources>

@@ -6,13 +6,13 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -132,7 +132,7 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
         private final TextView cookTimeTextView;
         private final ImageView recipeImageView;
         private final RatingBar ratingBar;
-        private final CardView recipeCard;
+        private final FrameLayout recipeCardTint;
 
         private RecipeCardViewHolder(View itemView) {
             super(itemView);
@@ -140,7 +140,7 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
             cookTimeTextView = itemView.findViewById(R.id.tv_card_cook_time);
             recipeImageView = itemView.findViewById(R.id.iv_card_recipe_image);
             ratingBar = itemView.findViewById(R.id.ratingBar);
-            recipeCard = itemView.findViewById(R.id.card_recipe);
+            recipeCardTint = itemView.findViewById(R.id.card_recipe_tint);
         }
 
         private void bind(int position) {
@@ -184,9 +184,9 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
             });
 
             if (mSelectedRecipes.contains(current)) {
-                recipeCard.setBackgroundColor(itemView.getResources().getColor(R.color.selected_card_back));
+                recipeCardTint.setBackgroundColor(itemView.getResources().getColor(R.color.card_selected_tint));
             } else {
-                recipeCard.setBackgroundColor(itemView.getResources().getColor(R.color.card_back));
+                recipeCardTint.setBackgroundColor(itemView.getResources().getColor(R.color.card_normal_tint));
             }
 
         }
@@ -195,10 +195,10 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
             if (mMultiSelect) {
                 if (mSelectedRecipes.contains(recipe)) {
                     mSelectedRecipes.remove(recipe);
-                    recipeCard.setBackgroundColor(itemView.getResources().getColor(R.color.card_back));
+                    recipeCardTint.setBackgroundColor(itemView.getResources().getColor(R.color.card_normal_tint));
                 } else {
                     mSelectedRecipes.add(recipe);
-                    recipeCard.setBackgroundColor(itemView.getResources().getColor(R.color.selected_card_back));
+                    recipeCardTint.setBackgroundColor(itemView.getResources().getColor(R.color.card_selected_tint));
                 }
             }
         }
