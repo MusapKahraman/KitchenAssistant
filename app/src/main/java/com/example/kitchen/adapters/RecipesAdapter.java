@@ -83,7 +83,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
         private final TextView cookTimeTextView;
         private final ImageView recipeImageView;
         private final RatingBar ratingBar;
-        private Recipe current;
+        private Recipe mRecipe;
 
         private RecipeCardViewHolder(View itemView) {
             super(itemView);
@@ -95,12 +95,12 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
         }
 
         private void bind(int position) {
-            current = mFilteredRecipes.get(position);
-            recipeNameTextView.setText(current.title);
-            int totalTime = current.cookTime + current.prepTime;
+            mRecipe = mFilteredRecipes.get(position);
+            recipeNameTextView.setText(mRecipe.title);
+            int totalTime = mRecipe.cookTime + mRecipe.prepTime;
             String cookTime = String.format(itemView.getResources().getString(R.string.minutes_abbreviation), totalTime);
             cookTimeTextView.setText(cookTime);
-            String url = current.imagePath;
+            String url = mRecipe.imagePath;
             if (url != null && url.length() != 0) {
                 RequestOptions options = new RequestOptions()
                         .centerCrop()
@@ -113,17 +113,17 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
                         .apply(options)
                         .into(recipeImageView);
             }
-            ratingBar.setRating(current.rating);
+            ratingBar.setRating(mRecipe.rating);
         }
 
         @Override
         public void onClick(View v) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             boolean isEditable = false;
-            if (current.writerUid != null && user != null) {
-                isEditable = current.writerUid.equals(user.getUid());
+            if (mRecipe.writerUid != null && user != null) {
+                isEditable = mRecipe.writerUid.equals(user.getUid());
             }
-            mRecipeClickListener.onRecipeClick(current, isEditable);
+            mRecipeClickListener.onRecipeClick(mRecipe, isEditable);
         }
     }
 }

@@ -38,6 +38,7 @@ import com.example.kitchen.data.local.KitchenViewModel;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.utility.AppConstants;
 import com.example.kitchen.utility.BitmapUtils;
+import com.example.kitchen.utility.CheckUtils;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -228,48 +229,6 @@ public class OverallFragment extends Fragment {
         outState.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
     }
 
-    private String validateRecipeTitle(String title) {
-        // Separate each character of the input title.
-        char[] chars = title.toCharArray();
-        // Empty outcome string.
-        title = "";
-        // Reserve a little box for preventing adjacent spaces.
-        char previous = '.';
-        // For each character...
-        for (char aChar : chars) {
-            // Allow letters and spaces; prevent adjacent spaces.
-            if (Character.isLetter(aChar) || (aChar == ' ' && previous != ' ')) {
-                title = title.concat(String.valueOf(aChar));
-                previous = aChar;
-            }
-        }
-        // Delete surrounding spaces and make all characters lower case.
-        title = title.trim().toLowerCase();
-        // Separate each word.
-        String[] words = title.split(" ");
-        // Empty outcome string.
-        title = "";
-        // For each word...
-        for (int i = 0; i < words.length; i++) {
-            // Separate each character.
-            chars = words[i].toCharArray();
-            // For each character...
-            for (int j = 0; j < chars.length; j++) {
-                // Make first letters of each word a capital letter.
-                // There is not any one-letter word to be a capital letter in the middle of a sentence.
-                if ((i == 0 && j == 0) || (i != 0 && j == 0 && chars.length > 1)) {
-                    chars[j] = Character.toUpperCase(chars[j]);
-                }
-            }
-            // Combine filtered characters.
-            title = title.concat(String.valueOf(chars));
-            if (i != words.length - 1) {
-                title = title.concat(" ");
-            }
-        }
-        return title;
-    }
-
     private boolean saveRecipe() {
         String title = mTitleView.getText().toString();
         // Do not save if no title is provided for the recipe.
@@ -278,7 +237,7 @@ public class OverallFragment extends Fragment {
             mTitleView.setError(getString(R.string.recipe_title_required));
             return false;
         }
-        mRecipe.title = validateRecipeTitle(title);
+        mRecipe.title = CheckUtils.validateRecipeTitle(title);
         mTitleView.setText(mRecipe.title);
         // Take the image from the image view.
         BitmapDrawable drawable = (BitmapDrawable) mImageView.getDrawable();
@@ -317,7 +276,7 @@ public class OverallFragment extends Fragment {
             return;
         }
         final String path = mRecipe.imagePath;
-        if (path == null || TextUtils.isEmpty(path)) {
+        if (TextUtils.isEmpty(path)) {
             Log.e(LOG_TAG, getString(R.string.missing_picture));
             Snackbar.make(mProgressBar, R.string.missing_picture, Snackbar.LENGTH_SHORT).show();
             return;
@@ -325,8 +284,10 @@ public class OverallFragment extends Fragment {
         mPublishButton.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
         Snackbar.make(mProgressBar, R.string.publishing, Snackbar.LENGTH_SHORT).show();
+        final RecipeViewModel viewModel = ViewModelProviders.of(OverallFragment.this).get(RecipeViewModel.class);
+        mRecipe.publicKey = viewModel.postRecipe(mRecipe, "");
         Uri file = Uri.fromFile(new File(path));
-        final StorageReference ref = FirebaseStorage.getInstance().getReference("images/" + mRecipe.title + ".jpg");
+        final StorageReference ref = FirebaseStorage.getInstance().getReference("images/" + mRecipe.publicKey + ".jpg");
         ref.putFile(file).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -334,23 +295,19 @@ public class OverallFragment extends Fragment {
                     //noinspection ConstantConditions
                     throw task.getException();
                 }
-                // Continue with the task to get the download URL
                 return ref.getDownloadUrl();
             }
         }).addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
                 if (task.isSuccessful()) {
-                    RecipeViewModel viewModel = ViewModelProviders.of(OverallFragment.this).get(RecipeViewModel.class);
-                    mRecipe.publicKey = viewModel.writeNewRecipe(mRecipe.title, task.getResult().toString(),
-                            mRecipe.servings, mRecipe.prepTime, mRecipe.cookTime, mRecipe.language,
-                            mRecipe.cuisine, mRecipe.course, mRecipe.writerUid, mRecipe.writerName);
+                    mRecipe.publicKey = viewModel.postRecipe(mRecipe, task.getResult().toString());
                     KitchenViewModel kitchenViewModel = ViewModelProviders.of(OverallFragment.this).get(KitchenViewModel.class);
                     kitchenViewModel.insertRecipes(mRecipe);
                 }
                 mPublishButton.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.GONE);
-                Snackbar.make(mProgressBar, R.string.publish_succesful, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(mProgressBar, R.string.publish_successful, Snackbar.LENGTH_SHORT).show();
             }
         });
     }

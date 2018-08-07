@@ -33,7 +33,5 @@ public class RecipeModel {
         this.course = course;
         this.writerUid = writerUid;
         this.writerName = writerName;
-        this.totalRating = 0;
-        this.ratingCount = 0;
     }
 }
