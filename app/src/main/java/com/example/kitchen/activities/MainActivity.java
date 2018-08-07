@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity
     private static final String KEY_NOTEBOOK_FRAG = "notebook-fragment-key";
     private static final String KEY_MEAL_BOARD_FRAG = "meal-board-fragment-key";
     private FloatingActionButton mFab;
-    private ProgressBar progressBar;
+    private ProgressBar mProgressBar;
     private Bundle mRecipesFragmentSavedState;
     private Bundle mNotebookFragmentSavedState;
     private Bundle mMealBoardFragmentSavedState;
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        progressBar = findViewById(R.id.progress_bar_recipes_fragment);
+        mProgressBar = findViewById(R.id.progress_bar_recipes_fragment);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -138,11 +138,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void changeContent() {
+        mProgressBar.setVisibility(View.GONE);
         mNavigatorIndex = sharedPref.getInt(KEY_NAV_INDEX, 0);
         switch (mNavigatorIndex) {
             case 0:
                 mFab.show();
-                progressBar.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.VISIBLE);
                 recipeViewModel.getDataSnapshotLiveData().observe(this, new Observer<DataSnapshot>() {
                     @Override
                     public void onChanged(@Nullable DataSnapshot dataSnapshot) {
@@ -171,7 +172,7 @@ public class MainActivity extends AppCompatActivity
                             }
                         }
                         showRecipes(recipes);
-                        progressBar.setVisibility(View.GONE);
+                        mProgressBar.setVisibility(View.GONE);
                     }
                 });
                 break;
@@ -305,6 +306,7 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, RecipeDetailActivity.class);
         intent.putExtra(AppConstants.EXTRA_RECIPE, recipe);
         intent.putExtra(AppConstants.EXTRA_EDITABLE, isEditable);
+        intent.putExtra(AppConstants.EXTRA_BOOKABLE, mNavigatorIndex == 0);
         startActivity(intent);
     }
 

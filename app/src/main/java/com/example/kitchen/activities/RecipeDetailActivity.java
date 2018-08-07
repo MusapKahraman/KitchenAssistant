@@ -41,6 +41,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
     private boolean mIsRatingProcessing;
     private AppBarLayout mAppBarLayout;
     private SharedPreferences sharedPref;
+    private boolean mIsBookable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
         if (getIntent() != null) {
             mRecipe = getIntent().getParcelableExtra(AppConstants.EXTRA_RECIPE);
             isEditable = getIntent().getBooleanExtra(AppConstants.EXTRA_EDITABLE, false);
+            mIsBookable = getIntent().getBooleanExtra(AppConstants.EXTRA_BOOKABLE, false);
         } else {
             return;
         }
@@ -192,7 +194,11 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_recipe_detail, menu);
+        if (mIsBookable) {
+            inflater.inflate(R.menu.menu_recipe_detail_bookable, menu);
+        } else {
+            inflater.inflate(R.menu.menu_recipe_detail, menu);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
