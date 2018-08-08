@@ -170,9 +170,8 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
             }
         });
 
+        final LayoutInflater inflater = LayoutInflater.from(this);
         final LinearLayout ingredientListLayout = findViewById(R.id.container_ingredients);
-        LayoutInflater inflater = LayoutInflater.from(this);
-        final View ingredientView = inflater.inflate(R.layout.item_ingredient, ingredientListLayout, false);
         final KitchenViewModel kitchenViewModel = ViewModelProviders.of(RecipeDetailActivity.this).get(KitchenViewModel.class);
         kitchenViewModel.getIngredientsByRecipe(mRecipe.id).observe(this, new Observer<List<Ingredient>>() {
             @Override
@@ -180,10 +179,10 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
                 if (ingredients == null)
                     return;
                 for (Ingredient ingredient : ingredients) {
+                    View ingredientView = inflater.inflate(R.layout.item_ingredient, ingredientListLayout, false);
                     TextView ingredientTextView = ingredientView.findViewById(R.id.tv_ingredient);
                     String text = ingredient.amount + " " + ingredient.amountType + " " + ingredient.food;
                     ingredientTextView.setText(text);
-                    ingredientListLayout.removeAllViews();
                     ingredientListLayout.addView(ingredientView);
                 }
             }

@@ -47,13 +47,27 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         notifyDataSetChanged();
     }
 
-    class IngredientViewHolder extends RecyclerView.ViewHolder {
+    public void removeItem(int position) {
+        mIngredients.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void restoreItem(Ingredient ingredient, int position) {
+        mIngredients.add(position, ingredient);
+        notifyItemInserted(position);
+    }
+
+    public class IngredientViewHolder extends RecyclerView.ViewHolder {
         private Ingredient mIngredient;
         private TextView mTextView;
+        final View viewBackground;
+        final View viewForeground;
 
         private IngredientViewHolder(View itemView) {
             super(itemView);
             mTextView = itemView.findViewById(R.id.tv_ingredient);
+            viewBackground = itemView.findViewById(R.id.swiped_background);
+            viewForeground = itemView.findViewById(R.id.view_foreground);
         }
 
         private void bind(int position) {

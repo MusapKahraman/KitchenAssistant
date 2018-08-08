@@ -15,4 +15,7 @@
     <color name="image_tint_gradient_start">#00ffffff</color>
     <color name="image_tint_gradient_center">#32000000</color>
     <color name="image_tint_gradient_end">#96000000</color>
+    <color name="swiped_list_item_foreground">#FFFFFF</color>
+    <color name="swiped_list_item_background">#a1887f</color>
+    <color name="swiped_list_item_background_text">#fff</color>
 </resources>

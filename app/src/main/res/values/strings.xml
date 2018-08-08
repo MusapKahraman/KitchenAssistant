@@ -149,5 +149,7 @@
     <string name="select_food">Select Food</string>
     <string name="amount">Amount</string>
     <string name="measure">Measure</string>
-    <string name="add_food_hint"><u>Didn\'t find the food?</u></string>
+    <string name="add_food_hint"><u>Cannot find the food?</u></string>
+    <string name="removed_ingredient">%1$s is removed from ingredients!</string>
+    <string name="undo">UNDO</string>
 </resources>
