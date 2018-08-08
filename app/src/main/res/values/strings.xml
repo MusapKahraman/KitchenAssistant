@@ -146,4 +146,8 @@
     <string name="equals_to">equals to</string>
     <string name="add_food">Add Food</string>
     <string name="food_added">%1$s is added to the food dictionary.</string>
+    <string name="select_food">Select Food</string>
+    <string name="amount">Amount</string>
+    <string name="measure">Measure</string>
+    <string name="add_food_hint"><u>Didn\'t find the food?</u></string>
 </resources>

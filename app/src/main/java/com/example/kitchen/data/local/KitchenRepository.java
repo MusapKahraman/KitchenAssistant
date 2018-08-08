@@ -45,8 +45,8 @@ class KitchenRepository {
         return mIngredientsDao.getIngredientsByRecipe(recipeId);
     }
 
-    LiveData<List<Ingredient>> getIngredientsByFood(int foodId) {
-        return mIngredientsDao.getIngredientsByFood(foodId);
+    LiveData<List<Ingredient>> getIngredientsByFood(String food) {
+        return mIngredientsDao.getIngredientsByFood(food);
     }
 
     LiveData<List<Step>> getStepsByRecipe(int recipeId) {
@@ -55,8 +55,8 @@ class KitchenRepository {
 
     // Insert and delete methods need to be run on an asynchronous thread.
 
-    public void insertRecipes(Recipe... recipes) {
-        new InsertRecipeTask(mRecipesDao).execute(recipes);
+    public void insertRecipe(Recipe recipe, LocalDatabaseInsertListener listener) {
+        new InsertRecipeTask(mRecipesDao, listener).execute(recipe);
     }
 
     public void deleteRecipes(Recipe... recipes) {
@@ -81,9 +81,11 @@ class KitchenRepository {
 
     private static class InsertRecipeTask extends AsyncTask<Recipe, Void, Void> {
         private final RecipesDao mAsyncTaskDao;
+        private LocalDatabaseInsertListener listener;
 
-        InsertRecipeTask(RecipesDao dao) {
+        InsertRecipeTask(RecipesDao dao, LocalDatabaseInsertListener listener) {
             mAsyncTaskDao = dao;
+            this.listener = listener;
         }
 
         @Override
@@ -93,6 +95,8 @@ class KitchenRepository {
                     long id = mAsyncTaskDao.insert(recipe);
                     if (id == -1) {
                         mAsyncTaskDao.update(recipe);
+                    } else {
+                        listener.onDataInsert(id);
                     }
                 }
             }

@@ -35,6 +35,7 @@ import com.bumptech.glide.request.target.Target;
 import com.example.kitchen.R;
 import com.example.kitchen.data.firebase.RecipeViewModel;
 import com.example.kitchen.data.local.KitchenViewModel;
+import com.example.kitchen.data.local.LocalDatabaseInsertListener;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.utility.AppConstants;
 import com.example.kitchen.utility.BitmapUtils;
@@ -53,7 +54,7 @@ import java.util.Date;
 
 import static android.support.v4.content.ContextCompat.checkSelfPermission;
 
-public class OverallFragment extends Fragment {
+public class OverallFragment extends Fragment implements LocalDatabaseInsertListener {
     private static final String LOG_TAG = OverallFragment.class.getSimpleName();
     private static final String KEY_IMAGE_ROTATION = "image-rotation";
     private static final String KEY_REQUEST_PERMISSION = "request-permission";
@@ -230,13 +231,10 @@ public class OverallFragment extends Fragment {
     }
 
     private boolean saveRecipe() {
-        String title = mTitleView.getText().toString();
         // Do not save if no title is provided for the recipe.
-        if (TextUtils.isEmpty(title)) {
-            mTitleView.requestFocus();
-            mTitleView.setError(getString(R.string.field_required));
+        if (CheckUtils.isEmptyTextField(mContext, mTitleView))
             return false;
-        }
+        String title = mTitleView.getText().toString();
         mRecipe.title = CheckUtils.validateTitle(title);
         mTitleView.setText(mRecipe.title);
         // Take the image from the image view.
@@ -267,7 +265,7 @@ public class OverallFragment extends Fragment {
         bundle.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
         mMessageListener.onFragmentMessage(0, bundle);
         KitchenViewModel viewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
-        viewModel.insertRecipes(mRecipe);
+        viewModel.insertRecipe(mRecipe, this);
         return true;
     }
 
@@ -303,7 +301,7 @@ public class OverallFragment extends Fragment {
                 if (task.isSuccessful()) {
                     mRecipe.publicKey = viewModel.postRecipe(mRecipe, task.getResult().toString());
                     KitchenViewModel kitchenViewModel = ViewModelProviders.of(OverallFragment.this).get(KitchenViewModel.class);
-                    kitchenViewModel.insertRecipes(mRecipe);
+                    kitchenViewModel.insertRecipe(mRecipe, OverallFragment.this);
                 }
                 mPublishButton.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.GONE);
@@ -341,5 +339,10 @@ public class OverallFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mMessageListener = null;
+    }
+
+    @Override
+    public void onDataInsert(long id) {
+        mRecipe.id = (int) id;
     }
 }

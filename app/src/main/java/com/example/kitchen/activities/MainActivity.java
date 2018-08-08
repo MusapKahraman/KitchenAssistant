@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity
                                     int count = recipe.ratingCount;
                                     float rating = 0;
                                     if (count != 0) rating = (float) total / (float) count;
-                                    recipes.add(new Recipe(recipe.title, recipe.imageUrl, recipe.prepTime, recipe.cookTime,
+                                    recipes.add(new Recipe(0, recipe.title, recipe.imageUrl, recipe.prepTime, recipe.cookTime,
                                             recipe.language, recipe.cuisine, recipe.course, recipe.writerUid, recipe.writerName,
                                             recipe.servings, 0, recipeSnapshot.getKey(), rating));
                                 }
@@ -178,13 +178,10 @@ public class MainActivity extends AppCompatActivity
                 kitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
                     @Override
                     public void onChanged(@Nullable List<Recipe> recipes) {
-                        showNotebook(recipes);
+                        if (recipes != null)
+                            showNotebook(recipes);
                     }
                 });
-                break;
-            case 3:
-                Intent intent = new Intent(MainActivity.this, FoodActivity.class);
-                startActivity(intent);
                 break;
             case 6:
                 kitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
@@ -211,6 +208,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void showNotebook(List<Recipe> recipes) {
+        for (Recipe recipe : recipes)
+            Log.v("MainActivity", recipe.toString());
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.notebook);
         Bundle bundle = new Bundle();

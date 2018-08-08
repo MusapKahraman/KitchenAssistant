@@ -83,4 +83,17 @@
         <item>@string/lb</item>
         <item>@string/kg</item>
     </string-array>
+
+    <string-array name="measurement_array">
+        <item>@string/ml</item>
+        <item>@string/c</item>
+        <item>@string/pt</item>
+        <item>@string/qt</item>
+        <item>@string/l</item>
+        <item>@string/gal</item>
+        <item>@string/g</item>
+        <item>@string/oz</item>
+        <item>@string/lb</item>
+        <item>@string/kg</item>
+    </string-array>
 </resources>

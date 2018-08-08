@@ -1,7 +1,6 @@
 package com.example.kitchen.data.local.entities;
 
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -21,27 +20,23 @@ public class Ingredient implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     public int id;
     public int recipe_id;
-    public int food_id;
-    public float amount;
+    public String food;
+    public int amount;
+    public String amountType;
 
-    @Ignore
-    public Ingredient() {
-        this.recipe_id = 0;
-        this.food_id = 0;
-        this.amount = 0;
-    }
-
-    public Ingredient(int recipe_id, int food_id, float amount) {
+    public Ingredient(int recipe_id, String food, int amount, String amountType) {
         this.recipe_id = recipe_id;
-        this.food_id = food_id;
+        this.food = food;
         this.amount = amount;
+        this.amountType = amountType;
     }
 
     private Ingredient(Parcel in) {
         id = in.readInt();
         recipe_id = in.readInt();
-        food_id = in.readInt();
-        amount = in.readFloat();
+        food = in.readString();
+        amount = in.readInt();
+        amountType = in.readString();
     }
 
     @Override
@@ -53,8 +48,9 @@ public class Ingredient implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeInt(recipe_id);
-        dest.writeInt(food_id);
-        dest.writeFloat(amount);
+        dest.writeString(food);
+        dest.writeInt(amount);
+        dest.writeString(amountType);
     }
 
     @Override
@@ -62,7 +58,8 @@ public class Ingredient implements Parcelable {
         return super.toString() +
                 "\nid: " + id +
                 "\nrecipe_id: " + recipe_id +
-                "\nfood_id: " + food_id +
-                "\namount: " + amount;
+                "\nfood: " + food +
+                "\namount: " + amount +
+                "\namountType: " + amountType;
     }
 }

@@ -38,16 +38,16 @@ public class KitchenViewModel extends AndroidViewModel {
         return mRepository.getIngredientsByRecipe(recipeId);
     }
 
-    public LiveData<List<Ingredient>> getIngredientsByFood(int foodId) {
-        return mRepository.getIngredientsByFood(foodId);
+    public LiveData<List<Ingredient>> getIngredientsByFood(String food) {
+        return mRepository.getIngredientsByFood(food);
     }
 
     public LiveData<List<Step>> getStepsByRecipe(int recipeId) {
         return mRepository.getStepsByRecipe(recipeId);
     }
 
-    public void insertRecipes(Recipe... recipes) {
-        mRepository.insertRecipes(recipes);
+    public void insertRecipe(Recipe recipe, LocalDatabaseInsertListener listener) {
+        mRepository.insertRecipe(recipe, listener);
     }
 
     public void deleteRecipes(Recipe... recipes) {

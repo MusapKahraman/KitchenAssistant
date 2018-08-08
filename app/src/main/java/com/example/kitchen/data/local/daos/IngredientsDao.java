@@ -23,7 +23,7 @@ public interface IngredientsDao {
     @Query("SELECT * from ingredients WHERE recipe_id = :recipeId ORDER BY id")
     LiveData<List<Ingredient>> getIngredientsByRecipe(int recipeId);
 
-    @Query("SELECT * from ingredients WHERE food_id = :foodId ORDER BY recipe_id")
-    LiveData<List<Ingredient>> getIngredientsByFood(int foodId);
+    @Query("SELECT * from ingredients WHERE food = :food ORDER BY recipe_id")
+    LiveData<List<Ingredient>> getIngredientsByFood(String food);
 
 }

@@ -103,6 +103,14 @@
         <item name="android:textColor">@color/primary_text</item>
     </style>
 
+    <style name="ButtonStyleLink">
+        <item name="android:textSize">@dimen/data_texts_text_size</item>
+        <item name="android:textColor">@color/accent</item>
+        <item name="android:layout_height">@dimen/list_button_size</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
     <!--suppress AndroidDomInspection -->
     <style name="RatingBar" parent="Theme.AppCompat">
         <item name="colorControlNormal">@color/rating_stars_passive</item>

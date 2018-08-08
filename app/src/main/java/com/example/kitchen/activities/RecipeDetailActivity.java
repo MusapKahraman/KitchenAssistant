@@ -1,10 +1,12 @@
 package com.example.kitchen.activities;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -29,10 +31,14 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.kitchen.R;
 import com.example.kitchen.data.firebase.RecipeViewModel;
 import com.example.kitchen.data.local.KitchenViewModel;
+import com.example.kitchen.data.local.LocalDatabaseInsertListener;
+import com.example.kitchen.data.local.entities.Ingredient;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.utility.AppConstants;
 
-public class RecipeDetailActivity extends AppCompatActivity implements RecipeViewModel.RatingPostListener {
+import java.util.List;
+
+public class RecipeDetailActivity extends AppCompatActivity implements RecipeViewModel.RatingPostListener, LocalDatabaseInsertListener {
 
     private static final String KEY_SERVINGS = "servings-key";
     private static final String KEY_RATING_TRANSACTION = "rating-transaction-status-key";
@@ -164,23 +170,33 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
             }
         });
 
-        LinearLayout ingredientListLayout = findViewById(R.id.container_ingredients);
+        final LinearLayout ingredientListLayout = findViewById(R.id.container_ingredients);
         LayoutInflater inflater = LayoutInflater.from(this);
-        for (int x = 0; x < 3; x++) {
-            View view = inflater.inflate(R.layout.item_ingredient, ingredientListLayout, false);
-            TextView ingredientView = view.findViewById(R.id.tv_ingredient);
-            ingredientView.setText("Wwwwwwww www");
-            ingredientListLayout.addView(view);
-        }
+        final View ingredientView = inflater.inflate(R.layout.item_ingredient, ingredientListLayout, false);
+        final KitchenViewModel kitchenViewModel = ViewModelProviders.of(RecipeDetailActivity.this).get(KitchenViewModel.class);
+        kitchenViewModel.getIngredientsByRecipe(mRecipe.id).observe(this, new Observer<List<Ingredient>>() {
+            @Override
+            public void onChanged(@Nullable List<Ingredient> ingredients) {
+                if (ingredients == null)
+                    return;
+                for (Ingredient ingredient : ingredients) {
+                    TextView ingredientTextView = ingredientView.findViewById(R.id.tv_ingredient);
+                    String text = ingredient.amount + " " + ingredient.amountType + " " + ingredient.food;
+                    ingredientTextView.setText(text);
+                    ingredientListLayout.removeAllViews();
+                    ingredientListLayout.addView(ingredientView);
+                }
+            }
+        });
 
         LinearLayout stepListLayout = findViewById(R.id.container_steps);
         for (int x = 0; x < 3; x++) {
-            View view = inflater.inflate(R.layout.item_step, stepListLayout, false);
-            TextView stepNumberView = view.findViewById(R.id.tv_step_number);
+            View stepView = inflater.inflate(R.layout.item_step, stepListLayout, false);
+            TextView stepNumberView = stepView.findViewById(R.id.tv_step_number);
             stepNumberView.setText(String.valueOf(x + 1));
-            TextView stepView = view.findViewById(R.id.tv_step);
-            stepView.setText("Wwwwwwww wwwwwwwwwww wwwwwww");
-            stepListLayout.addView(view);
+            TextView stepTextView = stepView.findViewById(R.id.tv_step);
+            stepTextView.setText("Wwwwwwww wwwwwwwwwww wwwwwww");
+            stepListLayout.addView(stepView);
         }
     }
 
@@ -211,7 +227,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
                 return true;
             case R.id.app_bar_bookmark:
                 KitchenViewModel viewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
-                viewModel.insertRecipes(mRecipe);
+                viewModel.insertRecipe(mRecipe, this);
                 Snackbar.make(mAppBarLayout, R.string.recipe_bookmarked, Snackbar.LENGTH_SHORT).show();
                 return true;
             case R.id.app_bar_share:
@@ -227,5 +243,10 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt(mRecipe.publicKey, rating);
         editor.apply();
+    }
+
+    @Override
+    public void onDataInsert(long id) {
+        mRecipe.id = (int) id;
     }
 }

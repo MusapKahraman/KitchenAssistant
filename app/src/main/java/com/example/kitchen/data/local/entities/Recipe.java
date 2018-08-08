@@ -19,7 +19,9 @@ public class Recipe implements Parcelable {
             return new Recipe[size];
         }
     };
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    @NonNull
+    public int id;
     @NonNull
     public String title;
     public String imagePath;
@@ -45,8 +47,6 @@ public class Recipe implements Parcelable {
         this.title = "";
         this.imagePath = "";
         this.servings = 1;
-        this.prepTime = 0;
-        this.cookTime = 0;
         this.language = "";
         this.cuisine = "";
         this.course = "";
@@ -54,11 +54,13 @@ public class Recipe implements Parcelable {
         this.writerName = "";
         this.timeStamp = timeStamp;
         this.publicKey = "";
-        this.rating = 0;
     }
 
-    public Recipe(@NonNull String title, String imagePath, int prepTime, int cookTime, String language, String cuisine, String course,
+    public Recipe(int id, @NonNull String title, String imagePath, int prepTime, int cookTime, String language, String cuisine, String course,
                   String writerUid, String writerName, int servings, long timeStamp, String publicKey, float rating) {
+        if (id != 0) {
+            this.id = id;
+        }
         this.title = title;
         this.imagePath = imagePath;
         this.servings = servings;
@@ -75,6 +77,7 @@ public class Recipe implements Parcelable {
     }
 
     private Recipe(Parcel in) {
+        id = in.readInt();
         title = in.readString();
         imagePath = in.readString();
         servings = in.readInt();
@@ -97,6 +100,7 @@ public class Recipe implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(title);
         dest.writeString(imagePath);
         dest.writeInt(servings);
@@ -115,6 +119,7 @@ public class Recipe implements Parcelable {
     @Override
     public String toString() {
         return super.toString() +
+                "\nid: " + id +
                 "\nname: " + title +
                 "\nimagePath: " + imagePath +
                 "\nservings: " + servings +
