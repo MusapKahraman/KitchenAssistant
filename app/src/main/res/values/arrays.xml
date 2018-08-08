@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string-array name="photo_options">
         <item>@string/camera</item>
         <item>@string/gallery</item>
     </string-array>
+
     <string-array name="course_array">
         <item>@string/appetizer</item>
         <item>@string/soup</item>
@@ -16,6 +18,7 @@
         <item>@string/dessert</item>
         <item>@string/beverage</item>
     </string-array>
+
     <string-array name="cuisine_array">
         <item>@string/turkish</item>
         <item>@string/greek</item>
@@ -29,6 +32,7 @@
         <item>@string/mexican</item>
         <item>@string/thai</item>
     </string-array>
+
     <string-array name="language_array">
         <item>@string/english</item>
         <item>@string/turkish</item>
@@ -60,5 +64,23 @@
         <item>@string/urdu</item>
         <item>@string/ukrainian</item>
         <item>@string/vietnamese</item>
+    </string-array>
+
+    <string-array name="volume_array">
+        <item>@string/ml</item>
+        <item>@string/tsp</item>
+        <item>@string/tbsp</item>
+        <item>@string/c</item>
+        <item>@string/pt</item>
+        <item>@string/qt</item>
+        <item>@string/l</item>
+        <item>@string/gal</item>
+    </string-array>
+
+    <string-array name="weight_array">
+        <item>@string/g</item>
+        <item>@string/oz</item>
+        <item>@string/lb</item>
+        <item>@string/kg</item>
     </string-array>
 </resources>

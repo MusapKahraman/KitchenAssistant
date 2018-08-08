@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Weight constants-->
+    <integer name="grams">1</integer>
+    <integer name="ounces">28</integer>
+    <integer name="pounds">454</integer>
+    <integer name="kilograms">1000</integer>
+    <!-- Volume constants-->
+    <integer name="milliliters">1</integer>
+    <integer name="teaspoons">5</integer>
+    <integer name="tablespoons">15</integer>
+    <integer name="cups">237</integer>
+    <integer name="pints">473</integer>
+    <integer name="quarts">950</integer>
+    <integer name="liters">1000</integer>
+    <integer name="gallons">3785</integer>
+</resources>

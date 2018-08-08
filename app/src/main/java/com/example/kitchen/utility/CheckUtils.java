@@ -3,6 +3,10 @@ package com.example.kitchen.utility;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.TextUtils;
+import android.widget.EditText;
+
+import com.example.kitchen.R;
 
 public class CheckUtils {
     /**
@@ -20,7 +24,7 @@ public class CheckUtils {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    public static String validateRecipeTitle(String title) {
+    public static String validateTitle(String title) {
         // Separate each character of the input title.
         char[] chars = title.toCharArray();
         // Empty outcome string.
@@ -60,5 +64,14 @@ public class CheckUtils {
             }
         }
         return title;
+    }
+
+    public static boolean isEmptyTextField(Context context, EditText editText) {
+        if (TextUtils.isEmpty(editText.getText())) {
+            editText.setError(context.getString(R.string.field_required));
+            editText.requestFocus();
+            return true;
+        }
+        return false;
     }
 }

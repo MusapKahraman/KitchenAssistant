@@ -198,7 +198,7 @@
 
         <TextView
             android:id="@+id/header_course"
-            style="@style/SpinnerHeaders"
+            style="@style/TextStyleSpinnerHeader"
             android:text="@string/course"
             app:layout_constraintBottom_toTopOf="@+id/spinner_course"
             app:layout_constraintStart_toStartOf="@+id/spinner_course" />
@@ -213,7 +213,7 @@
 
         <TextView
             android:id="@+id/header_cuisine"
-            style="@style/SpinnerHeaders"
+            style="@style/TextStyleSpinnerHeader"
             android:text="@string/cuisine"
             app:layout_constraintBottom_toTopOf="@+id/spinner_cuisine"
             app:layout_constraintStart_toStartOf="@+id/spinner_cuisine" />
@@ -228,7 +228,7 @@
 
         <TextView
             android:id="@+id/header_language"
-            style="@style/SpinnerHeaders"
+            style="@style/TextStyleSpinnerHeader"
             android:text="@string/language"
             app:layout_constraintBottom_toTopOf="@+id/spinner_language"
             app:layout_constraintStart_toStartOf="@+id/spinner_language" />

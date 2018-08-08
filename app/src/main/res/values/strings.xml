@@ -66,7 +66,31 @@
     <string name="urdu">Urdu</string>
     <string name="ukrainian">Ukrainian</string>
     <string name="vietnamese">Vietnamese</string>
-
+    <string name="lb">pounds</string>
+    <string name="pounds">lb</string>
+    <string name="oz">ounces</string>
+    <string name="ounces">oz</string>
+    <string name="milligrams">mg</string>
+    <string name="g">grams</string>
+    <string name="grams">g</string>
+    <string name="kg">kilograms</string>
+    <string name="kilograms">kg</string>
+    <string name="tsp">teaspoons</string>
+    <string name="teaspoons">tsp</string>
+    <string name="tbsp">tablespoons</string>
+    <string name="tablespoons">tbsp</string>
+    <string name="c">cups</string>
+    <string name="cups">c</string>
+    <string name="qt">quarts</string>
+    <string name="quarts">qt</string>
+    <string name="ml">milliliters</string>
+    <string name="milliliters">ml</string>
+    <string name="l">liters</string>
+    <string name="liters">l</string>
+    <string name="pt">pints</string>
+    <string name="pints">pt</string>
+    <string name="gal">gallons</string>
+    <string name="gallons">gal</string>
 
     <string name="app_name">Kitchen Assistant</string>
     <string name="auto_complete">Autocomplete</string>
@@ -99,7 +123,7 @@
     <string name="course">Course</string>
     <string name="cuisine">Cuisine</string>
     <string name="language">Written in</string>
-    <string name="recipe_title_required">Recipe title is required.</string>
+    <string name="field_required">This field is required.</string>
     <string name="rotate_image">Rotate image</string>
     <string name="cook_time_min">Cook time (min.)</string>
     <string name="prep_time_min">Prep time (min.)</string>
@@ -117,4 +141,9 @@
     <string name="publish_successful">Recipe is now public.</string>
     <string name="publishing">Publishing recipe.</string>
     <string name="missing_picture">Not published due to missing picture.</string>
+    <string name="weight">Weight</string>
+    <string name="volume">Volume</string>
+    <string name="equals_to">equals to</string>
+    <string name="add_food">Add Food</string>
+    <string name="food_added">%1$s is added to the food dictionary.</string>
 </resources>

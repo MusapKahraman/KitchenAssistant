@@ -4,6 +4,8 @@
     <integer name="max_length_recipe_title">30</integer>
     <integer name="max_length_servings">2</integer>
     <integer name="max_length_cook_time">3</integer>
+    <integer name="max_length_amount">3</integer>
+    <integer name="max_length_food_name">15</integer>
     <!-- Text sizes. -->
     <dimen name="card_cook_time_text_size">13sp</dimen>
     <dimen name="edit_recipe_text_size">14sp</dimen>

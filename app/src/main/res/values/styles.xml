@@ -62,7 +62,7 @@
         <item name="cardCornerRadius">@dimen/space_one_unit</item>
     </style>
 
-    <style name="CardTitle">
+    <style name="TextStyleCardTitle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/card_title_text_size</item>
@@ -75,7 +75,7 @@
         <item name="android:ellipsize">end</item>
     </style>
 
-    <style name="CardCookTime">
+    <style name="TextStyleCardCookTime">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center_horizontal</item>
@@ -84,7 +84,7 @@
         <item name="android:layout_marginEnd">@dimen/space_one_unit</item>
     </style>
 
-    <style name="SpinnerHeaders">
+    <style name="TextStyleSpinnerHeader">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">@dimen/activity_vertical_margin</item>
@@ -92,13 +92,13 @@
         <item name="android:textSize">@dimen/spinner_headers_text_size</item>
     </style>
 
-    <style name="DataLabels">
+    <style name="TextStyleDataLabel">
         <item name="android:textSize">@dimen/data_labels_text_size</item>
         <item name="android:textColor">@color/primary_text</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="DataTexts">
+    <style name="TextStyleData">
         <item name="android:textSize">@dimen/data_texts_text_size</item>
         <item name="android:textColor">@color/primary_text</item>
     </style>

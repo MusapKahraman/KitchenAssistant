@@ -23,7 +23,7 @@
 
             <TextView
                 android:id="@+id/tv_recipe_title"
-                style="@style/CardTitle"
+                style="@style/TextStyleCardTitle"
                 app:layout_constraintBottom_toTopOf="@+id/iv_clock"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -41,7 +41,7 @@
 
             <TextView
                 android:id="@+id/tv_card_cook_time"
-                style="@style/CardCookTime"
+                style="@style/TextStyleCardCookTime"
                 android:layout_marginBottom="@dimen/space_one_unit"
                 android:layout_marginStart="@dimen/space_half_unit"
                 app:layout_constraintBottom_toBottomOf="parent"

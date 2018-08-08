@@ -16,7 +16,7 @@
 
         <TextView
             android:id="@+id/label_prep_time"
-            style="@style/DataLabels"
+            style="@style/TextStyleDataLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -26,7 +26,7 @@
 
         <TextView
             android:id="@+id/label_cook_time"
-            style="@style/DataLabels"
+            style="@style/TextStyleDataLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -36,7 +36,7 @@
 
         <TextView
             android:id="@+id/label_course"
-            style="@style/DataLabels"
+            style="@style/TextStyleDataLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/course"
@@ -46,7 +46,7 @@
 
         <TextView
             android:id="@+id/label_cuisine"
-            style="@style/DataLabels"
+            style="@style/TextStyleDataLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -56,7 +56,7 @@
 
         <TextView
             android:id="@+id/tv_prep_time"
-            style="@style/DataTexts"
+            style="@style/TextStyleData"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
@@ -65,7 +65,7 @@
 
         <TextView
             android:id="@+id/tv_cook_time"
-            style="@style/DataTexts"
+            style="@style/TextStyleData"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@id/tv_prep_time"
@@ -73,7 +73,7 @@
 
         <TextView
             android:id="@+id/tv_course"
-            style="@style/DataTexts"
+            style="@style/TextStyleData"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@id/tv_prep_time"
@@ -81,7 +81,7 @@
 
         <TextView
             android:id="@+id/tv_cuisine"
-            style="@style/DataTexts"
+            style="@style/TextStyleData"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@id/tv_prep_time"
@@ -99,7 +99,7 @@
 
         <TextView
             android:id="@+id/label_servings"
-            style="@style/DataLabels"
+            style="@style/TextStyleDataLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -122,7 +122,7 @@
 
         <TextView
             android:id="@+id/tv_servings"
-            style="@style/DataTexts"
+            style="@style/TextStyleData"
             android:layout_width="@dimen/recipe_detail_button_heights"
             android:layout_height="@dimen/recipe_detail_button_heights"
             android:gravity="center"
@@ -162,7 +162,7 @@
 
             <TextView
                 android:id="@+id/label_ingredients"
-                style="@style/DataLabels"
+                style="@style/TextStyleDataLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -189,7 +189,7 @@
 
             <TextView
                 android:id="@+id/label_steps"
-                style="@style/DataLabels"
+                style="@style/TextStyleDataLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -208,7 +208,7 @@
 
         <TextView
             android:id="@+id/label_rating"
-            style="@style/DataLabels"
+            style="@style/TextStyleDataLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"

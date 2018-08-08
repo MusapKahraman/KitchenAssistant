@@ -234,10 +234,10 @@ public class OverallFragment extends Fragment {
         // Do not save if no title is provided for the recipe.
         if (TextUtils.isEmpty(title)) {
             mTitleView.requestFocus();
-            mTitleView.setError(getString(R.string.recipe_title_required));
+            mTitleView.setError(getString(R.string.field_required));
             return false;
         }
-        mRecipe.title = CheckUtils.validateRecipeTitle(title);
+        mRecipe.title = CheckUtils.validateTitle(title);
         mTitleView.setText(mRecipe.title);
         // Take the image from the image view.
         BitmapDrawable drawable = (BitmapDrawable) mImageView.getDrawable();

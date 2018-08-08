@@ -79,9 +79,6 @@ public class MainActivity extends AppCompatActivity
                 Intent intent;
                 switch (mNavigatorIndex) {
                     case 0:
-                        intent = new Intent(MainActivity.this, RecipeEditActivity.class);
-                        startActivity(intent);
-                        break;
                     case 1:
                         intent = new Intent(MainActivity.this, RecipeEditActivity.class);
                         startActivity(intent);
@@ -184,6 +181,10 @@ public class MainActivity extends AppCompatActivity
                         showNotebook(recipes);
                     }
                 });
+                break;
+            case 3:
+                Intent intent = new Intent(MainActivity.this, FoodActivity.class);
+                startActivity(intent);
                 break;
             case 6:
                 kitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
