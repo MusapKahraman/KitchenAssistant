@@ -35,6 +35,7 @@ import com.example.kitchen.data.local.LocalDatabaseInsertListener;
 import com.example.kitchen.data.local.entities.Ingredient;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.utility.AppConstants;
+import com.example.kitchen.utility.MeasurementUtils;
 
 import java.util.List;
 
@@ -180,9 +181,12 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
                     return;
                 for (Ingredient ingredient : ingredients) {
                     View ingredientView = inflater.inflate(R.layout.item_ingredient, ingredientListLayout, false);
+                    TextView ingredientAmountTextView = ingredientView.findViewById(R.id.tv_ingredient_amount);
                     TextView ingredientTextView = ingredientView.findViewById(R.id.tv_ingredient);
-                    String text = ingredient.amount + " " + ingredient.amountType + " " + ingredient.food;
-                    ingredientTextView.setText(text);
+                    String text = ingredient.amount +
+                            " " + MeasurementUtils.getAbbreviation(RecipeDetailActivity.this, ingredient.amountType);
+                    ingredientAmountTextView.setText(text);
+                    ingredientTextView.setText(ingredient.food);
                     ingredientListLayout.addView(ingredientView);
                 }
             }

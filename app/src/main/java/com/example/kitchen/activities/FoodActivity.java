@@ -7,8 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.example.kitchen.R;
 import com.example.kitchen.data.firebase.FoodViewModel;
@@ -38,6 +41,28 @@ public class FoodActivity extends AppCompatActivity {
         weightAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         weightSpinner.setAdapter(weightAdapter);
 
+        final TextView equalsLabel = findViewById(R.id.tv_equals);
+
+        final CheckBox countableCheckBox = findViewById(R.id.check_countable);
+        countableCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    volumeAmountView.setVisibility(View.GONE);
+                    weightAmountView.setVisibility(View.GONE);
+                    volumeSpinner.setVisibility(View.GONE);
+                    weightSpinner.setVisibility(View.GONE);
+                    equalsLabel.setVisibility(View.GONE);
+                } else {
+                    volumeAmountView.setVisibility(View.VISIBLE);
+                    weightAmountView.setVisibility(View.VISIBLE);
+                    volumeSpinner.setVisibility(View.VISIBLE);
+                    weightSpinner.setVisibility(View.VISIBLE);
+                    equalsLabel.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
         Button addFoodButton = findViewById(R.id.btn_add_food);
         addFoodButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,16 +71,19 @@ public class FoodActivity extends AppCompatActivity {
                     return;
                 String foodName = CheckUtils.validateTitle(foodNameView.getText().toString());
                 foodNameView.setText(foodName);
-                if (CheckUtils.isEmptyTextField(FoodActivity.this, volumeAmountView))
-                    return;
-                int volumeAmount = Integer.valueOf(volumeAmountView.getText().toString());
-                if (CheckUtils.isEmptyTextField(FoodActivity.this, weightAmountView))
-                    return;
-                int weightAmount = Integer.valueOf(weightAmountView.getText().toString());
-                int volumeType = volumeSpinner.getSelectedItemPosition();
-                int weightType = weightSpinner.getSelectedItemPosition();
-                float conversionMultiplier = MeasurementUtils.getConversionMultiplier(
-                        FoodActivity.this, volumeAmount, volumeType, weightAmount, weightType);
+                float conversionMultiplier = 0;
+                if (!countableCheckBox.isChecked()) {
+                    int volumeAmount = CheckUtils.getValidNumberFromField(FoodActivity.this, volumeAmountView);
+                    if (volumeAmount == 0)
+                        return;
+                    int weightAmount = CheckUtils.getValidNumberFromField(FoodActivity.this, weightAmountView);
+                    if (weightAmount == 0)
+                        return;
+                    int volumeType = volumeSpinner.getSelectedItemPosition();
+                    int weightType = weightSpinner.getSelectedItemPosition();
+                    conversionMultiplier = MeasurementUtils.getConversionMultiplier(
+                            FoodActivity.this, volumeAmount, volumeType, weightAmount, weightType);
+                }
                 FoodViewModel viewModel = ViewModelProviders.of(FoodActivity.this).get(FoodViewModel.class);
                 viewModel.addFood(foodName, conversionMultiplier);
                 Snackbar.make(foodNameView,

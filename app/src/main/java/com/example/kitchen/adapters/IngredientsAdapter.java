@@ -1,5 +1,6 @@
 package com.example.kitchen.adapters;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,13 +10,16 @@ import android.widget.TextView;
 
 import com.example.kitchen.R;
 import com.example.kitchen.data.local.entities.Ingredient;
+import com.example.kitchen.utility.MeasurementUtils;
 
 import java.util.List;
 
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.IngredientViewHolder> {
     private List<Ingredient> mIngredients;
+    private Context mContext;
 
-    public IngredientsAdapter() {
+    public IngredientsAdapter(Context context) {
+        mContext = context;
     }
 
     @Override
@@ -59,21 +63,24 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     public class IngredientViewHolder extends RecyclerView.ViewHolder {
         private Ingredient mIngredient;
-        private TextView mTextView;
+        private TextView mAmountTextView;
+        private TextView mIngredientTextView;
         final View viewBackground;
         final View viewForeground;
 
         private IngredientViewHolder(View itemView) {
             super(itemView);
-            mTextView = itemView.findViewById(R.id.tv_ingredient);
+            mAmountTextView = itemView.findViewById(R.id.tv_ingredient_amount);
+            mIngredientTextView = itemView.findViewById(R.id.tv_ingredient);
             viewBackground = itemView.findViewById(R.id.swiped_background);
             viewForeground = itemView.findViewById(R.id.view_foreground);
         }
 
         private void bind(int position) {
             mIngredient = mIngredients.get(position);
-            String text = mIngredient.amount + " " + mIngredient.amountType + " " + mIngredient.food;
-            mTextView.setText(text);
+            String text = mIngredient.amount + " " + MeasurementUtils.getAbbreviation(mContext, mIngredient.amountType);
+            mAmountTextView.setText(text);
+            mIngredientTextView.setText(mIngredient.food);
         }
     }
 }

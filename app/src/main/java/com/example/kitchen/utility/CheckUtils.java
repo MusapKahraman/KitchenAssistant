@@ -74,4 +74,20 @@ public class CheckUtils {
         }
         return false;
     }
+
+    public static int getValidNumberFromField(Context context, EditText editText) {
+        if (TextUtils.isEmpty(editText.getText())) {
+            editText.setError(context.getString(R.string.field_required));
+            editText.requestFocus();
+            return 0;
+        } else {
+            int volumeAmount = Integer.valueOf(editText.getText().toString());
+            if (volumeAmount < 1) {
+                editText.setError(context.getString(R.string.must_positive_integer));
+                editText.requestFocus();
+                return 0;
+            }
+            return volumeAmount;
+        }
+    }
 }

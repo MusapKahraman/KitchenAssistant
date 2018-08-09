@@ -28,13 +28,22 @@
             android:singleLine="true" />
     </android.support.design.widget.TextInputLayout>
 
+    <CheckBox
+        android:id="@+id/check_countable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="@string/countable"
+        app:layout_constraintStart_toStartOf="@+id/input_layout_food_name"
+        app:layout_constraintTop_toBottomOf="@+id/input_layout_food_name" />
+
     <android.support.design.widget.TextInputLayout
         android:id="@+id/input_layout_volume_amount"
         android:layout_width="@dimen/spinner_width"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        app:layout_constraintStart_toStartOf="@+id/input_layout_food_name"
-        app:layout_constraintTop_toBottomOf="@+id/input_layout_food_name">
+        app:layout_constraintStart_toStartOf="@+id/check_countable"
+        app:layout_constraintTop_toBottomOf="@+id/check_countable">
 
         <EditText
             android:id="@+id/text_edit_volume_amount"

@@ -67,33 +67,40 @@
     </string-array>
 
     <string-array name="volume_array">
-        <item>@string/ml</item>
-        <item>@string/tsp</item>
-        <item>@string/tbsp</item>
-        <item>@string/c</item>
-        <item>@string/pt</item>
-        <item>@string/qt</item>
-        <item>@string/l</item>
-        <item>@string/gal</item>
+        <item>@string/milliliters</item>
+        <item>@string/teaspoons</item>
+        <item>@string/tablespoons</item>
+        <item>@string/cups</item>
+        <item>@string/pints</item>
+        <item>@string/quarts</item>
+        <item>@string/liters</item>
+        <item>@string/gallons</item>
     </string-array>
 
     <string-array name="weight_array">
-        <item>@string/g</item>
-        <item>@string/oz</item>
-        <item>@string/lb</item>
-        <item>@string/kg</item>
+        <item>@string/grams</item>
+        <item>@string/ounces</item>
+        <item>@string/pounds</item>
+        <item>@string/kilograms</item>
     </string-array>
 
-    <string-array name="measurement_array">
-        <item>@string/ml</item>
-        <item>@string/c</item>
-        <item>@string/pt</item>
-        <item>@string/qt</item>
-        <item>@string/l</item>
-        <item>@string/gal</item>
-        <item>@string/g</item>
-        <item>@string/oz</item>
-        <item>@string/lb</item>
-        <item>@string/kg</item>
+    <string-array name="measurement_array_uncountable">
+        <item>@string/milliliters</item>
+        <item>@string/teaspoons</item>
+        <item>@string/tablespoons</item>
+        <item>@string/cups</item>
+        <item>@string/pints</item>
+        <item>@string/quarts</item>
+        <item>@string/liters</item>
+        <item>@string/gallons</item>
+        <item>@string/grams</item>
+        <item>@string/ounces</item>
+        <item>@string/pounds</item>
+        <item>@string/kilograms</item>
     </string-array>
+
+    <string-array name="measurement_array_countable">
+        <item>@string/pieces</item>
+    </string-array>
+
 </resources>

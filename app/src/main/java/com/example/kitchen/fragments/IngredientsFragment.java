@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,10 +40,13 @@ import com.google.firebase.database.DatabaseException;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class IngredientsFragment extends Fragment implements RecyclerViewItemTouchHelper.RecyclerItemTouchHelperListener {
     private ArrayList<String> mFoods;
+    private Map<String, String> mFoodMap;
     private FragmentMessageListener mMessageListener;
     private Context mContext;
     private Recipe mRecipe;
@@ -50,6 +54,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
     private RecyclerView mRecyclerView;
     private IngredientsAdapter mAdapter;
     private ArrayList<Ingredient> mIngredients;
+    private ArrayAdapter<CharSequence> mMeasurementAdapter;
 
     public IngredientsFragment() {
         // Required empty public constructor
@@ -99,7 +104,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
-        mAdapter = new IngredientsAdapter();
+        mAdapter = new IngredientsAdapter(mContext);
         mRecyclerView.setAdapter(mAdapter);
 
         mViewModel = ViewModelProviders.of(IngredientsFragment.this).get(KitchenViewModel.class);
@@ -120,16 +125,19 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
             public void onChanged(@Nullable DataSnapshot dataSnapshot) {
                 if (dataSnapshot != null) {
                     mFoods = new ArrayList<>();
+                    mFoodMap = new HashMap<>();
                     for (DataSnapshot foodSnapShot : dataSnapshot.getChildren()) {
                         try {
+                            if (foodSnapShot.getValue() != null)
+                                mFoodMap.put(foodSnapShot.getKey(), foodSnapShot.getValue().toString());
                             mFoods.add(foodSnapShot.getKey());
-                            ArrayAdapter<String> foodAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_item, mFoods);
-                            foodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            foodSpinner.setAdapter(foodAdapter);
                         } catch (DatabaseException e) {
                             Log.e("IngredientsFragment", e.getMessage());
                         }
                     }
+                    ArrayAdapter<String> foodAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_item, mFoods);
+                    foodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    foodSpinner.setAdapter(foodAdapter);
                 }
             }
         });
@@ -137,10 +145,27 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
         final EditText amountEditText = rootView.findViewById(R.id.text_edit_amount);
 
         final Spinner measurementSpinner = rootView.findViewById(R.id.spinner_measure);
-        ArrayAdapter<CharSequence> measurementAdapter = ArrayAdapter.createFromResource(mContext,
-                R.array.measurement_array, android.R.layout.simple_spinner_item);
-        measurementAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        measurementSpinner.setAdapter(measurementAdapter);
+        foodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String food = mFoods.get(position);
+                float value = Float.valueOf(mFoodMap.get(food));
+                if (value == 0) {
+                    mMeasurementAdapter = ArrayAdapter.createFromResource(mContext,
+                            R.array.measurement_array_countable, android.R.layout.simple_spinner_item);
+                } else {
+                    mMeasurementAdapter = ArrayAdapter.createFromResource(mContext,
+                            R.array.measurement_array_uncountable, android.R.layout.simple_spinner_item);
+                }
+                mMeasurementAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                measurementSpinner.setAdapter(mMeasurementAdapter);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         Button addButton = rootView.findViewById(R.id.btn_add_ingredient);
         addButton.setOnClickListener(new View.OnClickListener() {
