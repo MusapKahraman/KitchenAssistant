@@ -15,7 +15,7 @@
             android:layout_weight="1"
             android:contentDescription="@string/recipe_image_description"
             android:scaleType="centerCrop"
-            android:src="@mipmap/ingredients" />
+            android:src="@drawable/ingredients" />
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"

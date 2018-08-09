@@ -1,3 +1,8 @@
+/*
+ * Reference
+ * https://www.androidhive.info/2017/09/android-recyclerview-swipe-delete-undo-using-itemtouchhelper/
+ */
+
 package com.example.kitchen.adapters;
 
 import android.graphics.Canvas;

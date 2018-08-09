@@ -3,6 +3,7 @@
  * https://firebase.googleblog.com/2017/12/using-android-architecture-components.html
  * https://firebase.google.com/docs/database/android/read-and-write#save_data_as_transactions
  */
+
 package com.example.kitchen.data.firebase;
 
 import android.arch.lifecycle.LiveData;

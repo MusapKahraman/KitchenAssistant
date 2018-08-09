@@ -1,6 +1,8 @@
 /*
- * Reference => https://firebase.googleblog.com/2017/12/using-android-architecture-components.html
+ * Reference
+ * https://firebase.googleblog.com/2017/12/using-android-architecture-components.html
  */
+
 package com.example.kitchen.data.firebase;
 
 import android.arch.lifecycle.LiveData;

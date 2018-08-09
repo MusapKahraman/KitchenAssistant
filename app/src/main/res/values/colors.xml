@@ -3,6 +3,7 @@
     <color name="primary">#009688</color>
     <color name="primary_dark">#00796B</color>
     <color name="primary_light">#B2DFDB</color>
+    <color name="firebase_primary_dark">#000000</color>
     <color name="accent">#00BCD4</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
@@ -17,5 +18,5 @@
     <color name="image_tint_gradient_end">#96000000</color>
     <color name="swiped_list_item_foreground">#FFFFFF</color>
     <color name="swiped_list_item_background">#a1887f</color>
-    <color name="swiped_list_item_background_text">#fff</color>
+    <color name="swiped_list_item_background_text">#fff</color>z
 </resources>

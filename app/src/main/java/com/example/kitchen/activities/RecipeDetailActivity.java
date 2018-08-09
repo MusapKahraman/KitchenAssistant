@@ -80,8 +80,8 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
         if (url != null && url.length() != 0) {
             RequestOptions options = new RequestOptions()
                     .centerCrop()
-                    .placeholder(R.mipmap.ingredients)
-                    .error(R.mipmap.ingredients)
+                    .placeholder(R.drawable.ingredients)
+                    .error(R.drawable.ingredients)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .priority(Priority.HIGH);
             Glide.with(this)

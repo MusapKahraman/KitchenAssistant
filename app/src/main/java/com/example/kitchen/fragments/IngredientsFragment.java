@@ -33,6 +33,7 @@ import com.example.kitchen.data.local.entities.Ingredient;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.utility.AppConstants;
 import com.example.kitchen.utility.CheckUtils;
+import com.example.kitchen.utility.DeviceUtils;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseException;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
@@ -154,7 +155,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
                 int amount = Integer.valueOf(amountEditText.getText().toString());
                 Ingredient ingredient = new Ingredient(mRecipe.id, name, amount, amountType);
                 IngredientsFragment.this.mViewModel.insertIngredients(ingredient);
-                CheckUtils.hideKeyboardFrom(mContext, amountEditText);
+                DeviceUtils.hideKeyboardFrom(mContext, amountEditText);
             }
         });
         return rootView;

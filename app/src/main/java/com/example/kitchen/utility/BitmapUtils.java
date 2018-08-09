@@ -1,3 +1,8 @@
+/*
+ * Reference
+ * https://developer.android.com/training/camera/photobasics
+ */
+
 package com.example.kitchen.utility;
 
 import android.content.Context;
@@ -35,7 +40,6 @@ public class BitmapUtils {
     }
 
     public static File createImageFile(Context context) throws IOException {
-        // Reference -> https://developer.android.com/training/camera/photobasics
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
         String imageFileName = timeStamp + "_";
         File storageDir;
@@ -46,7 +50,7 @@ public class BitmapUtils {
         return File.createTempFile(imageFileName, ".jpg", storageDir);
     }
 
-    /* Checks if external storage is available for read and write */
+    // Check if external storage is available for read and write
     private static boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
         return Environment.MEDIA_MOUNTED.equals(state);

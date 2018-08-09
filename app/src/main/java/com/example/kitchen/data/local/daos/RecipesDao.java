@@ -2,6 +2,7 @@
  * Reference
  * https://stackoverflow.com/questions/45677230/android-room-persistence-library-upsert/48641762#48641762
  */
+
 package com.example.kitchen.data.local.daos;
 
 import android.arch.lifecycle.LiveData;
