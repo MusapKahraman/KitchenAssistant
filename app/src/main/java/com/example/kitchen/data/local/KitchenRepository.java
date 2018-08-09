@@ -131,8 +131,12 @@ class KitchenRepository {
         @Override
         protected Void doInBackground(Ingredient... ingredients) {
             for (Ingredient ingredient : ingredients) {
-                if (ingredient != null)
-                    mAsyncTaskDao.insertIngredient(ingredient);
+                if (ingredient != null) {
+                    long id = mAsyncTaskDao.insertIngredient(ingredient);
+                    if (id == -1) {
+                        mAsyncTaskDao.update(ingredient);
+                    }
+                }
             }
             return null;
         }

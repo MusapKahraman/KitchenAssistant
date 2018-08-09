@@ -1,6 +1,7 @@
 package com.example.kitchen.data.local.entities;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -25,6 +26,15 @@ public class Ingredient implements Parcelable {
     public String amountType;
 
     public Ingredient(int recipe_id, String food, int amount, String amountType) {
+        this.recipe_id = recipe_id;
+        this.food = food;
+        this.amount = amount;
+        this.amountType = amountType;
+    }
+
+    @Ignore
+    public Ingredient(int id, int recipe_id, String food, int amount, String amountType) {
+        this.id = id;
         this.recipe_id = recipe_id;
         this.food = food;
         this.amount = amount;

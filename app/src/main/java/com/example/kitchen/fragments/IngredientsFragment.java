@@ -49,7 +49,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
     private Map<String, String> mFoodMap;
     private Context mContext;
     private Recipe mRecipe;
-    private KitchenViewModel mViewModel;
+    private KitchenViewModel mKitchenViewModel;
     private RecyclerView mRecyclerView;
     private IngredientsAdapter mAdapter;
     private ArrayList<Ingredient> mIngredients;
@@ -71,6 +71,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
         View rootView = inflater.inflate(R.layout.fragment_ingredients, container, false);
 
         FoodViewModel foodViewModel = ViewModelProviders.of(this).get(FoodViewModel.class);
+        mKitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
 
         Button addFoodLink = rootView.findViewById(R.id.tv_add_food_link);
         addFoodLink.setOnClickListener(new View.OnClickListener() {
@@ -103,8 +104,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
         mAdapter = new IngredientsAdapter(mContext);
         mRecyclerView.setAdapter(mAdapter);
 
-        mViewModel = ViewModelProviders.of(IngredientsFragment.this).get(KitchenViewModel.class);
-        mViewModel.getIngredientsByRecipe(mRecipe.id).observe(this, new Observer<List<Ingredient>>() {
+        mKitchenViewModel.getIngredientsByRecipe(mRecipe.id).observe(this, new Observer<List<Ingredient>>() {
             @Override
             public void onChanged(@Nullable List<Ingredient> ingredients) {
                 mAdapter.setIngredients(ingredients);
@@ -173,8 +173,20 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
                 if (CheckUtils.isEmptyTextField(mContext, amountEditText))
                     return;
                 int amount = Integer.valueOf(amountEditText.getText().toString());
-                Ingredient ingredient = new Ingredient(mRecipe.id, name, amount, amountType);
-                IngredientsFragment.this.mViewModel.insertIngredients(ingredient);
+                // If there is already an item in the list with the same name then just increase its amount.
+                int shownId = 0;
+                int shownAmount = 0;
+                for (Ingredient shown : mIngredients) {
+                    if (name.equals(shown.food) && amountType.equals(shown.amountType)) {
+                        shownId = shown.id;
+                        shownAmount = shown.amount;
+                    }
+                }
+                if (shownId == 0) {
+                    mKitchenViewModel.insertIngredients(new Ingredient(mRecipe.id, name, amount, amountType));
+                } else {
+                    mKitchenViewModel.insertIngredients(new Ingredient(shownId, mRecipe.id, name, amount + shownAmount, amountType));
+                }
                 DeviceUtils.hideKeyboardFrom(mContext, amountEditText);
             }
         });
@@ -200,7 +212,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
 
             // remove the item from recycler view
             mAdapter.removeItem(viewHolder.getAdapterPosition());
-            mViewModel.deleteIngredients(deletedIngredient);
+            mKitchenViewModel.deleteIngredients(deletedIngredient);
 
             // showing snack bar with Undo option
             Snackbar snackbar = Snackbar.make(mRecyclerView, String.format(getString(R.string.removed_ingredient), food), Snackbar.LENGTH_LONG);
@@ -209,7 +221,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
                 public void onClick(View view) {
                     // undo is selected, restore the deleted item
                     mAdapter.restoreItem(deletedIngredient, deletedIndex);
-                    mViewModel.insertIngredients(deletedIngredient);
+                    mKitchenViewModel.insertIngredients(deletedIngredient);
                 }
             });
             //snackbar.setActionTextColor(getResources().getColor(R.color.accent));
