@@ -47,7 +47,6 @@ import java.util.Map;
 public class IngredientsFragment extends Fragment implements RecyclerViewItemTouchHelper.RecyclerItemTouchHelperListener {
     private ArrayList<String> mFoods;
     private Map<String, String> mFoodMap;
-    private FragmentMessageListener mMessageListener;
     private Context mContext;
     private Recipe mRecipe;
     private KitchenViewModel mViewModel;
@@ -64,17 +63,14 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
-        if (context instanceof FragmentMessageListener) {
-            mMessageListener = (FragmentMessageListener) context;
-        } else {
-            throw new ClassCastException(context.toString() + "must implement FragmentMessageListener");
-        }
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_ingredients, container, false);
+
+        FoodViewModel foodViewModel = ViewModelProviders.of(this).get(FoodViewModel.class);
 
         Button addFoodLink = rootView.findViewById(R.id.tv_add_food_link);
         addFoodLink.setOnClickListener(new View.OnClickListener() {
@@ -119,8 +115,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
         final SearchableSpinner foodSpinner = rootView.findViewById(R.id.spinner_food);
         foodSpinner.setTitle(getString(R.string.select_food));
 
-        final FoodViewModel viewModel = ViewModelProviders.of(this).get(FoodViewModel.class);
-        viewModel.getDataSnapshotLiveData().observe(this, new Observer<DataSnapshot>() {
+        foodViewModel.getDataSnapshotLiveData().observe(this, new Observer<DataSnapshot>() {
             @Override
             public void onChanged(@Nullable DataSnapshot dataSnapshot) {
                 if (dataSnapshot != null) {
@@ -194,13 +189,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
     }
 
     @Override
-    public void onDetach() {
-        mMessageListener = null;
-        super.onDetach();
-    }
-
-    @Override
-    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+    public void onSwiped(RecyclerView.ViewHolder viewHolder) {
         if (viewHolder instanceof IngredientsAdapter.IngredientViewHolder) {
             // get the removed item id to display it in snack bar
             String food = mIngredients.get(viewHolder.getAdapterPosition()).food;

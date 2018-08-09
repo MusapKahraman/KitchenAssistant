@@ -34,7 +34,7 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
     private List<Recipe> mRecipes;
     private List<Recipe> mFilteredRecipes;
     private boolean mMultiSelect = false;
-    private Context mContext;
+    private KitchenViewModel mKitchenViewModel;
     private final ActionMode.Callback mActionModeCallbacks = new ActionMode.Callback() {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -54,11 +54,7 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
                 for (Recipe recipe : mSelectedRecipes) {
                     int position = mRecipes.indexOf(recipe);
                     mRecipes.remove(recipe);
-                    if (mContext instanceof FragmentActivity) {
-                        FragmentActivity activity = (FragmentActivity) mContext;
-                        KitchenViewModel kitchenViewModel = ViewModelProviders.of(activity).get(KitchenViewModel.class);
-                        kitchenViewModel.deleteRecipes(recipe);
-                    }
+                    mKitchenViewModel.deleteRecipes(recipe);
                     notifyItemRemoved(position);
                 }
             }
@@ -75,8 +71,11 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
     };
 
     public NotebookAdapter(Context context, RecipeClickListener recipeClickListener) {
-        mContext = context;
         mRecipeClickListener = recipeClickListener;
+        if (context instanceof FragmentActivity) {
+            FragmentActivity activity = (FragmentActivity) context;
+            mKitchenViewModel = ViewModelProviders.of(activity).get(KitchenViewModel.class);
+        }
     }
 
     @Override

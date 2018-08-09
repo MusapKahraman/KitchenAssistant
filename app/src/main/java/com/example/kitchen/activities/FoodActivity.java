@@ -19,11 +19,14 @@ import com.example.kitchen.utility.CheckUtils;
 import com.example.kitchen.utility.MeasurementUtils;
 
 public class FoodActivity extends AppCompatActivity {
+    private FoodViewModel mFoodViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food);
+
+        mFoodViewModel = ViewModelProviders.of(FoodActivity.this).get(FoodViewModel.class);
 
         final EditText foodNameView = findViewById(R.id.text_edit_food_name);
         final EditText volumeAmountView = findViewById(R.id.text_edit_volume_amount);
@@ -84,8 +87,7 @@ public class FoodActivity extends AppCompatActivity {
                     conversionMultiplier = MeasurementUtils.getConversionMultiplier(
                             FoodActivity.this, volumeAmount, volumeType, weightAmount, weightType);
                 }
-                FoodViewModel viewModel = ViewModelProviders.of(FoodActivity.this).get(FoodViewModel.class);
-                viewModel.addFood(foodName, conversionMultiplier);
+                mFoodViewModel.addFood(foodName, conversionMultiplier);
                 Snackbar.make(foodNameView,
                         String.format(getString(R.string.food_added), foodName), Snackbar.LENGTH_SHORT).show();
             }

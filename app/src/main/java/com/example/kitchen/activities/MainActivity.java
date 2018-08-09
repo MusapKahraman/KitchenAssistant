@@ -57,9 +57,9 @@ public class MainActivity extends AppCompatActivity
     private Bundle mNotebookFragmentSavedState;
     private Bundle mMealBoardFragmentSavedState;
     private int mNavigatorIndex;
-    private KitchenViewModel kitchenViewModel;
-    private RecipeViewModel recipeViewModel;
-    private SharedPreferences sharedPref;
+    private KitchenViewModel mKitchenViewModel;
+    private RecipeViewModel mRecipeViewModel;
+    private SharedPreferences mSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +68,9 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        sharedPref = getPreferences(Context.MODE_PRIVATE);
-        kitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
-        recipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
+        mSharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        mKitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
+        mRecipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
 
         mFab = findViewById(R.id.fab);
         mFab.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                SharedPreferences.Editor editor = sharedPref.edit();
+                SharedPreferences.Editor editor = mSharedPreferences.edit();
                 editor.putInt(KEY_NAV_INDEX, mNavigatorIndex);
                 editor.apply();
                 changeContent();
@@ -136,12 +136,12 @@ public class MainActivity extends AppCompatActivity
 
     private void changeContent() {
         mProgressBar.setVisibility(View.GONE);
-        mNavigatorIndex = sharedPref.getInt(KEY_NAV_INDEX, 0);
+        mNavigatorIndex = mSharedPreferences.getInt(KEY_NAV_INDEX, 0);
         switch (mNavigatorIndex) {
             case 0:
                 mFab.show();
                 mProgressBar.setVisibility(View.VISIBLE);
-                recipeViewModel.getDataSnapshotLiveData().observe(this, new Observer<DataSnapshot>() {
+                mRecipeViewModel.getDataSnapshotLiveData().observe(this, new Observer<DataSnapshot>() {
                     @Override
                     public void onChanged(@Nullable DataSnapshot dataSnapshot) {
                         if (mNavigatorIndex != 0) {
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case 1:
                 mFab.show();
-                kitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
+                mKitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
                     @Override
                     public void onChanged(@Nullable List<Recipe> recipes) {
                         if (recipes != null)
@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity
                 });
                 break;
             case 6:
-                kitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
+                mKitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
                     @Override
                     public void onChanged(@Nullable List<Recipe> recipes) {
                         showMealBoard(recipes);

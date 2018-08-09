@@ -74,6 +74,8 @@ public class OverallFragment extends Fragment implements LocalDatabaseInsertList
     private ProgressBar mProgressBar;
     private Recipe mRecipe;
     private boolean mDoNotRequestPermission;
+    private KitchenViewModel mKitchenViewModel;
+    private RecipeViewModel mRecipeViewModel;
     // Deal with write permission to external storage in Glide
     // Reference => https://futurestud.io/tutorials/glide-exceptions-debugging-and-error-handling
     private final RequestListener<Drawable> requestListener = new RequestListener<Drawable>() {
@@ -119,7 +121,8 @@ public class OverallFragment extends Fragment implements LocalDatabaseInsertList
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment.
         mRootView = inflater.inflate(R.layout.fragment_overall, container, false);
-
+        mKitchenViewModel = ViewModelProviders.of(OverallFragment.this).get(KitchenViewModel.class);
+        mRecipeViewModel = ViewModelProviders.of(OverallFragment.this).get(RecipeViewModel.class);
         // Take a picture and load the thumbnail to the image view.
         mImageView = mRootView.findViewById(R.id.iv_recipe_picture);
         mImageView.setOnClickListener(new View.OnClickListener() {
@@ -264,8 +267,7 @@ public class OverallFragment extends Fragment implements LocalDatabaseInsertList
         Bundle bundle = new Bundle();
         bundle.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
         mMessageListener.onFragmentMessage(0, bundle);
-        KitchenViewModel viewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
-        viewModel.insertRecipe(mRecipe, this);
+        mKitchenViewModel.insertRecipe(mRecipe, this);
         return true;
     }
 
@@ -282,8 +284,7 @@ public class OverallFragment extends Fragment implements LocalDatabaseInsertList
         mPublishButton.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
         Snackbar.make(mProgressBar, R.string.publishing, Snackbar.LENGTH_SHORT).show();
-        final RecipeViewModel viewModel = ViewModelProviders.of(OverallFragment.this).get(RecipeViewModel.class);
-        mRecipe.publicKey = viewModel.postRecipe(mRecipe, "");
+        mRecipe.publicKey = mRecipeViewModel.postRecipe(mRecipe, "");
         Uri file = Uri.fromFile(new File(path));
         final StorageReference ref = FirebaseStorage.getInstance().getReference("images/" + mRecipe.publicKey + ".jpg");
         ref.putFile(file).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -299,9 +300,8 @@ public class OverallFragment extends Fragment implements LocalDatabaseInsertList
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
                 if (task.isSuccessful()) {
-                    mRecipe.publicKey = viewModel.postRecipe(mRecipe, task.getResult().toString());
-                    KitchenViewModel kitchenViewModel = ViewModelProviders.of(OverallFragment.this).get(KitchenViewModel.class);
-                    kitchenViewModel.insertRecipe(mRecipe, OverallFragment.this);
+                    mRecipe.publicKey = mRecipeViewModel.postRecipe(mRecipe, task.getResult().toString());
+                    mKitchenViewModel.insertRecipe(mRecipe, OverallFragment.this);
                 }
                 mPublishButton.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.GONE);

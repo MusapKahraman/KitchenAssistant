@@ -81,7 +81,7 @@ class KitchenRepository {
 
     private static class InsertRecipeTask extends AsyncTask<Recipe, Void, Void> {
         private final RecipesDao mAsyncTaskDao;
-        private LocalDatabaseInsertListener listener;
+        private final LocalDatabaseInsertListener listener;
 
         InsertRecipeTask(RecipesDao dao, LocalDatabaseInsertListener listener) {
             mAsyncTaskDao = dao;

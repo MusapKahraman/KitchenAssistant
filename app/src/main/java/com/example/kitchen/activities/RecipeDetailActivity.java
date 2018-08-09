@@ -47,16 +47,17 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
     private int mServings;
     private boolean mIsRatingProcessing;
     private AppBarLayout mAppBarLayout;
-    private SharedPreferences sharedPref;
+    private SharedPreferences mSharedPreferences;
     private boolean mIsBookable;
+    private RecipeViewModel mRecipeViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
-
-        sharedPref = getPreferences(Context.MODE_PRIVATE);
-
+        mSharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        mRecipeViewModel = ViewModelProviders.of(RecipeDetailActivity.this).get(RecipeViewModel.class);
+        KitchenViewModel kitchenViewModel = ViewModelProviders.of(RecipeDetailActivity.this).get(KitchenViewModel.class);
         boolean isEditable;
         if (getIntent() != null) {
             mRecipe = getIntent().getParcelableExtra(AppConstants.EXTRA_RECIPE);
@@ -105,7 +106,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
         View ratingDivider = findViewById(R.id.divider_rating);
         TextView ratingLabel = findViewById(R.id.label_rating);
         RatingBar ratingBar = findViewById(R.id.ratingBar);
-        int rating = sharedPref.getInt(mRecipe.publicKey, 0);
+        int rating = mSharedPreferences.getInt(mRecipe.publicKey, 0);
         ratingBar.setRating(rating);
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
@@ -113,9 +114,8 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
                 if (!mIsRatingProcessing) {
                     mIsRatingProcessing = true;
                     int currentRating = (int) rating;
-                    int lastRating = sharedPref.getInt(mRecipe.publicKey, 0);
-                    RecipeViewModel viewModel = ViewModelProviders.of(RecipeDetailActivity.this).get(RecipeViewModel.class);
-                    viewModel.postRating(mRecipe.publicKey, currentRating, lastRating, RecipeDetailActivity.this);
+                    int lastRating = mSharedPreferences.getInt(mRecipe.publicKey, 0);
+                    mRecipeViewModel.postRating(mRecipe.publicKey, currentRating, lastRating, RecipeDetailActivity.this);
                 }
             }
         });
@@ -173,7 +173,6 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
 
         final LayoutInflater inflater = LayoutInflater.from(this);
         final LinearLayout ingredientListLayout = findViewById(R.id.container_ingredients);
-        final KitchenViewModel kitchenViewModel = ViewModelProviders.of(RecipeDetailActivity.this).get(KitchenViewModel.class);
         kitchenViewModel.getIngredientsByRecipe(mRecipe.id).observe(this, new Observer<List<Ingredient>>() {
             @Override
             public void onChanged(@Nullable List<Ingredient> ingredients) {
@@ -243,7 +242,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
     @Override
     public void onRatingTransactionSuccessful(int rating) {
         mIsRatingProcessing = false;
-        SharedPreferences.Editor editor = sharedPref.edit();
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putInt(mRecipe.publicKey, rating);
         editor.apply();
     }

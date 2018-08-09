@@ -16,7 +16,7 @@ import java.util.List;
 
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.IngredientViewHolder> {
     private List<Ingredient> mIngredients;
-    private Context mContext;
+    private final Context mContext;
 
     public IngredientsAdapter(Context context) {
         mContext = context;
@@ -63,16 +63,14 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     public class IngredientViewHolder extends RecyclerView.ViewHolder {
         private Ingredient mIngredient;
-        private TextView mAmountTextView;
-        private TextView mIngredientTextView;
-        final View viewBackground;
+        private final TextView mAmountTextView;
+        private final TextView mIngredientTextView;
         final View viewForeground;
 
         private IngredientViewHolder(View itemView) {
             super(itemView);
             mAmountTextView = itemView.findViewById(R.id.tv_ingredient_amount);
             mIngredientTextView = itemView.findViewById(R.id.tv_ingredient);
-            viewBackground = itemView.findViewById(R.id.swiped_background);
             viewForeground = itemView.findViewById(R.id.view_foreground);
         }
 
