@@ -95,6 +95,7 @@ class KitchenRepository {
                     long id = mAsyncTaskDao.insert(recipe);
                     if (id == -1) {
                         mAsyncTaskDao.update(recipe);
+                        listener.onDataInsert(recipe.id);
                     } else {
                         listener.onDataInsert(id);
                     }

@@ -55,14 +55,16 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
     private SharedPreferences mSharedPreferences;
     private boolean mIsBookable;
     private RecipeViewModel mRecipeViewModel;
+    private KitchenViewModel mKitchenViewModel;
+    private boolean mIsInsertedForEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
         mSharedPreferences = getPreferences(Context.MODE_PRIVATE);
-        mRecipeViewModel = ViewModelProviders.of(RecipeDetailActivity.this).get(RecipeViewModel.class);
-        KitchenViewModel kitchenViewModel = ViewModelProviders.of(RecipeDetailActivity.this).get(KitchenViewModel.class);
+        mRecipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
+        mKitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
         boolean isEditable;
         if (getIntent() != null) {
             mRecipe = getIntent().getParcelableExtra(AppConstants.EXTRA_RECIPE);
@@ -101,10 +103,8 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(RecipeDetailActivity.this, RecipeEditActivity.class);
-                intent.putExtra(AppConstants.EXTRA_RECIPE, mRecipe);
-                startActivity(intent);
-                finish();
+                mKitchenViewModel.insertRecipe(mRecipe, RecipeDetailActivity.this);
+                mIsInsertedForEdit = true;
             }
         });
 
@@ -178,7 +178,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
 
         final LayoutInflater inflater = LayoutInflater.from(this);
         final LinearLayout ingredientListLayout = findViewById(R.id.container_ingredients);
-        kitchenViewModel.getIngredientsByRecipe(mRecipe.id).observe(this, new Observer<List<Ingredient>>() {
+        mKitchenViewModel.getIngredientsByRecipe(mRecipe.id).observe(this, new Observer<List<Ingredient>>() {
             @Override
             public void onChanged(@Nullable List<Ingredient> ingredients) {
                 if (ingredients == null)
@@ -233,8 +233,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
                 Snackbar.make(mAppBarLayout, "Boarding...", Snackbar.LENGTH_SHORT).show();
                 return true;
             case R.id.app_bar_bookmark:
-                KitchenViewModel viewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
-                viewModel.insertRecipe(mRecipe, this);
+                mKitchenViewModel.insertRecipe(mRecipe, this);
                 Snackbar.make(mAppBarLayout, R.string.recipe_bookmarked, Snackbar.LENGTH_SHORT).show();
                 // Delete bookmark icon from action bar menu.
                 mIsBookable = false;
@@ -258,5 +257,11 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
     @Override
     public void onDataInsert(long id) {
         mRecipe.id = (int) id;
+        if (mIsInsertedForEdit) {
+            Intent intent = new Intent(RecipeDetailActivity.this, RecipeEditActivity.class);
+            intent.putExtra(AppConstants.EXTRA_RECIPE, mRecipe);
+            startActivity(intent);
+            finish();
+        }
     }
 }

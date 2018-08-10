@@ -66,6 +66,7 @@
         <item>@string/vietnamese</item>
     </string-array>
 
+    <!-- Populates volume spinner. If any item is changed or reordered, must do the same for MeasurementUtils.class-->
     <string-array name="volume_array">
         <item>@string/milliliters</item>
         <item>@string/teaspoons</item>
@@ -77,6 +78,7 @@
         <item>@string/gallons</item>
     </string-array>
 
+    <!-- Populates weight spinner. If any item is changed or reordered, must do the same for MeasurementUtils.class-->
     <string-array name="weight_array">
         <item>@string/grams</item>
         <item>@string/ounces</item>
