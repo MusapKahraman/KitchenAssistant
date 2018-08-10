@@ -1,3 +1,8 @@
+/*
+ * Reference
+ * http://www.vogella.com/tutorials/AndroidParcelable/article.html
+ */
+
 package com.example.kitchen.data.local.entities;
 
 import android.arch.persistence.room.Entity;
@@ -123,7 +128,7 @@ public class Recipe implements Parcelable {
                 "\nname: " + title +
                 "\nimagePath: " + imagePath +
                 "\nservings: " + servings +
-                "\nrecipe_id: " + prepTime +
+                "\nrecipeId: " + prepTime +
                 "\nfood_id: " + cookTime +
                 "\nlanguage: " + language +
                 "\ncuisine: " + cuisine +

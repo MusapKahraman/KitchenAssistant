@@ -231,6 +231,9 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
                 KitchenViewModel viewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
                 viewModel.insertRecipe(mRecipe, this);
                 Snackbar.make(mAppBarLayout, R.string.recipe_bookmarked, Snackbar.LENGTH_SHORT).show();
+                // Delete bookmark icon from action bar menu.
+                mIsBookable = false;
+                invalidateOptionsMenu();
                 return true;
             case R.id.app_bar_share:
                 Snackbar.make(mAppBarLayout, "Sharing...", Snackbar.LENGTH_SHORT).show();

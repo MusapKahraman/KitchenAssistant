@@ -12,7 +12,7 @@
     <string name="recipes">Recipes</string>
     <string name="notebook">Notebook</string>
     <string name="suggestions">Suggestions</string>
-    <string name="meal_board">Add to plans</string>
+    <string name="meal_board">Meal Board</string>
     <string name="routines">Routines</string>
     <string name="shopping_list">Shopping List</string>
     <string name="food">Food</string>
@@ -157,4 +157,5 @@
     <string name="undo">UNDO</string>
     <string name="must_positive_integer">Must be a positive integer other than 0.</string>
     <string name="countable">Countable</string>
+    <string name="add_to_meal_plan">Add to meal plan</string>
 </resources>

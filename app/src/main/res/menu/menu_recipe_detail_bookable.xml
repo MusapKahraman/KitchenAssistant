@@ -12,6 +12,6 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/app_bar_board"
-        android:title="@string/meal_board"
+        android:title="@string/add_to_meal_plan"
         app:showAsAction="never" />
 </menu>

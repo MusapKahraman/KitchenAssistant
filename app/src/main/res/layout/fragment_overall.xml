@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
+Reference
+https://stackoverflow.com/questions/1555109/stop-edittext-from-gaining-focus-at-activity-startup/1662088#1662088
+-->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,7 +11,8 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true">
 
         <LinearLayout
             android:id="@+id/view_top"
@@ -79,9 +83,9 @@
                     android:layout_marginStart="@dimen/space_one_unit"
                     android:background="@android:color/transparent"
                     android:contentDescription="@string/rotate_image"
-                    app:srcCompat="@drawable/accent_rotate"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:srcCompat="@drawable/accent_rotate" />
 
                 <ImageButton
                     android:id="@+id/btn_publish_recipe"
@@ -90,9 +94,9 @@
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
                     android:background="@android:color/transparent"
                     android:contentDescription="@string/upload"
-                    app:srcCompat="@drawable/accent_cloud"
                     app:layout_constraintBottom_toTopOf="@id/btn_rotate"
-                    app:layout_constraintStart_toStartOf="@+id/btn_rotate" />
+                    app:layout_constraintStart_toStartOf="@+id/btn_rotate"
+                    app:srcCompat="@drawable/accent_cloud" />
 
                 <ProgressBar
                     android:id="@+id/progress_bar_publish_recipe"

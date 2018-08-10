@@ -20,7 +20,7 @@ public interface StepsDao {
     @Delete
     void deleteStep(Step step);
 
-    @Query("SELECT * from steps WHERE recipe_id = :recipeId")
+    @Query("SELECT * from steps WHERE recipeId = :recipeId")
     LiveData<List<Step>> getStepsByRecipe(int recipeId);
 
 }

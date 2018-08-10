@@ -1,3 +1,8 @@
+/*
+ * Reference
+ * https://stackoverflow.com/questions/45677230/android-room-persistence-library-upsert/48641762#48641762
+ */
+
 package com.example.kitchen.data.local.daos;
 
 import android.arch.lifecycle.LiveData;
@@ -24,10 +29,10 @@ public interface IngredientsDao {
     @Delete
     void deleteIngredient(Ingredient ingredient);
 
-    @Query("SELECT * from ingredients WHERE recipe_id = :recipeId ORDER BY id")
+    @Query("SELECT * from ingredients WHERE recipeId = :recipeId ORDER BY id")
     LiveData<List<Ingredient>> getIngredientsByRecipe(int recipeId);
 
-    @Query("SELECT * from ingredients WHERE food = :food ORDER BY recipe_id")
+    @Query("SELECT * from ingredients WHERE food = :food ORDER BY recipeId")
     LiveData<List<Ingredient>> getIngredientsByFood(String food);
 
 }

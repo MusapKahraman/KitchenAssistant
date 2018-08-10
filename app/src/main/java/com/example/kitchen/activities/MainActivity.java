@@ -16,6 +16,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity
     private KitchenViewModel mKitchenViewModel;
     private RecipeViewModel mRecipeViewModel;
     private SharedPreferences mSharedPreferences;
+    private List<Recipe> mBookedRecipes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +74,14 @@ public class MainActivity extends AppCompatActivity
         mSharedPreferences = getPreferences(Context.MODE_PRIVATE);
         mKitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
         mRecipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
+
+        mKitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
+            @Override
+            public void onChanged(@Nullable List<Recipe> recipes) {
+                if (recipes != null)
+                    mBookedRecipes = recipes;
+            }
+        });
 
         mFab = findViewById(R.id.fab);
         mFab.setOnClickListener(new View.OnClickListener() {
@@ -181,13 +191,8 @@ public class MainActivity extends AppCompatActivity
                 break;
             case 1:
                 mFab.show();
-                mKitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
-                    @Override
-                    public void onChanged(@Nullable List<Recipe> recipes) {
-                        if (recipes != null)
-                            showNotebook(recipes);
-                    }
-                });
+                if (mBookedRecipes != null)
+                    showNotebook(mBookedRecipes);
                 break;
             case 6:
                 mKitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
@@ -309,10 +314,20 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onRecipeClick(Recipe recipe, boolean isEditable) {
+        if (recipe == null)
+            return;
         Intent intent = new Intent(this, RecipeDetailActivity.class);
         intent.putExtra(AppConstants.EXTRA_RECIPE, recipe);
         intent.putExtra(AppConstants.EXTRA_EDITABLE, isEditable);
-        intent.putExtra(AppConstants.EXTRA_BOOKABLE, mNavigatorIndex == 0);
+        if (mNavigatorIndex == 0) {
+            boolean isBookable = true;
+            for (Recipe r : mBookedRecipes) {
+                if (!TextUtils.isEmpty(r.publicKey) && r.publicKey.equals(recipe.publicKey)) {
+                    isBookable = false;
+                }
+            }
+            intent.putExtra(AppConstants.EXTRA_BOOKABLE, isBookable);
+        }
         startActivity(intent);
     }
 

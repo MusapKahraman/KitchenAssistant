@@ -1,3 +1,7 @@
+/*
+ * Reference
+ * http://blog.teamtreehouse.com/contextual-action-bars-removing-items-recyclerview
+ */
 package com.example.kitchen.adapters;
 
 import android.arch.lifecycle.ViewModelProviders;
