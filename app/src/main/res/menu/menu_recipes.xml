@@ -9,12 +9,10 @@
         app:showAsAction="collapseActionView|ifRoom" />
     <item
         android:id="@+id/app_bar_filter"
-        android:icon="@drawable/ic_filter"
         android:title="@string/filter"
         app:showAsAction="never" />
     <item
         android:id="@+id/app_bar_sort"
-        android:icon="@drawable/ic_menu_sort"
         android:title="@string/sort"
         app:showAsAction="never" />
 </menu>
