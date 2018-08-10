@@ -1,3 +1,8 @@
+/*
+ * Reference
+ * https://stackoverflow.com/questions/5767570/how-to-update-a-menu-item-shown-in-the-actionbar/5767673#5767673
+ */
+
 package com.example.kitchen.activities;
 
 import android.arch.lifecycle.Observer;

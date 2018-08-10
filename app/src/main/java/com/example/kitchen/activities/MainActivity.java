@@ -74,16 +74,9 @@ public class MainActivity extends AppCompatActivity
         mSharedPreferences = getPreferences(Context.MODE_PRIVATE);
         mKitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
         mRecipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
-
-        mKitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
-            @Override
-            public void onChanged(@Nullable List<Recipe> recipes) {
-                if (recipes != null)
-                    mBookedRecipes = recipes;
-            }
-        });
-
+        mProgressBar = findViewById(R.id.progress_bar_recipes_fragment);
         mFab = findViewById(R.id.fab);
+        changeContent();
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,9 +90,13 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-
-        mProgressBar = findViewById(R.id.progress_bar_recipes_fragment);
-
+        mKitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
+            @Override
+            public void onChanged(@Nullable List<Recipe> recipes) {
+                if (recipes != null)
+                    mBookedRecipes = recipes;
+            }
+        });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
@@ -139,7 +136,6 @@ public class MainActivity extends AppCompatActivity
             mNotebookFragmentSavedState = savedInstanceState.getBundle(KEY_NOTEBOOK_FRAG);
             mMealBoardFragmentSavedState = savedInstanceState.getBundle(KEY_MEAL_BOARD_FRAG);
         }
-        changeContent();
     }
 
     @Override
@@ -191,8 +187,13 @@ public class MainActivity extends AppCompatActivity
                 break;
             case 1:
                 mFab.show();
-                if (mBookedRecipes != null)
-                    showNotebook(mBookedRecipes);
+                mKitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Recipe> recipes) {
+                        if (recipes != null)
+                            showNotebook(recipes);
+                    }
+                });
                 break;
             case 6:
                 mKitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
