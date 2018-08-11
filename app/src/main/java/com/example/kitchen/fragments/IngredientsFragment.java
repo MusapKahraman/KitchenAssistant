@@ -44,16 +44,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class IngredientsFragment extends Fragment implements RecyclerViewItemTouchHelper.RecyclerItemTouchHelperListener {
-    private ArrayList<String> mFoods;
-    private Map<String, String> mFoodMap;
-    private Context mContext;
-    private Recipe mRecipe;
+    @BindView(R.id.rv_ingredients)
+    RecyclerView mRecyclerView;
+    @BindView(R.id.btn_add_food)
+    Button mAddFoodLink;
+    @BindView(R.id.spinner_food)
+    SearchableSpinner mFoodSpinner;
+    @BindView(R.id.text_edit_amount)
+    EditText mAmountEditText;
+    @BindView(R.id.spinner_measure)
+    Spinner mMeasurementSpinner;
+    @BindView(R.id.btn_add_ingredient)
+    Button mAddButton;
     private KitchenViewModel mKitchenViewModel;
-    private RecyclerView mRecyclerView;
+    private Context mContext;
     private IngredientsAdapter mAdapter;
-    private ArrayList<Ingredient> mIngredients;
     private ArrayAdapter<CharSequence> mMeasurementAdapter;
+    private Map<String, String> mFoodMap;
+    private ArrayList<Ingredient> mIngredients;
+    private ArrayList<String> mFoods;
+    private Recipe mRecipe;
 
     public IngredientsFragment() {
         // Required empty public constructor
@@ -69,19 +83,9 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_ingredients, container, false);
-
+        ButterKnife.bind(this, rootView);
         FoodViewModel foodViewModel = ViewModelProviders.of(this).get(FoodViewModel.class);
         mKitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
-
-        Button addFoodLink = rootView.findViewById(R.id.tv_add_food_link);
-        addFoodLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, FoodActivity.class);
-                startActivity(intent);
-            }
-        });
-
         if (savedInstanceState != null) {
             mRecipe = savedInstanceState.getParcelable(AppConstants.KEY_RECIPE);
             mIngredients = savedInstanceState.getParcelableArrayList(AppConstants.KEY_INGREDIENTS);
@@ -91,8 +95,13 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
                 mRecipe = arguments.getParcelable(AppConstants.KEY_RECIPE);
             }
         }
-
-        mRecyclerView = rootView.findViewById(R.id.rv_ingredients);
+        mAddFoodLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, FoodActivity.class);
+                startActivity(intent);
+            }
+        });
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerViewItemTouchHelper(
@@ -103,7 +112,6 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
         mRecyclerView.setHasFixedSize(true);
         mAdapter = new IngredientsAdapter(mContext);
         mRecyclerView.setAdapter(mAdapter);
-
         mKitchenViewModel.getIngredientsByRecipe(mRecipe.id).observe(this, new Observer<List<Ingredient>>() {
             @Override
             public void onChanged(@Nullable List<Ingredient> ingredients) {
@@ -111,10 +119,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
                 mIngredients = (ArrayList<Ingredient>) ingredients;
             }
         });
-
-        final SearchableSpinner foodSpinner = rootView.findViewById(R.id.spinner_food);
-        foodSpinner.setTitle(getString(R.string.select_food));
-
+        mFoodSpinner.setTitle(getString(R.string.select_food));
         foodViewModel.getDataSnapshotLiveData().observe(this, new Observer<DataSnapshot>() {
             @Override
             public void onChanged(@Nullable DataSnapshot dataSnapshot) {
@@ -132,15 +137,11 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
                     }
                     ArrayAdapter<String> foodAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_item, mFoods);
                     foodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    foodSpinner.setAdapter(foodAdapter);
+                    mFoodSpinner.setAdapter(foodAdapter);
                 }
             }
         });
-
-        final EditText amountEditText = rootView.findViewById(R.id.text_edit_amount);
-
-        final Spinner measurementSpinner = rootView.findViewById(R.id.spinner_measure);
-        foodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mFoodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String food = mFoods.get(position);
@@ -153,7 +154,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
                             R.array.measurement_array_uncountable, android.R.layout.simple_spinner_item);
                 }
                 mMeasurementAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                measurementSpinner.setAdapter(mMeasurementAdapter);
+                mMeasurementSpinner.setAdapter(mMeasurementAdapter);
             }
 
             @Override
@@ -161,18 +162,16 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
 
             }
         });
-
-        Button addButton = rootView.findViewById(R.id.btn_add_ingredient);
-        addButton.setOnClickListener(new View.OnClickListener() {
+        mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (foodSpinner.getSelectedItem() == null)
+                if (mFoodSpinner.getSelectedItem() == null)
                     return;
-                String name = foodSpinner.getSelectedItem().toString();
-                String amountType = measurementSpinner.getSelectedItem().toString();
-                if (CheckUtils.isEmptyTextField(mContext, amountEditText))
+                String name = mFoodSpinner.getSelectedItem().toString();
+                String amountType = mMeasurementSpinner.getSelectedItem().toString();
+                if (CheckUtils.isEmptyTextField(mContext, mAmountEditText))
                     return;
-                int amount = Integer.valueOf(amountEditText.getText().toString());
+                int amount = Integer.valueOf(mAmountEditText.getText().toString());
                 // If there is already an item in the list with the same name then just increase its amount.
                 int shownId = 0;
                 int shownAmount = 0;
@@ -187,7 +186,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
                 } else {
                     mKitchenViewModel.insertIngredients(new Ingredient(shownId, mRecipe.id, name, amount + shownAmount, amountType));
                 }
-                DeviceUtils.hideKeyboardFrom(mContext, amountEditText);
+                DeviceUtils.hideKeyboardFrom(mContext, mAmountEditText);
             }
         });
         return rootView;

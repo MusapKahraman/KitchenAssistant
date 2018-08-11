@@ -75,19 +75,35 @@ public class CheckUtils {
         return false;
     }
 
-    public static int getValidNumberFromField(Context context, EditText editText) {
+    public static int getNonZeroPositiveIntegerFromField(Context context, EditText editText) {
         if (TextUtils.isEmpty(editText.getText())) {
             editText.setError(context.getString(R.string.field_required));
             editText.requestFocus();
-            return 0;
+            return -1;
         } else {
-            int volumeAmount = Integer.valueOf(editText.getText().toString());
-            if (volumeAmount < 1) {
+            int value = Integer.valueOf(editText.getText().toString());
+            if (value < 1) {
                 editText.setError(context.getString(R.string.must_positive_integer));
                 editText.requestFocus();
-                return 0;
+                return -1;
             }
-            return volumeAmount;
+            return value;
+        }
+    }
+
+    public static int getPositiveIntegerFromField(Context context, EditText editText) {
+        if (TextUtils.isEmpty(editText.getText())) {
+            editText.setError(context.getString(R.string.field_required));
+            editText.requestFocus();
+            return -1;
+        } else {
+            int value = Integer.valueOf(editText.getText().toString());
+            if (value < 0) {
+                editText.setError(context.getString(R.string.must_be_integer));
+                editText.requestFocus();
+                return -1;
+            }
+            return value;
         }
     }
 }

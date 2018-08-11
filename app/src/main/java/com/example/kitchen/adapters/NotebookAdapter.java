@@ -32,13 +32,16 @@ import com.example.kitchen.data.local.entities.Recipe;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.RecipeCardViewHolder> {
     private final RecipeClickListener mRecipeClickListener;
     private final ArrayList<Recipe> mSelectedRecipes = new ArrayList<>();
+    private KitchenViewModel mKitchenViewModel;
     private List<Recipe> mRecipes;
     private List<Recipe> mFilteredRecipes;
     private boolean mMultiSelect = false;
-    private KitchenViewModel mKitchenViewModel;
     private final ActionMode.Callback mActionModeCallbacks = new ActionMode.Callback() {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -131,19 +134,20 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
     }
 
     class RecipeCardViewHolder extends RecyclerView.ViewHolder {
-        private final TextView recipeNameTextView;
-        private final TextView cookTimeTextView;
-        private final ImageView recipeImageView;
-        private final RatingBar ratingBar;
-        private final FrameLayout recipeCardTint;
+        @BindView(R.id.tv_recipe_title)
+        TextView recipeNameTextView;
+        @BindView(R.id.tv_card_cook_time)
+        TextView cookTimeTextView;
+        @BindView(R.id.iv_card_recipe_image)
+        ImageView recipeImageView;
+        @BindView(R.id.ratingBar)
+        RatingBar ratingBar;
+        @BindView(R.id.card_recipe_tint)
+        FrameLayout recipeCardTint;
 
         private RecipeCardViewHolder(View itemView) {
             super(itemView);
-            recipeNameTextView = itemView.findViewById(R.id.tv_recipe_title);
-            cookTimeTextView = itemView.findViewById(R.id.tv_card_cook_time);
-            recipeImageView = itemView.findViewById(R.id.iv_card_recipe_image);
-            ratingBar = itemView.findViewById(R.id.ratingBar);
-            recipeCardTint = itemView.findViewById(R.id.card_recipe_tint);
+            ButterKnife.bind(this, itemView);
         }
 
         private void bind(int position) {

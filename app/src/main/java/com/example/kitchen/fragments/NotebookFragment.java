@@ -3,7 +3,6 @@ package com.example.kitchen.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -25,16 +24,20 @@ import com.example.kitchen.utility.AppConstants;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class NotebookFragment extends Fragment {
-    private static final String TAG = NotebookFragment.class.getSimpleName();
+    private static final String LOG_TAG = NotebookFragment.class.getSimpleName();
     private static final String LAYOUT_STATE = "state";
     private static final String SEARCH_QUERY = "search-query";
+    @BindView(R.id.rv_recipe_steps)
+    RecyclerView mRecyclerView;
     private Context mContext;
     private FragmentScrollListener fragmentScrollListener;
     private RecipeClickListener mClickListener;
     private StaggeredGridLayoutManager mLayoutManager;
     private NotebookAdapter mAdapter;
-    private View mRootView;
     private String mQuery;
 
     public NotebookFragment() {
@@ -66,19 +69,18 @@ public class NotebookFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        mRootView = inflater.inflate(R.layout.fragment_recipes, container, false);
-        RecyclerView recyclerView = mRootView.findViewById(R.id.rv_recipe_steps);
+        View rootView = inflater.inflate(R.layout.fragment_recipes, container, false);
+        ButterKnife.bind(this, rootView);
         if (getResources().getBoolean(R.bool.landscape)) {
             mLayoutManager = new StaggeredGridLayoutManager(1, RecyclerView.HORIZONTAL);
         } else {
             mLayoutManager = new StaggeredGridLayoutManager(1, RecyclerView.VERTICAL);
         }
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
         mAdapter = new NotebookAdapter(mContext, mClickListener);
-        recyclerView.setAdapter(mAdapter);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -100,7 +102,7 @@ public class NotebookFragment extends Fragment {
                 mAdapter.filter(mQuery);
             }
         }
-        return mRootView;
+        return rootView;
     }
 
     @Override
@@ -122,9 +124,8 @@ public class NotebookFragment extends Fragment {
         try {
             activity = (MainActivity) getActivity();
         } catch (ClassCastException e) {
-            Log.e(TAG, e.getMessage());
+            Log.e(LOG_TAG, e.getMessage());
         }
-
         if (activity != null) {
             activity.fromNotebookFragment(outState);
         }
@@ -159,16 +160,12 @@ public class NotebookFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         switch (id) {
             case R.id.app_bar_filter:
-                Snackbar.make(mRootView, "Filtering...", Snackbar.LENGTH_SHORT).show();
                 return true;
             case R.id.app_bar_sort:
-                Snackbar.make(mRootView, "Sorting...", Snackbar.LENGTH_SHORT).show();
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

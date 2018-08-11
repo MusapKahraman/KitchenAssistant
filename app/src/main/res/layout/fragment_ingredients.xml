@@ -28,7 +28,7 @@
             app:layout_constraintTop_toBottomOf="@+id/header_food" />
 
         <Button
-            android:id="@+id/tv_add_food_link"
+            android:id="@+id/btn_add_food"
             style="@style/ButtonStyleLink"
             android:layout_width="wrap_content"
             android:layout_marginStart="@dimen/activity_horizontal_margin"

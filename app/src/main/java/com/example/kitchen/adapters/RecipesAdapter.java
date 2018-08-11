@@ -21,6 +21,9 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCardViewHolder> {
     private final RecipeClickListener mRecipeClickListener;
     private List<Recipe> mRecipes;
@@ -79,18 +82,19 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
     }
 
     public class RecipeCardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private final TextView recipeNameTextView;
-        private final TextView cookTimeTextView;
-        private final ImageView recipeImageView;
-        private final RatingBar ratingBar;
+        @BindView(R.id.tv_recipe_title)
+        TextView recipeNameTextView;
+        @BindView(R.id.tv_card_cook_time)
+        TextView cookTimeTextView;
+        @BindView(R.id.iv_card_recipe_image)
+        ImageView recipeImageView;
+        @BindView(R.id.ratingBar)
+        RatingBar ratingBar;
         private Recipe mRecipe;
 
         private RecipeCardViewHolder(View itemView) {
             super(itemView);
-            recipeNameTextView = itemView.findViewById(R.id.tv_recipe_title);
-            cookTimeTextView = itemView.findViewById(R.id.tv_card_cook_time);
-            recipeImageView = itemView.findViewById(R.id.iv_card_recipe_image);
-            ratingBar = itemView.findViewById(R.id.ratingBar);
+            ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 

@@ -25,16 +25,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class RecipeEditActivity extends AppCompatActivity implements PictureDialogListener, FragmentMessageListener {
-    private ViewPager mViewPager;
+    @BindView(R.id.viewPager)
+    ViewPager mViewPager;
     private Recipe mRecipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_edit);
-        mViewPager = findViewById(R.id.viewPager);
-
+        ButterKnife.bind(this);
         if (savedInstanceState != null) {
             mRecipe = savedInstanceState.getParcelable(AppConstants.KEY_RECIPE);
         } else if (getIntent() != null) {
@@ -64,7 +67,6 @@ public class RecipeEditActivity extends AppCompatActivity implements PictureDial
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(mViewPager);
     }
-
 
     @Override
     public void onFragmentMessage(int fragmentIndex, Bundle bundle) {

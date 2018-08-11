@@ -14,16 +14,20 @@ import android.widget.TextView;
 
 import com.example.kitchen.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class WelcomeActivity extends AppCompatActivity {
+    @BindView(R.id.container)
+    ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-
+        ButterKnife.bind(this);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        ViewPager viewPager = findViewById(R.id.container);
-        viewPager.setAdapter(sectionsPagerAdapter);
+        mViewPager.setAdapter(sectionsPagerAdapter);
     }
 
     /**

@@ -14,9 +14,12 @@ import com.example.kitchen.utility.MeasurementUtils;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.IngredientViewHolder> {
-    private List<Ingredient> mIngredients;
     private final Context mContext;
+    private List<Ingredient> mIngredients;
 
     public IngredientsAdapter(Context context) {
         mContext = context;
@@ -62,16 +65,17 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     }
 
     public class IngredientViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.tv_ingredient_amount)
+        TextView mAmountTextView;
+        @BindView(R.id.tv_ingredient)
+        TextView mIngredientTextView;
+        @BindView(R.id.view_foreground)
+        View viewForeground;
         private Ingredient mIngredient;
-        private final TextView mAmountTextView;
-        private final TextView mIngredientTextView;
-        final View viewForeground;
 
         private IngredientViewHolder(View itemView) {
             super(itemView);
-            mAmountTextView = itemView.findViewById(R.id.tv_ingredient_amount);
-            mIngredientTextView = itemView.findViewById(R.id.tv_ingredient);
-            viewForeground = itemView.findViewById(R.id.view_foreground);
+            ButterKnife.bind(this, itemView);
         }
 
         private void bind(int position) {

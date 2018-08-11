@@ -1,6 +1,5 @@
 package com.example.kitchen.adapters;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,13 +12,14 @@ import com.example.kitchen.data.local.entities.Step;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHolder> {
-    private final Context mContext;
     private final StepClickListener mClickListener;
     private List<Step> mSteps;
 
-    public StepsAdapter(Context context, StepClickListener listener) {
-        mContext = context;
+    public StepsAdapter(StepClickListener listener) {
         mClickListener = listener;
     }
 
@@ -63,16 +63,17 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
     }
 
     public class StepViewHolder extends RecyclerView.ViewHolder {
-        final View viewForeground;
-        private final TextView mStepNumberTextView;
-        private final TextView mInstructionTextView;
+        @BindView(R.id.view_foreground)
+        View mViewForeground;
+        @BindView(R.id.tv_step_number)
+        TextView mStepNumberTextView;
+        @BindView(R.id.tv_instruction)
+        TextView mInstructionTextView;
         private Step mStep;
 
         private StepViewHolder(View itemView) {
             super(itemView);
-            mStepNumberTextView = itemView.findViewById(R.id.tv_step_number);
-            mInstructionTextView = itemView.findViewById(R.id.tv_instruction);
-            viewForeground = itemView.findViewById(R.id.view_foreground);
+            ButterKnife.bind(this, itemView);
         }
 
         private void bind(int position) {

@@ -47,36 +47,49 @@ import com.google.firebase.database.DatabaseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, RecipeClickListener, FragmentScrollListener {
     private static final String KEY_NAV_INDEX = "navigator-index-key";
     private static final String KEY_RECIPES_FRAG = "recipes-fragment-key";
     private static final String KEY_NOTEBOOK_FRAG = "notebook-fragment-key";
     private static final String KEY_MEAL_BOARD_FRAG = "meal-board-fragment-key";
-    private FloatingActionButton mFab;
-    private ProgressBar mProgressBar;
-    private Bundle mRecipesFragmentSavedState;
-    private Bundle mNotebookFragmentSavedState;
-    private Bundle mMealBoardFragmentSavedState;
-    private int mNavigatorIndex;
+    @BindView(R.id.fab)
+    FloatingActionButton mFab;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+    @BindView(R.id.nav_view)
+    NavigationView mNavigationView;
+    @BindView(R.id.progress_bar_recipes_fragment)
+    ProgressBar mProgressBar;
     private KitchenViewModel mKitchenViewModel;
     private RecipeViewModel mRecipeViewModel;
     private SharedPreferences mSharedPreferences;
+    private Bundle mRecipesFragmentSavedState;
+    private Bundle mNotebookFragmentSavedState;
+    private Bundle mMealBoardFragmentSavedState;
     private List<Recipe> mBookedRecipes;
+    private int mNavigatorIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        mSharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        ButterKnife.bind(this);
+        if (savedInstanceState != null) {
+            mRecipesFragmentSavedState = savedInstanceState.getBundle(KEY_RECIPES_FRAG);
+            mNotebookFragmentSavedState = savedInstanceState.getBundle(KEY_NOTEBOOK_FRAG);
+            mMealBoardFragmentSavedState = savedInstanceState.getBundle(KEY_MEAL_BOARD_FRAG);
+        }
         mKitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
         mRecipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
-        mProgressBar = findViewById(R.id.progress_bar_recipes_fragment);
-        mFab = findViewById(R.id.fab);
+        mSharedPreferences = getPreferences(Context.MODE_PRIVATE);
         changeContent();
+        setSupportActionBar(mToolbar);
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,9 +110,8 @@ public class MainActivity extends AppCompatActivity
                     mBookedRecipes = recipes;
             }
         });
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+                this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
@@ -109,13 +121,11 @@ public class MainActivity extends AppCompatActivity
                 changeContent();
             }
         };
-        drawer.addDrawerListener(toggle);
+        mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.setNavigationItemSelectedListener(this);
         // Populate navigation header with user data.
-        View navHeader = navigationView.getHeaderView(0);
+        View navHeader = mNavigationView.getHeaderView(0);
         ImageView userImage = navHeader.findViewById(R.id.iv_nav_header);
         TextView userName = navHeader.findViewById(R.id.tv_nav_header_title);
         TextView userEmail = navHeader.findViewById(R.id.tv_nav_header_subtitle);
@@ -129,12 +139,6 @@ public class MainActivity extends AppCompatActivity
             }
             userName.setText(user.getDisplayName());
             userEmail.setText(user.getEmail());
-        }
-
-        if (savedInstanceState != null) {
-            mRecipesFragmentSavedState = savedInstanceState.getBundle(KEY_RECIPES_FRAG);
-            mNotebookFragmentSavedState = savedInstanceState.getBundle(KEY_NOTEBOOK_FRAG);
-            mMealBoardFragmentSavedState = savedInstanceState.getBundle(KEY_MEAL_BOARD_FRAG);
         }
     }
 

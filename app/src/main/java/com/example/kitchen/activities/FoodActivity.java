@@ -18,80 +18,84 @@ import com.example.kitchen.data.firebase.FoodViewModel;
 import com.example.kitchen.utility.CheckUtils;
 import com.example.kitchen.utility.MeasurementUtils;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class FoodActivity extends AppCompatActivity {
+    @BindView(R.id.text_edit_food_name)
+    EditText mFoodNameView;
+    @BindView(R.id.text_edit_volume_amount)
+    EditText mVolumeAmountView;
+    @BindView(R.id.text_edit_weight_amount)
+    EditText mWeightAmountView;
+    @BindView(R.id.spinner_volume)
+    Spinner mVolumeSpinner;
+    @BindView(R.id.spinner_weight)
+    Spinner mWeightSpinner;
+    @BindView(R.id.tv_equals)
+    TextView mEqualsLabel;
+    @BindView(R.id.check_countable)
+    CheckBox mCountableCheckBox;
+    @BindView(R.id.btn_add_food)
+    Button mAddFoodButton;
     private FoodViewModel mFoodViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food);
-
+        ButterKnife.bind(this);
         mFoodViewModel = ViewModelProviders.of(FoodActivity.this).get(FoodViewModel.class);
-
-        final EditText foodNameView = findViewById(R.id.text_edit_food_name);
-        final EditText volumeAmountView = findViewById(R.id.text_edit_volume_amount);
-        final EditText weightAmountView = findViewById(R.id.text_edit_weight_amount);
-
-        final Spinner volumeSpinner = findViewById(R.id.spinner_volume);
         ArrayAdapter<CharSequence> volumeAdapter = ArrayAdapter.createFromResource(this,
                 R.array.volume_array, android.R.layout.simple_spinner_item);
         volumeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        volumeSpinner.setAdapter(volumeAdapter);
-
-        final Spinner weightSpinner = findViewById(R.id.spinner_weight);
+        mVolumeSpinner.setAdapter(volumeAdapter);
         ArrayAdapter<CharSequence> weightAdapter = ArrayAdapter.createFromResource(this,
                 R.array.weight_array, android.R.layout.simple_spinner_item);
         weightAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        weightSpinner.setAdapter(weightAdapter);
-
-        final TextView equalsLabel = findViewById(R.id.tv_equals);
-
-        final CheckBox countableCheckBox = findViewById(R.id.check_countable);
-        countableCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mWeightSpinner.setAdapter(weightAdapter);
+        mCountableCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    volumeAmountView.setVisibility(View.GONE);
-                    weightAmountView.setVisibility(View.GONE);
-                    volumeSpinner.setVisibility(View.GONE);
-                    weightSpinner.setVisibility(View.GONE);
-                    equalsLabel.setVisibility(View.GONE);
+                    mVolumeAmountView.setVisibility(View.GONE);
+                    mWeightAmountView.setVisibility(View.GONE);
+                    mVolumeSpinner.setVisibility(View.GONE);
+                    mWeightSpinner.setVisibility(View.GONE);
+                    mEqualsLabel.setVisibility(View.GONE);
                 } else {
-                    volumeAmountView.setVisibility(View.VISIBLE);
-                    weightAmountView.setVisibility(View.VISIBLE);
-                    volumeSpinner.setVisibility(View.VISIBLE);
-                    weightSpinner.setVisibility(View.VISIBLE);
-                    equalsLabel.setVisibility(View.VISIBLE);
+                    mVolumeAmountView.setVisibility(View.VISIBLE);
+                    mWeightAmountView.setVisibility(View.VISIBLE);
+                    mVolumeSpinner.setVisibility(View.VISIBLE);
+                    mWeightSpinner.setVisibility(View.VISIBLE);
+                    mEqualsLabel.setVisibility(View.VISIBLE);
                 }
             }
         });
-
-        Button addFoodButton = findViewById(R.id.btn_add_food);
-        addFoodButton.setOnClickListener(new View.OnClickListener() {
+        mAddFoodButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (CheckUtils.isEmptyTextField(FoodActivity.this, foodNameView))
+                if (CheckUtils.isEmptyTextField(FoodActivity.this, mFoodNameView))
                     return;
-                String foodName = CheckUtils.validateTitle(foodNameView.getText().toString());
-                foodNameView.setText(foodName);
+                String foodName = CheckUtils.validateTitle(mFoodNameView.getText().toString());
+                mFoodNameView.setText(foodName);
                 float conversionMultiplier = 0;
-                if (!countableCheckBox.isChecked()) {
-                    int volumeAmount = CheckUtils.getValidNumberFromField(FoodActivity.this, volumeAmountView);
-                    if (volumeAmount == 0)
+                if (!mCountableCheckBox.isChecked()) {
+                    int volumeAmount = CheckUtils.getNonZeroPositiveIntegerFromField(FoodActivity.this, mVolumeAmountView);
+                    if (volumeAmount == -1)
                         return;
-                    int weightAmount = CheckUtils.getValidNumberFromField(FoodActivity.this, weightAmountView);
-                    if (weightAmount == 0)
+                    int weightAmount = CheckUtils.getNonZeroPositiveIntegerFromField(FoodActivity.this, mWeightAmountView);
+                    if (weightAmount == -1)
                         return;
-                    int volumeType = volumeSpinner.getSelectedItemPosition();
-                    int weightType = weightSpinner.getSelectedItemPosition();
+                    int volumeType = mVolumeSpinner.getSelectedItemPosition();
+                    int weightType = mWeightSpinner.getSelectedItemPosition();
                     conversionMultiplier = MeasurementUtils.getConversionMultiplier(
                             FoodActivity.this, volumeAmount, volumeType, weightAmount, weightType);
                 }
                 mFoodViewModel.addFood(foodName, conversionMultiplier);
-                Snackbar.make(foodNameView,
+                Snackbar.make(mFoodNameView,
                         String.format(getString(R.string.food_added), foodName), Snackbar.LENGTH_SHORT).show();
             }
         });
     }
-
 }

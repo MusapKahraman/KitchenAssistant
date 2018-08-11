@@ -30,7 +30,7 @@ public class RecyclerViewItemTouchHelper extends ItemTouchHelper.SimpleCallback 
             if (viewHolder instanceof IngredientsAdapter.IngredientViewHolder) {
                 foregroundView = ((IngredientsAdapter.IngredientViewHolder) viewHolder).viewForeground;
             } else if (viewHolder instanceof StepsAdapter.StepViewHolder) {
-                foregroundView = ((StepsAdapter.StepViewHolder) viewHolder).viewForeground;
+                foregroundView = ((StepsAdapter.StepViewHolder) viewHolder).mViewForeground;
             }
             if (foregroundView != null)
                 getDefaultUIUtil().onSelected(foregroundView);
@@ -44,7 +44,7 @@ public class RecyclerViewItemTouchHelper extends ItemTouchHelper.SimpleCallback 
         if (viewHolder instanceof IngredientsAdapter.IngredientViewHolder) {
             foregroundView = ((IngredientsAdapter.IngredientViewHolder) viewHolder).viewForeground;
         } else if (viewHolder instanceof StepsAdapter.StepViewHolder) {
-            foregroundView = ((StepsAdapter.StepViewHolder) viewHolder).viewForeground;
+            foregroundView = ((StepsAdapter.StepViewHolder) viewHolder).mViewForeground;
         }
         if (foregroundView != null)
             getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
@@ -56,7 +56,7 @@ public class RecyclerViewItemTouchHelper extends ItemTouchHelper.SimpleCallback 
         if (viewHolder instanceof IngredientsAdapter.IngredientViewHolder) {
             foregroundView = ((IngredientsAdapter.IngredientViewHolder) viewHolder).viewForeground;
         } else if (viewHolder instanceof StepsAdapter.StepViewHolder) {
-            foregroundView = ((StepsAdapter.StepViewHolder) viewHolder).viewForeground;
+            foregroundView = ((StepsAdapter.StepViewHolder) viewHolder).mViewForeground;
         }
         if (foregroundView != null)
             getDefaultUIUtil().clearView(foregroundView);
@@ -69,7 +69,7 @@ public class RecyclerViewItemTouchHelper extends ItemTouchHelper.SimpleCallback 
         if (viewHolder instanceof IngredientsAdapter.IngredientViewHolder) {
             foregroundView = ((IngredientsAdapter.IngredientViewHolder) viewHolder).viewForeground;
         } else if (viewHolder instanceof StepsAdapter.StepViewHolder) {
-            foregroundView = ((StepsAdapter.StepViewHolder) viewHolder).viewForeground;
+            foregroundView = ((StepsAdapter.StepViewHolder) viewHolder).mViewForeground;
         }
         if (foregroundView != null)
             getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);

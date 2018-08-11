@@ -45,24 +45,62 @@ import com.example.kitchen.utility.MeasurementUtils;
 
 import java.util.List;
 
-public class RecipeDetailActivity extends AppCompatActivity implements RecipeViewModel.RatingPostListener, LocalDatabaseInsertListener {
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
+public class RecipeDetailActivity extends AppCompatActivity implements RecipeViewModel.RatingPostListener, LocalDatabaseInsertListener {
     private static final String KEY_SERVINGS = "servings-key";
     private static final String KEY_RATING_TRANSACTION = "rating-transaction-status-key";
+    @BindView(R.id.app_bar)
+    AppBarLayout mAppBarLayout;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.iv_recipe_image)
+    ImageView mRecipeImageView;
+    @BindView(R.id.fab)
+    FloatingActionButton mFab;
+    @BindView(R.id.divider_rating)
+    View mRatingDivider;
+    @BindView(R.id.label_rating)
+    TextView mRatingLabel;
+    @BindView(R.id.ratingBar)
+    RatingBar mRatingBar;
+    @BindView(R.id.tv_recipe_writer)
+    TextView mWriterTextView;
+    @BindView(R.id.tv_course)
+    TextView mCourseTextView;
+    @BindView(R.id.tv_cuisine)
+    TextView mCuisineTextView;
+    @BindView(R.id.tv_prep_time)
+    TextView mPrepTimeTextView;
+    @BindView(R.id.tv_cook_time)
+    TextView mCookTimeTextView;
+    @BindView(R.id.tv_servings)
+    TextView mServingsTextView;
+    @BindView(R.id.btn_servings_decrement)
+    Button mDecrementButton;
+    @BindView(R.id.btn_servings_increment)
+    Button mIncrementButton;
+    @BindView(R.id.btn_finished)
+    Button mFinishedButton;
+    @BindView(R.id.container_ingredients)
+    LinearLayout mIngredientsContainer;
+    @BindView(R.id.container_steps)
+    LinearLayout mStepsContainer;
+    private RecipeViewModel mRecipeViewModel;
+    private KitchenViewModel mKitchenViewModel;
+    private SharedPreferences mSharedPreferences;
     private Recipe mRecipe;
     private int mServings;
     private boolean mIsRatingProcessing;
-    private AppBarLayout mAppBarLayout;
-    private SharedPreferences mSharedPreferences;
     private boolean mIsBookable;
-    private RecipeViewModel mRecipeViewModel;
-    private KitchenViewModel mKitchenViewModel;
     private boolean mIsInsertedForEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
+        ButterKnife.bind(this);
         mSharedPreferences = getPreferences(Context.MODE_PRIVATE);
         mRecipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
         mKitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
@@ -74,18 +112,14 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
         } else {
             return;
         }
-
-        mAppBarLayout = findViewById(R.id.app_bar);
-        final Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
+        // Change ActionBar title as the name of the recipe.
+        setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            // Change ActionBar title as the name of the recipe.
             actionBar.setTitle(mRecipe.title);
         }
-        ImageView recipeImageView = findViewById(R.id.iv_recipe_image);
+
         String url = mRecipe.imagePath;
         if (url != null && url.length() != 0) {
             RequestOptions options = new RequestOptions()
@@ -97,11 +131,10 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
             Glide.with(this)
                     .load(url)
                     .apply(options)
-                    .into(recipeImageView);
+                    .into(mRecipeImageView);
         }
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mKitchenViewModel.insertRecipe(mRecipe, RecipeDetailActivity.this);
@@ -109,12 +142,9 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
             }
         });
 
-        View ratingDivider = findViewById(R.id.divider_rating);
-        TextView ratingLabel = findViewById(R.id.label_rating);
-        RatingBar ratingBar = findViewById(R.id.ratingBar);
         int rating = mSharedPreferences.getInt(mRecipe.publicKey, 0);
-        ratingBar.setRating(rating);
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+        mRatingBar.setRating(rating);
+        mRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 if (!mIsRatingProcessing) {
@@ -126,51 +156,42 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
             }
         });
         if (!isEditable) {
-            fab.setVisibility(View.GONE);
-            TextView writerView = findViewById(R.id.tv_recipe_writer);
-            writerView.setText(mRecipe.writerName);
+            mFab.setVisibility(View.GONE);
+            mWriterTextView.setText(mRecipe.writerName);
         } else {
-            ratingBar.setVisibility(View.GONE);
-            ratingLabel.setVisibility(View.GONE);
-            ratingDivider.setVisibility(View.GONE);
+            mRatingBar.setVisibility(View.GONE);
+            mRatingLabel.setVisibility(View.GONE);
+            mRatingDivider.setVisibility(View.GONE);
         }
-        TextView courseTextView = findViewById(R.id.tv_course);
-        courseTextView.setText(mRecipe.course);
-        TextView cuisineTextView = findViewById(R.id.tv_cuisine);
-        cuisineTextView.setText(mRecipe.cuisine);
-        TextView prepTimeTextView = findViewById(R.id.tv_prep_time);
-        prepTimeTextView.setText(String.valueOf(mRecipe.prepTime));
-        TextView cookTimeTextView = findViewById(R.id.tv_cook_time);
-        cookTimeTextView.setText(String.valueOf(mRecipe.cookTime));
+        mCourseTextView.setText(mRecipe.course);
+        mCuisineTextView.setText(mRecipe.cuisine);
+        mPrepTimeTextView.setText(String.valueOf(mRecipe.prepTime));
+        mCookTimeTextView.setText(String.valueOf(mRecipe.cookTime));
         if (savedInstanceState == null) {
             mServings = mRecipe.servings;
         } else {
             mServings = savedInstanceState.getInt(KEY_SERVINGS);
             mIsRatingProcessing = savedInstanceState.getBoolean(KEY_RATING_TRANSACTION);
         }
-        final TextView servingsTextView = findViewById(R.id.tv_servings);
-        servingsTextView.setText(String.valueOf(mServings));
-        Button decrementButton = findViewById(R.id.btn_servings_decrement);
-        Button incrementButton = findViewById(R.id.btn_servings_increment);
-        decrementButton.setOnClickListener(new View.OnClickListener() {
+        mServingsTextView.setText(String.valueOf(mServings));
+        mDecrementButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mServings > 1) {
                     mServings--;
-                    servingsTextView.setText(String.valueOf(mServings));
+                    mServingsTextView.setText(String.valueOf(mServings));
                 }
             }
         });
-        incrementButton.setOnClickListener(new View.OnClickListener() {
+        mIncrementButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mServings++;
-                servingsTextView.setText(String.valueOf(mServings));
+                mServingsTextView.setText(String.valueOf(mServings));
             }
         });
 
-        Button finishedButton = findViewById(R.id.btn_finished);
-        finishedButton.setOnClickListener(new View.OnClickListener() {
+        mFinishedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Snackbar.make(mAppBarLayout, "Finished.", Snackbar.LENGTH_SHORT).show();
@@ -178,38 +199,36 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
         });
 
         final LayoutInflater inflater = LayoutInflater.from(this);
-        final LinearLayout ingredientListLayout = findViewById(R.id.container_ingredients);
         mKitchenViewModel.getIngredientsByRecipe(mRecipe.id).observe(this, new Observer<List<Ingredient>>() {
             @Override
             public void onChanged(@Nullable List<Ingredient> ingredients) {
                 if (ingredients == null)
                     return;
                 for (Ingredient ingredient : ingredients) {
-                    View ingredientView = inflater.inflate(R.layout.item_ingredient, ingredientListLayout, false);
+                    View ingredientView = inflater.inflate(R.layout.item_ingredient, mIngredientsContainer, false);
                     TextView ingredientAmountTextView = ingredientView.findViewById(R.id.tv_ingredient_amount);
                     TextView ingredientTextView = ingredientView.findViewById(R.id.tv_ingredient);
                     String text = ingredient.amount +
                             " " + MeasurementUtils.getAbbreviation(RecipeDetailActivity.this, ingredient.amountType);
                     ingredientAmountTextView.setText(text);
                     ingredientTextView.setText(ingredient.food);
-                    ingredientListLayout.addView(ingredientView);
+                    mIngredientsContainer.addView(ingredientView);
                 }
             }
         });
 
-        final LinearLayout stepListLayout = findViewById(R.id.container_steps);
         mKitchenViewModel.getStepsByRecipe(mRecipe.id).observe(this, new Observer<List<Step>>() {
             @Override
             public void onChanged(@Nullable List<Step> steps) {
                 if (steps == null)
                     return;
                 for (Step step : steps) {
-                    View stepView = inflater.inflate(R.layout.item_step, stepListLayout, false);
+                    View stepView = inflater.inflate(R.layout.item_step, mStepsContainer, false);
                     TextView stepNumberView = stepView.findViewById(R.id.tv_step_number);
                     stepNumberView.setText(String.valueOf(step.stepNumber));
                     TextView instructionTextView = stepView.findViewById(R.id.tv_instruction);
                     instructionTextView.setText(step.instruction);
-                    stepListLayout.addView(stepView);
+                    mStepsContainer.addView(stepView);
                 }
             }
         });

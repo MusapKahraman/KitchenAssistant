@@ -33,15 +33,22 @@ import com.example.kitchen.utility.DeviceUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class StepsFragment extends Fragment implements RecyclerViewItemTouchHelper.RecyclerItemTouchHelperListener, StepClickListener {
     private static final String KEY_STEP_NUMBER = "step-number-key";
+    @BindView(R.id.rv_steps)
+    RecyclerView mRecyclerView;
+    @BindView(R.id.text_edit_instruction)
+    EditText mInstructionText;
+    @BindView(R.id.btn_add_instruction)
+    Button addButton;
     private Recipe mRecipe;
     private ArrayList<Step> mSteps;
     private KitchenViewModel mKitchenViewModel;
-    private RecyclerView mRecyclerView;
     private StepsAdapter mAdapter;
     private Context mContext;
-    private EditText mInstructionText;
     private int mStepNumber;
     private FragmentMessageListener mMessageListener;
 
@@ -64,7 +71,7 @@ public class StepsFragment extends Fragment implements RecyclerViewItemTouchHelp
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_steps, container, false);
-
+        ButterKnife.bind(this, rootView);
         mKitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
         if (savedInstanceState != null) {
             mRecipe = savedInstanceState.getParcelable(AppConstants.KEY_RECIPE);
@@ -76,7 +83,6 @@ public class StepsFragment extends Fragment implements RecyclerViewItemTouchHelp
                 mRecipe = arguments.getParcelable(AppConstants.KEY_RECIPE);
             }
         }
-        mRecyclerView = rootView.findViewById(R.id.rv_steps);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerViewItemTouchHelper(
@@ -85,9 +91,8 @@ public class StepsFragment extends Fragment implements RecyclerViewItemTouchHelp
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
-        mAdapter = new StepsAdapter(mContext, this);
+        mAdapter = new StepsAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
-
         mKitchenViewModel.getStepsByRecipe(mRecipe.id).observe(this, new Observer<List<Step>>() {
             @Override
             public void onChanged(@Nullable List<Step> steps) {
@@ -95,8 +100,6 @@ public class StepsFragment extends Fragment implements RecyclerViewItemTouchHelp
                 mSteps = (ArrayList<Step>) steps;
             }
         });
-        mInstructionText = rootView.findViewById(R.id.text_edit_instruction);
-        Button addButton = rootView.findViewById(R.id.btn_add_instruction);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,15 +145,12 @@ public class StepsFragment extends Fragment implements RecyclerViewItemTouchHelp
         if (viewHolder instanceof StepsAdapter.StepViewHolder) {
             // get the removed step number to display it in snack bar
             int stepNumber = mSteps.get(viewHolder.getAdapterPosition()).stepNumber;
-
             // backup of removed item for undo purpose
             final Step deletedStep = mSteps.get(viewHolder.getAdapterPosition());
             final int deletedIndex = viewHolder.getAdapterPosition();
-
             // remove the item from recycler view
             mAdapter.removeItem(viewHolder.getAdapterPosition());
             mKitchenViewModel.deleteSteps(deletedStep);
-
             // showing snack bar with Undo option
             Snackbar snackbar = Snackbar.make(mRecyclerView, String.format(getString(R.string.removed_step), stepNumber), Snackbar.LENGTH_LONG);
             snackbar.setAction(R.string.undo, new View.OnClickListener() {

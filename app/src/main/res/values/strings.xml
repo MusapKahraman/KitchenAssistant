@@ -157,9 +157,10 @@
     <string name="removed_ingredient">%1$s is removed from ingredients.</string>
     <string name="removed_step">Step %1$d is removed from instructions.</string>
     <string name="undo">UNDO</string>
-    <string name="must_positive_integer">Must be a positive integer other than 0.</string>
+    <string name="must_positive_integer">Must be an integer bigger than zero.</string>
     <string name="countable">Countable</string>
     <string name="add_to_meal_plan">Add to meal plan</string>
     <string name="add_ingredient">Add ingredient</string>
     <string name="add_instruction">Add instruction</string>
+    <string name="must_be_integer">Must be a positive integer.</string>
 </resources>

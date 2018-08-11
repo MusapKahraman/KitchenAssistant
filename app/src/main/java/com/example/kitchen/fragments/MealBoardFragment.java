@@ -23,6 +23,9 @@ import com.example.kitchen.adapters.ExpandableListAdapter;
 import com.example.kitchen.data.DataPlaceholders;
 import com.example.kitchen.utility.AppConstants;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MealBoardFragment extends Fragment {
     private static final String TAG = MealBoardFragment.class.getSimpleName();
     private static final String TAB_LAST = "tab-last_opened";
@@ -33,16 +36,24 @@ public class MealBoardFragment extends Fragment {
     private static final String TAB_FRIDAY = "tab-friday";
     private static final String TAB_SATURDAY = "tab-saturday";
     private static final String TAB_SUNDAY = "tab-sunday";
-    private View mRootView;
-    private HorizontalScrollView mHorizontalScrollView;
-    private TabHost mTabHost;
-    private ExpandableListView mMonday;
-    private ExpandableListView mTuesday;
-    private ExpandableListView mWednesday;
-    private ExpandableListView mThursday;
-    private ExpandableListView mFriday;
-    private ExpandableListView mSaturday;
-    private ExpandableListView mSunday;
+    @BindView(R.id.tab_0)
+    ExpandableListView mMonday;
+    @BindView(R.id.tab_1)
+    ExpandableListView mTuesday;
+    @BindView(R.id.tab_2)
+    ExpandableListView mWednesday;
+    @BindView(R.id.tab_3)
+    ExpandableListView mThursday;
+    @BindView(R.id.tab_4)
+    ExpandableListView mFriday;
+    @BindView(R.id.tab_5)
+    ExpandableListView mSaturday;
+    @BindView(R.id.tab_6)
+    ExpandableListView mSunday;
+    @BindView(R.id.horizontalScrollView)
+    HorizontalScrollView mHorizontalScrollView;
+    @BindView(R.id.tab_host)
+    TabHost mTabHost;
 
     public MealBoardFragment() {
         // Required empty public constructor
@@ -57,35 +68,25 @@ public class MealBoardFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mRootView = inflater.inflate(R.layout.fragment_meal_board, container, false);
+
+        final View rootView = inflater.inflate(R.layout.fragment_meal_board, container, false);
+        ButterKnife.bind(this, rootView);
         // Set tabs as week days.
-        mHorizontalScrollView = mRootView.findViewById(R.id.horizontalScrollView);
-        mTabHost = mRootView.findViewById(R.id.tab_host);
         mTabHost.setup();
         setWeekDayTabs();
-        ExpandableListAdapter adapter = new ExpandableListAdapter(getContext(),
-                DataPlaceholders.getGroups(), DataPlaceholders.getChildren());
-        mMonday = mRootView.findViewById(R.id.tab_0);
+        ExpandableListAdapter adapter = new ExpandableListAdapter(getContext(), DataPlaceholders.getGroups(), DataPlaceholders.getChildren());
         mMonday.setAdapter(adapter);
-        mTuesday = mRootView.findViewById(R.id.tab_1);
         mTuesday.setAdapter(adapter);
-        mWednesday = mRootView.findViewById(R.id.tab_2);
         mWednesday.setAdapter(adapter);
-        mThursday = mRootView.findViewById(R.id.tab_3);
         mThursday.setAdapter(adapter);
-        mFriday = mRootView.findViewById(R.id.tab_4);
         mFriday.setAdapter(adapter);
-        mSaturday = mRootView.findViewById(R.id.tab_5);
         mSaturday.setAdapter(adapter);
-        mSunday = mRootView.findViewById(R.id.tab_6);
         mSunday.setAdapter(adapter);
-
         // Set colors of tab titles
         for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++) {
             TextView tv = mTabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
             tv.setTextColor(getResources().getColor(R.color.tab_text));
         }
-
         Bundle arguments = getArguments();
         if (arguments != null) {
             savedInstanceState = arguments.getBundle(AppConstants.KEY_SAVED_STATE);
@@ -100,34 +101,30 @@ public class MealBoardFragment extends Fragment {
                 mTabHost.setCurrentTab(savedInstanceState.getInt(TAB_LAST));
             }
         }
-
         mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
                 scrollToSelectedTab();
             }
         });
-
         mMonday.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
-                Snackbar.make(mRootView, DataPlaceholders.getGroups().get(groupPosition)
+                Snackbar.make(rootView, DataPlaceholders.getGroups().get(groupPosition)
                         + " Expanded", Snackbar.LENGTH_SHORT).show();
             }
         });
-
         mMonday.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
             @Override
             public void onGroupCollapse(int groupPosition) {
-                Snackbar.make(mRootView, DataPlaceholders.getGroups().get(groupPosition)
+                Snackbar.make(rootView, DataPlaceholders.getGroups().get(groupPosition)
                         + " Collapsed", Snackbar.LENGTH_SHORT).show();
             }
         });
-
         mMonday.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                Snackbar.make(mRootView,
+                Snackbar.make(rootView,
                         DataPlaceholders.getGroups().get(groupPosition) + " : "
                                 + DataPlaceholders.getChildren()
                                 .get(DataPlaceholders.getGroups().get(groupPosition))
@@ -136,8 +133,7 @@ public class MealBoardFragment extends Fragment {
                 return false;
             }
         });
-
-        return mRootView;
+        return rootView;
     }
 
     /**
@@ -201,7 +197,6 @@ public class MealBoardFragment extends Fragment {
         int id = item.getItemId();
         switch (id) {
             case R.id.app_bar_auto_complete:
-                Snackbar.make(mRootView, "Magic happening...", Snackbar.LENGTH_SHORT).show();
                 return true;
         }
         return super.onOptionsItemSelected(item);
