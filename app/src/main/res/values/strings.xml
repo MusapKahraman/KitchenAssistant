@@ -116,7 +116,8 @@
     <string name="edit_recipe">Edit Recipe</string>
     <string name="overview">Overview</string>
     <string name="ingredients">Ingredients</string>
-    <string name="directions">Directions</string>
+    <string name="instruction">Instruction</string>
+    <string name="instructions">Instructions</string>
     <string name="click_to_add_a_picture">Click to add a picture</string>
     <string name="dialog_photo_select">Select a source for the picture.</string>
     <string name="no_camera_app">No camera application available.</string>
@@ -153,9 +154,12 @@
     <string name="amount">Amount</string>
     <string name="measure">Measure</string>
     <string name="add_food_hint"><u>Cannot find the food?</u></string>
-    <string name="removed_ingredient">%1$s is removed from ingredients!</string>
+    <string name="removed_ingredient">%1$s is removed from ingredients.</string>
+    <string name="removed_step">Step %1$d is removed from instructions.</string>
     <string name="undo">UNDO</string>
     <string name="must_positive_integer">Must be a positive integer other than 0.</string>
     <string name="countable">Countable</string>
     <string name="add_to_meal_plan">Add to meal plan</string>
+    <string name="add_ingredient">Add ingredient</string>
+    <string name="add_instruction">Add instruction</string>
 </resources>

@@ -26,35 +26,53 @@ public class RecyclerViewItemTouchHelper extends ItemTouchHelper.SimpleCallback 
     @Override
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
         if (viewHolder != null) {
-            final View foregroundView = ((IngredientsAdapter.IngredientViewHolder) viewHolder).viewForeground;
-
-            getDefaultUIUtil().onSelected(foregroundView);
+            View foregroundView = null;
+            if (viewHolder instanceof IngredientsAdapter.IngredientViewHolder) {
+                foregroundView = ((IngredientsAdapter.IngredientViewHolder) viewHolder).viewForeground;
+            } else if (viewHolder instanceof StepsAdapter.StepViewHolder) {
+                foregroundView = ((StepsAdapter.StepViewHolder) viewHolder).viewForeground;
+            }
+            if (foregroundView != null)
+                getDefaultUIUtil().onSelected(foregroundView);
         }
     }
 
     @Override
-    public void onChildDrawOver(Canvas c, RecyclerView recyclerView,
-                                RecyclerView.ViewHolder viewHolder, float dX, float dY,
-                                int actionState, boolean isCurrentlyActive) {
-        final View foregroundView = ((IngredientsAdapter.IngredientViewHolder) viewHolder).viewForeground;
-        getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY,
-                actionState, isCurrentlyActive);
+    public void onChildDrawOver(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                                float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        View foregroundView = null;
+        if (viewHolder instanceof IngredientsAdapter.IngredientViewHolder) {
+            foregroundView = ((IngredientsAdapter.IngredientViewHolder) viewHolder).viewForeground;
+        } else if (viewHolder instanceof StepsAdapter.StepViewHolder) {
+            foregroundView = ((StepsAdapter.StepViewHolder) viewHolder).viewForeground;
+        }
+        if (foregroundView != null)
+            getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
     }
 
     @Override
     public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-        final View foregroundView = ((IngredientsAdapter.IngredientViewHolder) viewHolder).viewForeground;
-        getDefaultUIUtil().clearView(foregroundView);
+        View foregroundView = null;
+        if (viewHolder instanceof IngredientsAdapter.IngredientViewHolder) {
+            foregroundView = ((IngredientsAdapter.IngredientViewHolder) viewHolder).viewForeground;
+        } else if (viewHolder instanceof StepsAdapter.StepViewHolder) {
+            foregroundView = ((StepsAdapter.StepViewHolder) viewHolder).viewForeground;
+        }
+        if (foregroundView != null)
+            getDefaultUIUtil().clearView(foregroundView);
     }
 
     @Override
-    public void onChildDraw(Canvas c, RecyclerView recyclerView,
-                            RecyclerView.ViewHolder viewHolder, float dX, float dY,
-                            int actionState, boolean isCurrentlyActive) {
-        final View foregroundView = ((IngredientsAdapter.IngredientViewHolder) viewHolder).viewForeground;
-
-        getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY,
-                actionState, isCurrentlyActive);
+    public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                            float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        View foregroundView = null;
+        if (viewHolder instanceof IngredientsAdapter.IngredientViewHolder) {
+            foregroundView = ((IngredientsAdapter.IngredientViewHolder) viewHolder).viewForeground;
+        } else if (viewHolder instanceof StepsAdapter.StepViewHolder) {
+            foregroundView = ((StepsAdapter.StepViewHolder) viewHolder).viewForeground;
+        }
+        if (foregroundView != null)
+            getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
     }
 
     @Override

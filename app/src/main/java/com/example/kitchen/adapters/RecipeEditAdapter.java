@@ -56,7 +56,7 @@ public class RecipeEditAdapter extends FragmentStatePagerAdapter {
             case 1:
                 return mContext.getString(R.string.ingredients);
             case 2:
-                return mContext.getString(R.string.directions);
+                return mContext.getString(R.string.instructions);
             default:
                 return null;
         }

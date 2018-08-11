@@ -39,6 +39,7 @@ import com.example.kitchen.data.local.KitchenViewModel;
 import com.example.kitchen.data.local.LocalDatabaseInsertListener;
 import com.example.kitchen.data.local.entities.Ingredient;
 import com.example.kitchen.data.local.entities.Recipe;
+import com.example.kitchen.data.local.entities.Step;
 import com.example.kitchen.utility.AppConstants;
 import com.example.kitchen.utility.MeasurementUtils;
 
@@ -196,15 +197,22 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
             }
         });
 
-        LinearLayout stepListLayout = findViewById(R.id.container_steps);
-        for (int x = 0; x < 3; x++) {
-            View stepView = inflater.inflate(R.layout.item_step, stepListLayout, false);
-            TextView stepNumberView = stepView.findViewById(R.id.tv_step_number);
-            stepNumberView.setText(String.valueOf(x + 1));
-            TextView stepTextView = stepView.findViewById(R.id.tv_step);
-            stepTextView.setText("Wwwwwwww wwwwwwwwwww wwwwwww");
-            stepListLayout.addView(stepView);
-        }
+        final LinearLayout stepListLayout = findViewById(R.id.container_steps);
+        mKitchenViewModel.getStepsByRecipe(mRecipe.id).observe(this, new Observer<List<Step>>() {
+            @Override
+            public void onChanged(@Nullable List<Step> steps) {
+                if (steps == null)
+                    return;
+                for (Step step : steps) {
+                    View stepView = inflater.inflate(R.layout.item_step, stepListLayout, false);
+                    TextView stepNumberView = stepView.findViewById(R.id.tv_step_number);
+                    stepNumberView.setText(String.valueOf(step.stepNumber));
+                    TextView instructionTextView = stepView.findViewById(R.id.tv_instruction);
+                    instructionTextView.setText(step.instruction);
+                    stepListLayout.addView(stepView);
+                }
+            }
+        });
     }
 
     @Override

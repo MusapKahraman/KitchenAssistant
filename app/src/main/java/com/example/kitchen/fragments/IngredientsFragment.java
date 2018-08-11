@@ -34,6 +34,7 @@ import com.example.kitchen.data.local.entities.Ingredient;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.utility.AppConstants;
 import com.example.kitchen.utility.CheckUtils;
+import com.example.kitchen.utility.DeviceUtils;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseException;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
@@ -186,6 +187,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
                 } else {
                     mKitchenViewModel.insertIngredients(new Ingredient(shownId, mRecipe.id, name, amount + shownAmount, amountType));
                 }
+                DeviceUtils.hideKeyboardFrom(mContext, amountEditText);
             }
         });
         return rootView;
@@ -201,7 +203,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder) {
         if (viewHolder instanceof IngredientsAdapter.IngredientViewHolder) {
-            // get the removed item id to display it in snack bar
+            // get the removed ingredient name to display it in snack bar
             String food = mIngredients.get(viewHolder.getAdapterPosition()).food;
 
             // backup of removed item for undo purpose
@@ -222,7 +224,6 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
                     mKitchenViewModel.insertIngredients(deletedIngredient);
                 }
             });
-            //snackbar.setActionTextColor(getResources().getColor(R.color.accent));
             snackbar.show();
         }
     }

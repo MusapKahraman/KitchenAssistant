@@ -1,17 +1,48 @@
 package com.example.kitchen.fragments;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.example.kitchen.R;
+import com.example.kitchen.adapters.RecyclerViewItemTouchHelper;
+import com.example.kitchen.adapters.StepClickListener;
+import com.example.kitchen.adapters.StepsAdapter;
+import com.example.kitchen.data.local.KitchenViewModel;
+import com.example.kitchen.data.local.entities.Recipe;
+import com.example.kitchen.data.local.entities.Step;
+import com.example.kitchen.utility.AppConstants;
+import com.example.kitchen.utility.CheckUtils;
+import com.example.kitchen.utility.DeviceUtils;
 
-public class StepsFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
 
+public class StepsFragment extends Fragment implements RecyclerViewItemTouchHelper.RecyclerItemTouchHelperListener, StepClickListener {
+    private static final String KEY_STEP_NUMBER = "step-number-key";
+    private Recipe mRecipe;
+    private ArrayList<Step> mSteps;
+    private KitchenViewModel mKitchenViewModel;
+    private RecyclerView mRecyclerView;
+    private StepsAdapter mAdapter;
+    private Context mContext;
+    private EditText mInstructionText;
+    private int mStepNumber;
     private FragmentMessageListener mMessageListener;
 
     public StepsFragment() {
@@ -21,6 +52,7 @@ public class StepsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mContext = context;
         if (context instanceof FragmentMessageListener) {
             mMessageListener = (FragmentMessageListener) context;
         } else {
@@ -31,12 +63,111 @@ public class StepsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_steps, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_steps, container, false);
+
+        mKitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
+        if (savedInstanceState != null) {
+            mRecipe = savedInstanceState.getParcelable(AppConstants.KEY_RECIPE);
+            mSteps = savedInstanceState.getParcelableArrayList(AppConstants.KEY_STEPS);
+            mStepNumber = savedInstanceState.getInt(KEY_STEP_NUMBER);
+        } else {
+            Bundle arguments = getArguments();
+            if (arguments != null) {
+                mRecipe = arguments.getParcelable(AppConstants.KEY_RECIPE);
+            }
+        }
+        mRecyclerView = rootView.findViewById(R.id.rv_steps);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerViewItemTouchHelper(
+                0, ItemTouchHelper.LEFT, this);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mRecyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setHasFixedSize(true);
+        mAdapter = new StepsAdapter(mContext, this);
+        mRecyclerView.setAdapter(mAdapter);
+
+        mKitchenViewModel.getStepsByRecipe(mRecipe.id).observe(this, new Observer<List<Step>>() {
+            @Override
+            public void onChanged(@Nullable List<Step> steps) {
+                mAdapter.setSteps(steps);
+                mSteps = (ArrayList<Step>) steps;
+            }
+        });
+        mInstructionText = rootView.findViewById(R.id.text_edit_instruction);
+        Button addButton = rootView.findViewById(R.id.btn_add_instruction);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (CheckUtils.isEmptyTextField(mContext, mInstructionText))
+                    return;
+                String instruction = mInstructionText.getText().toString();
+                // If there is already an item in the list with the same step number then update that item.
+                int shownId = 0;
+                for (Step shown : mSteps) {
+                    if (mStepNumber == shown.stepNumber) {
+                        shownId = shown.id;
+                    }
+                }
+                if (shownId == 0) {
+                    mKitchenViewModel.insertSteps(new Step(instruction, mSteps.size() + 1, mRecipe.id));
+                } else {
+                    mKitchenViewModel.insertSteps(new Step(shownId, instruction, mStepNumber, mRecipe.id));
+                }
+                DeviceUtils.hideKeyboardFrom(mContext, mInstructionText);
+                mStepNumber = 0;
+                mInstructionText.setText("");
+            }
+        });
+        return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
+        outState.putParcelableArrayList(AppConstants.KEY_STEPS, mSteps);
+        outState.putInt(KEY_STEP_NUMBER, mStepNumber);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mMessageListener = null;
+    }
+
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder) {
+        if (viewHolder instanceof StepsAdapter.StepViewHolder) {
+            // get the removed step number to display it in snack bar
+            int stepNumber = mSteps.get(viewHolder.getAdapterPosition()).stepNumber;
+
+            // backup of removed item for undo purpose
+            final Step deletedStep = mSteps.get(viewHolder.getAdapterPosition());
+            final int deletedIndex = viewHolder.getAdapterPosition();
+
+            // remove the item from recycler view
+            mAdapter.removeItem(viewHolder.getAdapterPosition());
+            mKitchenViewModel.deleteSteps(deletedStep);
+
+            // showing snack bar with Undo option
+            Snackbar snackbar = Snackbar.make(mRecyclerView, String.format(getString(R.string.removed_step), stepNumber), Snackbar.LENGTH_LONG);
+            snackbar.setAction(R.string.undo, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // undo is selected, restore the deleted item
+                    mAdapter.restoreItem(deletedStep, deletedIndex);
+                    mKitchenViewModel.insertSteps(deletedStep);
+                }
+            });
+            snackbar.show();
+        }
+    }
+
+    @Override
+    public void onStepClicked(Step step) {
+        mInstructionText.setText(step.instruction);
+        mStepNumber = step.stepNumber;
     }
 }

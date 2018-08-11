@@ -18,7 +18,7 @@ import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
-    private static final String TAG = LoginActivity.class.getSimpleName();
+    private static final String LOG_TAG = LoginActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
                             .setAvailableProviders(Arrays.asList(
                                     new AuthUI.IdpConfig.GoogleBuilder().build(),
                                     new AuthUI.IdpConfig.EmailBuilder().build()))
-                            .setIsSmartLockEnabled(!BuildConfig.DEBUG /* credentials */, true /* hints */)
+                            .setIsSmartLockEnabled(!BuildConfig.DEBUG, true)
                             .setTheme(R.style.LoginTheme)
                             .setLogo(R.mipmap.logo)
                             .build(), RC_SIGN_IN);
@@ -50,7 +50,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // RC_SIGN_IN is the request code you passed into startActivityForResult(...) when starting the sign in flow.
         if (requestCode == RC_SIGN_IN) {
             IdpResponse idpResponse = IdpResponse.fromResultIntent(data);
             if (resultCode == RESULT_OK) {
@@ -60,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (idpResponse != null) {
                         Intent intent;
                         if (idpResponse.isNewUser()) {
-                            // The user is new, show them a fancy intro screen!
+                            // The user is new.
                             intent = new Intent(this, WelcomeActivity.class);
                         } else {
                             // This is an existing user.
@@ -74,16 +73,16 @@ public class LoginActivity extends AppCompatActivity {
                 // Sign in failed
                 if (idpResponse == null) {
                     // User pressed back button
-                    Log.v(TAG, "Sign_in_cancelled");
+                    Log.v(LOG_TAG, "Sign_in_cancelled");
                     finish();
                     return;
                 }
                 if (idpResponse.getError() != null && idpResponse.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
-                    Log.v(TAG, "No network");
+                    Log.v(LOG_TAG, "No network");
                     return;
                 }
 
-                Log.e(TAG, "Sign-in error: ", idpResponse.getError());
+                Log.e(LOG_TAG, "Sign-in error: ", idpResponse.getError());
             }
         }
     }
