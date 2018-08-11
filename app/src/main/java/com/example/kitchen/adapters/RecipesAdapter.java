@@ -82,14 +82,10 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
     }
 
     public class RecipeCardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.tv_recipe_title)
-        TextView recipeNameTextView;
-        @BindView(R.id.tv_card_cook_time)
-        TextView cookTimeTextView;
-        @BindView(R.id.iv_card_recipe_image)
-        ImageView recipeImageView;
-        @BindView(R.id.ratingBar)
-        RatingBar ratingBar;
+        @BindView(R.id.tv_recipe_title) TextView recipeNameTextView;
+        @BindView(R.id.tv_card_cook_time) TextView cookTimeTextView;
+        @BindView(R.id.iv_card_recipe_image) ImageView recipeImageView;
+        @BindView(R.id.ratingBar) RatingBar ratingBar;
         private Recipe mRecipe;
 
         private RecipeCardViewHolder(View itemView) {

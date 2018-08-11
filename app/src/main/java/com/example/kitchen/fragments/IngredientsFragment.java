@@ -48,18 +48,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class IngredientsFragment extends Fragment implements RecyclerViewItemTouchHelper.RecyclerItemTouchHelperListener {
-    @BindView(R.id.rv_ingredients)
-    RecyclerView mRecyclerView;
-    @BindView(R.id.btn_add_food)
-    Button mAddFoodLink;
-    @BindView(R.id.spinner_food)
-    SearchableSpinner mFoodSpinner;
-    @BindView(R.id.text_edit_amount)
-    EditText mAmountEditText;
-    @BindView(R.id.spinner_measure)
-    Spinner mMeasurementSpinner;
-    @BindView(R.id.btn_add_ingredient)
-    Button mAddButton;
+    @BindView(R.id.rv_ingredients) RecyclerView mRecyclerView;
+    @BindView(R.id.btn_add_food) Button mAddFoodLink;
+    @BindView(R.id.spinner_food) SearchableSpinner mFoodSpinner;
+    @BindView(R.id.text_edit_amount) EditText mAmountEditText;
+    @BindView(R.id.spinner_measure) Spinner mMeasurementSpinner;
+    @BindView(R.id.btn_add_ingredient) Button mAddButton;
     private KitchenViewModel mKitchenViewModel;
     private Context mContext;
     private IngredientsAdapter mAdapter;

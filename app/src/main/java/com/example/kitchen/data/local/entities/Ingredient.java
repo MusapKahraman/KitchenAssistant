@@ -28,8 +28,7 @@ public class Ingredient implements Parcelable {
             return new Ingredient[size];
         }
     };
-    @PrimaryKey(autoGenerate = true)
-    public int id;
+    @PrimaryKey(autoGenerate = true) public int id;
     public int recipeId;
     public String food;
     public int amount;

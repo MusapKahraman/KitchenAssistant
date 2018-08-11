@@ -36,24 +36,15 @@ public class MealBoardFragment extends Fragment {
     private static final String TAB_FRIDAY = "tab-friday";
     private static final String TAB_SATURDAY = "tab-saturday";
     private static final String TAB_SUNDAY = "tab-sunday";
-    @BindView(R.id.tab_0)
-    ExpandableListView mMonday;
-    @BindView(R.id.tab_1)
-    ExpandableListView mTuesday;
-    @BindView(R.id.tab_2)
-    ExpandableListView mWednesday;
-    @BindView(R.id.tab_3)
-    ExpandableListView mThursday;
-    @BindView(R.id.tab_4)
-    ExpandableListView mFriday;
-    @BindView(R.id.tab_5)
-    ExpandableListView mSaturday;
-    @BindView(R.id.tab_6)
-    ExpandableListView mSunday;
-    @BindView(R.id.horizontalScrollView)
-    HorizontalScrollView mHorizontalScrollView;
-    @BindView(R.id.tab_host)
-    TabHost mTabHost;
+    @BindView(R.id.tab_0) ExpandableListView mMonday;
+    @BindView(R.id.tab_1) ExpandableListView mTuesday;
+    @BindView(R.id.tab_2) ExpandableListView mWednesday;
+    @BindView(R.id.tab_3) ExpandableListView mThursday;
+    @BindView(R.id.tab_4) ExpandableListView mFriday;
+    @BindView(R.id.tab_5) ExpandableListView mSaturday;
+    @BindView(R.id.tab_6) ExpandableListView mSunday;
+    @BindView(R.id.horizontalScrollView) HorizontalScrollView mHorizontalScrollView;
+    @BindView(R.id.tab_host) TabHost mTabHost;
 
     public MealBoardFragment() {
         // Required empty public constructor

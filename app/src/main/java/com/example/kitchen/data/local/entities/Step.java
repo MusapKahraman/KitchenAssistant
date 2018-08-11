@@ -29,10 +29,8 @@ public class Step implements Parcelable {
             return new Step[size];
         }
     };
-    @PrimaryKey(autoGenerate = true)
-    public int id;
-    @NonNull
-    public String instruction;
+    @PrimaryKey(autoGenerate = true) public int id;
+    @NonNull public String instruction;
     public int stepNumber;
     public int recipeId;
 

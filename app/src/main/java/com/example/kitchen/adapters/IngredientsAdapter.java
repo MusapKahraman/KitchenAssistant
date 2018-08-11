@@ -65,12 +65,9 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     }
 
     public class IngredientViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.tv_ingredient_amount)
-        TextView mAmountTextView;
-        @BindView(R.id.tv_ingredient)
-        TextView mIngredientTextView;
-        @BindView(R.id.view_foreground)
-        View viewForeground;
+        @BindView(R.id.tv_ingredient_amount) TextView mAmountTextView;
+        @BindView(R.id.tv_ingredient) TextView mIngredientTextView;
+        @BindView(R.id.view_foreground) View viewForeground;
         private Ingredient mIngredient;
 
         private IngredientViewHolder(View itemView) {

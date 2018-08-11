@@ -29,8 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class RecipeEditActivity extends AppCompatActivity implements PictureDialogListener, FragmentMessageListener {
-    @BindView(R.id.viewPager)
-    ViewPager mViewPager;
+    @BindView(R.id.viewPager) ViewPager mViewPager;
     private Recipe mRecipe;
 
     @Override

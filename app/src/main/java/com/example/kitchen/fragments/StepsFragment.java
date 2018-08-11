@@ -38,12 +38,9 @@ import butterknife.ButterKnife;
 
 public class StepsFragment extends Fragment implements RecyclerViewItemTouchHelper.RecyclerItemTouchHelperListener, StepClickListener {
     private static final String KEY_STEP_NUMBER = "step-number-key";
-    @BindView(R.id.rv_steps)
-    RecyclerView mRecyclerView;
-    @BindView(R.id.text_edit_instruction)
-    EditText mInstructionText;
-    @BindView(R.id.btn_add_instruction)
-    Button addButton;
+    @BindView(R.id.rv_steps) RecyclerView mRecyclerView;
+    @BindView(R.id.text_edit_instruction) EditText mInstructionText;
+    @BindView(R.id.btn_add_instruction) Button addButton;
     private Recipe mRecipe;
     private ArrayList<Step> mSteps;
     private KitchenViewModel mKitchenViewModel;

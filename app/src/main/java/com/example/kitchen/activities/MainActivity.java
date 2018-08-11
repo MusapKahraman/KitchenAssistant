@@ -56,16 +56,11 @@ public class MainActivity extends AppCompatActivity
     private static final String KEY_RECIPES_FRAG = "recipes-fragment-key";
     private static final String KEY_NOTEBOOK_FRAG = "notebook-fragment-key";
     private static final String KEY_MEAL_BOARD_FRAG = "meal-board-fragment-key";
-    @BindView(R.id.fab)
-    FloatingActionButton mFab;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout mDrawerLayout;
-    @BindView(R.id.nav_view)
-    NavigationView mNavigationView;
-    @BindView(R.id.progress_bar_recipes_fragment)
-    ProgressBar mProgressBar;
+    @BindView(R.id.fab) FloatingActionButton mFab;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
+    @BindView(R.id.nav_view) NavigationView mNavigationView;
+    @BindView(R.id.progress_bar_recipes_fragment) ProgressBar mProgressBar;
     private KitchenViewModel mKitchenViewModel;
     private RecipeViewModel mRecipeViewModel;
     private SharedPreferences mSharedPreferences;

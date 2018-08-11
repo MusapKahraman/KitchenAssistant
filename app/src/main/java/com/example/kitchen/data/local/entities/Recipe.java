@@ -27,8 +27,7 @@ public class Recipe implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     @NonNull
     public int id;
-    @NonNull
-    public String title;
+    @NonNull public String title;
     public String imagePath;
     public int servings;
     public int prepTime;

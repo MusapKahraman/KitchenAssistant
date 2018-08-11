@@ -51,42 +51,24 @@ import butterknife.ButterKnife;
 public class RecipeDetailActivity extends AppCompatActivity implements RecipeViewModel.RatingPostListener, LocalDatabaseInsertListener {
     private static final String KEY_SERVINGS = "servings-key";
     private static final String KEY_RATING_TRANSACTION = "rating-transaction-status-key";
-    @BindView(R.id.app_bar)
-    AppBarLayout mAppBarLayout;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.iv_recipe_image)
-    ImageView mRecipeImageView;
-    @BindView(R.id.fab)
-    FloatingActionButton mFab;
-    @BindView(R.id.divider_rating)
-    View mRatingDivider;
-    @BindView(R.id.label_rating)
-    TextView mRatingLabel;
-    @BindView(R.id.ratingBar)
-    RatingBar mRatingBar;
-    @BindView(R.id.tv_recipe_writer)
-    TextView mWriterTextView;
-    @BindView(R.id.tv_course)
-    TextView mCourseTextView;
-    @BindView(R.id.tv_cuisine)
-    TextView mCuisineTextView;
-    @BindView(R.id.tv_prep_time)
-    TextView mPrepTimeTextView;
-    @BindView(R.id.tv_cook_time)
-    TextView mCookTimeTextView;
-    @BindView(R.id.tv_servings)
-    TextView mServingsTextView;
-    @BindView(R.id.btn_servings_decrement)
-    Button mDecrementButton;
-    @BindView(R.id.btn_servings_increment)
-    Button mIncrementButton;
-    @BindView(R.id.btn_finished)
-    Button mFinishedButton;
-    @BindView(R.id.container_ingredients)
-    LinearLayout mIngredientsContainer;
-    @BindView(R.id.container_steps)
-    LinearLayout mStepsContainer;
+    @BindView(R.id.app_bar) AppBarLayout mAppBarLayout;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.iv_recipe_image) ImageView mRecipeImageView;
+    @BindView(R.id.fab) FloatingActionButton mFab;
+    @BindView(R.id.divider_rating) View mRatingDivider;
+    @BindView(R.id.label_rating) TextView mRatingLabel;
+    @BindView(R.id.ratingBar) RatingBar mRatingBar;
+    @BindView(R.id.tv_recipe_writer) TextView mWriterTextView;
+    @BindView(R.id.tv_course) TextView mCourseTextView;
+    @BindView(R.id.tv_cuisine) TextView mCuisineTextView;
+    @BindView(R.id.tv_prep_time) TextView mPrepTimeTextView;
+    @BindView(R.id.tv_cook_time) TextView mCookTimeTextView;
+    @BindView(R.id.tv_servings) TextView mServingsTextView;
+    @BindView(R.id.btn_servings_decrement) Button mDecrementButton;
+    @BindView(R.id.btn_servings_increment) Button mIncrementButton;
+    @BindView(R.id.btn_finished) Button mFinishedButton;
+    @BindView(R.id.container_ingredients) LinearLayout mIngredientsContainer;
+    @BindView(R.id.container_steps) LinearLayout mStepsContainer;
     private RecipeViewModel mRecipeViewModel;
     private KitchenViewModel mKitchenViewModel;
     private SharedPreferences mSharedPreferences;

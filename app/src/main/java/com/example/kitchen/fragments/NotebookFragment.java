@@ -31,8 +31,7 @@ public class NotebookFragment extends Fragment {
     private static final String LOG_TAG = NotebookFragment.class.getSimpleName();
     private static final String LAYOUT_STATE = "state";
     private static final String SEARCH_QUERY = "search-query";
-    @BindView(R.id.rv_recipe_steps)
-    RecyclerView mRecyclerView;
+    @BindView(R.id.rv_recipe_steps) RecyclerView mRecyclerView;
     private Context mContext;
     private FragmentScrollListener fragmentScrollListener;
     private RecipeClickListener mClickListener;

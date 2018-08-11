@@ -62,28 +62,17 @@ public class OverallFragment extends Fragment implements LocalDatabaseInsertList
     private static final String KEY_IMAGE_ROTATION = "image-rotation";
     private static final String KEY_REQUEST_PERMISSION = "request-permission";
     private static final String TAG_PICTURE_DIALOG = "picture-dialog";
-    @BindView(R.id.iv_recipe_picture)
-    ImageView mRecipeImageView;
-    @BindView(R.id.btn_rotate)
-    ImageButton mRotateButton;
-    @BindView(R.id.text_edit_title)
-    EditText mTitleView;
-    @BindView(R.id.text_edit_servings)
-    EditText mServingsView;
-    @BindView(R.id.text_edit_prep_time)
-    EditText mPrepTimeView;
-    @BindView(R.id.text_edit_cook_time)
-    EditText mCookTimeView;
-    @BindView(R.id.spinner_course)
-    Spinner mCourseSpinner;
-    @BindView(R.id.spinner_cuisine)
-    Spinner mCuisineSpinner;
-    @BindView(R.id.spinner_language)
-    Spinner mLanguageSpinner;
-    @BindView(R.id.btn_publish_recipe)
-    ImageButton mPublishButton;
-    @BindView(R.id.progress_bar_publish_recipe)
-    ProgressBar mProgressBar;
+    @BindView(R.id.iv_recipe_picture) ImageView mRecipeImageView;
+    @BindView(R.id.btn_rotate) ImageButton mRotateButton;
+    @BindView(R.id.text_edit_title) EditText mTitleView;
+    @BindView(R.id.text_edit_servings) EditText mServingsView;
+    @BindView(R.id.text_edit_prep_time) EditText mPrepTimeView;
+    @BindView(R.id.text_edit_cook_time) EditText mCookTimeView;
+    @BindView(R.id.spinner_course) Spinner mCourseSpinner;
+    @BindView(R.id.spinner_cuisine) Spinner mCuisineSpinner;
+    @BindView(R.id.spinner_language) Spinner mLanguageSpinner;
+    @BindView(R.id.btn_publish_recipe) ImageButton mPublishButton;
+    @BindView(R.id.progress_bar_publish_recipe) ProgressBar mProgressBar;
     private KitchenViewModel mKitchenViewModel;
     private RecipeViewModel mRecipeViewModel;
     private FragmentMessageListener mMessageListener;

@@ -22,22 +22,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FoodActivity extends AppCompatActivity {
-    @BindView(R.id.text_edit_food_name)
-    EditText mFoodNameView;
-    @BindView(R.id.text_edit_volume_amount)
-    EditText mVolumeAmountView;
-    @BindView(R.id.text_edit_weight_amount)
-    EditText mWeightAmountView;
-    @BindView(R.id.spinner_volume)
-    Spinner mVolumeSpinner;
-    @BindView(R.id.spinner_weight)
-    Spinner mWeightSpinner;
-    @BindView(R.id.tv_equals)
-    TextView mEqualsLabel;
-    @BindView(R.id.check_countable)
-    CheckBox mCountableCheckBox;
-    @BindView(R.id.btn_add_food)
-    Button mAddFoodButton;
+    @BindView(R.id.text_edit_food_name) EditText mFoodNameView;
+    @BindView(R.id.text_edit_volume_amount) EditText mVolumeAmountView;
+    @BindView(R.id.text_edit_weight_amount) EditText mWeightAmountView;
+    @BindView(R.id.spinner_volume) Spinner mVolumeSpinner;
+    @BindView(R.id.spinner_weight) Spinner mWeightSpinner;
+    @BindView(R.id.tv_equals) TextView mEqualsLabel;
+    @BindView(R.id.check_countable) CheckBox mCountableCheckBox;
+    @BindView(R.id.btn_add_food) Button mAddFoodButton;
     private FoodViewModel mFoodViewModel;
 
     @Override

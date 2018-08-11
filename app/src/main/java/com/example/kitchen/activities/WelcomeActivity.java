@@ -18,8 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class WelcomeActivity extends AppCompatActivity {
-    @BindView(R.id.container)
-    ViewPager mViewPager;
+    @BindView(R.id.container) ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

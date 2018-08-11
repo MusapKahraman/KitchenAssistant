@@ -134,16 +134,11 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
     }
 
     class RecipeCardViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.tv_recipe_title)
-        TextView recipeNameTextView;
-        @BindView(R.id.tv_card_cook_time)
-        TextView cookTimeTextView;
-        @BindView(R.id.iv_card_recipe_image)
-        ImageView recipeImageView;
-        @BindView(R.id.ratingBar)
-        RatingBar ratingBar;
-        @BindView(R.id.card_recipe_tint)
-        FrameLayout recipeCardTint;
+        @BindView(R.id.tv_recipe_title) TextView recipeNameTextView;
+        @BindView(R.id.tv_card_cook_time) TextView cookTimeTextView;
+        @BindView(R.id.iv_card_recipe_image) ImageView recipeImageView;
+        @BindView(R.id.ratingBar) RatingBar ratingBar;
+        @BindView(R.id.card_recipe_tint) FrameLayout recipeCardTint;
 
         private RecipeCardViewHolder(View itemView) {
             super(itemView);
