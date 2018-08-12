@@ -32,6 +32,9 @@ public interface RecipesDao {
     @Query("SELECT * from recipes WHERE title = :title")
     LiveData<Recipe> getRecipe(String title);
 
+    @Query("SELECT * from recipes WHERE publicKey = :publicKey")
+    LiveData<Recipe> getRecipeByPublicKey(String publicKey);
+
     @Query("SELECT * from recipes ORDER BY timeStamp")
     LiveData<List<Recipe>> getAll();
 

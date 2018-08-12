@@ -18,6 +18,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -120,7 +121,18 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mKitchenViewModel.insertRecipe(mRecipe, RecipeDetailActivity.this);
+                if (TextUtils.isEmpty(mRecipe.publicKey)) {
+                    mKitchenViewModel.insertRecipe(mRecipe, RecipeDetailActivity.this);
+                } else {
+                    mKitchenViewModel.getRecipeByPublicKey(mRecipe.publicKey).observe(RecipeDetailActivity.this, new Observer<Recipe>() {
+                        @Override
+                        public void onChanged(@Nullable Recipe recipe) {
+                            if (recipe != null) {
+                                startEditingActivity(recipe);
+                            }
+                        }
+                    });
+                }
                 mIsInsertedForEdit = true;
             }
         });
@@ -268,10 +280,14 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
     public void onDataInsert(long id) {
         mRecipe.id = (int) id;
         if (mIsInsertedForEdit) {
-            Intent intent = new Intent(RecipeDetailActivity.this, RecipeEditActivity.class);
-            intent.putExtra(AppConstants.EXTRA_RECIPE, mRecipe);
-            startActivity(intent);
-            finish();
+            startEditingActivity(mRecipe);
         }
+    }
+
+    private void startEditingActivity(Recipe recipe) {
+        Intent intent = new Intent(RecipeDetailActivity.this, RecipeEditActivity.class);
+        intent.putExtra(AppConstants.EXTRA_RECIPE, recipe);
+        startActivity(intent);
+        finish();
     }
 }

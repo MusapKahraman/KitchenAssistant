@@ -37,6 +37,10 @@ class KitchenRepository {
         return mRecipesDao.getRecipe(title);
     }
 
+    LiveData<Recipe> getRecipeByPublicKey(String publicKey) {
+        return mRecipesDao.getRecipeByPublicKey(publicKey);
+    }
+
     LiveData<List<Recipe>> getAllRecipes() {
         return mRecipesDao.getAll();
     }

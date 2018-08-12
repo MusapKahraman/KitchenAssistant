@@ -30,6 +30,10 @@ public class KitchenViewModel extends AndroidViewModel {
         return mRepository.getRecipe(title);
     }
 
+    public LiveData<Recipe> getRecipeByPublicKey(String publicKey) {
+        return mRepository.getRecipeByPublicKey(publicKey);
+    }
+
     public LiveData<List<Recipe>> getAllRecipes() {
         return mRepository.getAllRecipes();
     }
