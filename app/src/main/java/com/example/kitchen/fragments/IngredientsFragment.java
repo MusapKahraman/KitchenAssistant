@@ -48,6 +48,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class IngredientsFragment extends Fragment implements RecyclerViewItemTouchHelper.RecyclerItemTouchHelperListener {
+    private static final String KEY_OBSERVER_ATTACH = "observer-attachment-key";
     @BindView(R.id.rv_ingredients) RecyclerView mRecyclerView;
     @BindView(R.id.btn_add_food) Button mAddFoodLink;
     @BindView(R.id.spinner_food) SearchableSpinner mFoodSpinner;
@@ -62,7 +63,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
     private ArrayList<Ingredient> mIngredients;
     private ArrayList<String> mFoods;
     private Recipe mRecipe;
-    private boolean isObserverAttached;
+    private boolean mIsObserverAttached;
 
     public IngredientsFragment() {
         // Required empty public constructor
@@ -84,6 +85,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
         if (savedInstanceState != null) {
             mRecipe = savedInstanceState.getParcelable(AppConstants.KEY_RECIPE);
             mIngredients = savedInstanceState.getParcelableArrayList(AppConstants.KEY_INGREDIENTS);
+            mIsObserverAttached = savedInstanceState.getBoolean(KEY_OBSERVER_ATTACH);
         } else {
             Bundle arguments = getArguments();
             if (arguments != null) {
@@ -107,7 +109,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
         mRecyclerView.setHasFixedSize(true);
         mAdapter = new IngredientsAdapter(mContext);
         mRecyclerView.setAdapter(mAdapter);
-        if (!isObserverAttached && mRecipe.id != 0) {
+        if (!mIsObserverAttached && mRecipe.id != 0) {
             mKitchenViewModel.getIngredientsByRecipe(mRecipe.id).observe(this, new Observer<List<Ingredient>>() {
                 @Override
                 public void onChanged(@Nullable List<Ingredient> ingredients) {
@@ -115,7 +117,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
                     mIngredients = (ArrayList<Ingredient>) ingredients;
                 }
             });
-            isObserverAttached = true;
+            mIsObserverAttached = true;
         }
         mFoodSpinner.setTitle(getString(R.string.select_food));
         foodViewModel.getDataSnapshotLiveData().observe(this, new Observer<DataSnapshot>() {
@@ -167,7 +169,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
                     Snackbar.make(mAddButton, R.string.can_not_add_ingredient, Snackbar.LENGTH_LONG).show();
                     return;
                 }
-                if (!isObserverAttached) {
+                if (!mIsObserverAttached) {
                     mKitchenViewModel.getIngredientsByRecipe(mRecipe.id).observe(IngredientsFragment.this, new Observer<List<Ingredient>>() {
                         @Override
                         public void onChanged(@Nullable List<Ingredient> ingredients) {
@@ -175,7 +177,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
                             mIngredients = (ArrayList<Ingredient>) ingredients;
                         }
                     });
-                    isObserverAttached = true;
+                    mIsObserverAttached = true;
                 }
                 if (mFoodSpinner.getSelectedItem() == null)
                     return;
@@ -211,6 +213,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
         super.onSaveInstanceState(outState);
         outState.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
         outState.putParcelableArrayList(AppConstants.KEY_INGREDIENTS, mIngredients);
+        outState.putBoolean(KEY_OBSERVER_ATTACH, mIsObserverAttached);
     }
 
     @Override

@@ -17,6 +17,10 @@
         <item name="windowActionModeOverlay">true</item>
     </style>
 
+    <style name="AppOpening">
+        <item name="android:background">@drawable/kitchen_portrait</item>
+    </style>
+
     <style name="LoginTheme" parent="FirebaseUI">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/firebase_primary_dark</item>
@@ -42,7 +46,7 @@
     </style>
 
     <style name="FirebaseUI.Text.Link">
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@color/accent</item>
     </style>
 
     <!--suppress AndroidDomInspection -->

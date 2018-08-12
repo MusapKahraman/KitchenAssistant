@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="AppOpening">
+        <item name="android:background">@drawable/kitchen_land</item>
+    </style>
+
     <style name="LoginTheme" parent="FirebaseUI">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/firebase_primary_dark</item>
