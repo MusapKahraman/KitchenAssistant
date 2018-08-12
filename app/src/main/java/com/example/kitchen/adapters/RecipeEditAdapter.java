@@ -52,7 +52,7 @@ public class RecipeEditAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return mContext.getString(R.string.overview);
+                return mContext.getString(R.string.overall);
             case 1:
                 return mContext.getString(R.string.ingredients);
             case 2:

@@ -62,6 +62,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
     private ArrayList<Ingredient> mIngredients;
     private ArrayList<String> mFoods;
     private Recipe mRecipe;
+    private boolean isObserverAttached;
 
     public IngredientsFragment() {
         // Required empty public constructor
@@ -106,13 +107,16 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
         mRecyclerView.setHasFixedSize(true);
         mAdapter = new IngredientsAdapter(mContext);
         mRecyclerView.setAdapter(mAdapter);
-        mKitchenViewModel.getIngredientsByRecipe(mRecipe.id).observe(this, new Observer<List<Ingredient>>() {
-            @Override
-            public void onChanged(@Nullable List<Ingredient> ingredients) {
-                mAdapter.setIngredients(ingredients);
-                mIngredients = (ArrayList<Ingredient>) ingredients;
-            }
-        });
+        if (!isObserverAttached && mRecipe.id != 0) {
+            mKitchenViewModel.getIngredientsByRecipe(mRecipe.id).observe(this, new Observer<List<Ingredient>>() {
+                @Override
+                public void onChanged(@Nullable List<Ingredient> ingredients) {
+                    mAdapter.setIngredients(ingredients);
+                    mIngredients = (ArrayList<Ingredient>) ingredients;
+                }
+            });
+            isObserverAttached = true;
+        }
         mFoodSpinner.setTitle(getString(R.string.select_food));
         foodViewModel.getDataSnapshotLiveData().observe(this, new Observer<DataSnapshot>() {
             @Override
@@ -159,6 +163,20 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mRecipe.id == 0) {
+                    Snackbar.make(mAddButton, R.string.can_not_add_ingredient, Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+                if (!isObserverAttached) {
+                    mKitchenViewModel.getIngredientsByRecipe(mRecipe.id).observe(IngredientsFragment.this, new Observer<List<Ingredient>>() {
+                        @Override
+                        public void onChanged(@Nullable List<Ingredient> ingredients) {
+                            mAdapter.setIngredients(ingredients);
+                            mIngredients = (ArrayList<Ingredient>) ingredients;
+                        }
+                    });
+                    isObserverAttached = true;
+                }
                 if (mFoodSpinner.getSelectedItem() == null)
                     return;
                 String name = mFoodSpinner.getSelectedItem().toString();
@@ -169,10 +187,12 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
                 // If there is already an item in the list with the same name then just increase its amount.
                 int shownId = 0;
                 int shownAmount = 0;
-                for (Ingredient shown : mIngredients) {
-                    if (name.equals(shown.food) && amountType.equals(shown.amountType)) {
-                        shownId = shown.id;
-                        shownAmount = shown.amount;
+                if (mIngredients != null) {
+                    for (Ingredient shown : mIngredients) {
+                        if (name.equals(shown.food) && amountType.equals(shown.amountType)) {
+                            shownId = shown.id;
+                            shownAmount = shown.amount;
+                        }
                     }
                 }
                 if (shownId == 0) {
@@ -198,15 +218,12 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
         if (viewHolder instanceof IngredientsAdapter.IngredientViewHolder) {
             // get the removed ingredient name to display it in snack bar
             String food = mIngredients.get(viewHolder.getAdapterPosition()).food;
-
             // backup of removed item for undo purpose
             final Ingredient deletedIngredient = mIngredients.get(viewHolder.getAdapterPosition());
             final int deletedIndex = viewHolder.getAdapterPosition();
-
             // remove the item from recycler view
             mAdapter.removeItem(viewHolder.getAdapterPosition());
             mKitchenViewModel.deleteIngredients(deletedIngredient);
-
             // showing snack bar with Undo option
             Snackbar snackbar = Snackbar.make(mRecyclerView, String.format(getString(R.string.removed_ingredient), food), Snackbar.LENGTH_LONG);
             snackbar.setAction(R.string.undo, new View.OnClickListener() {

@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 
 import com.example.kitchen.R;
 import com.example.kitchen.activities.MainActivity;
-import com.example.kitchen.adapters.NotebookAdapter;
+import com.example.kitchen.adapters.BookmarksAdapter;
 import com.example.kitchen.adapters.RecipeClickListener;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.utility.AppConstants;
@@ -27,8 +27,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class NotebookFragment extends Fragment {
-    private static final String LOG_TAG = NotebookFragment.class.getSimpleName();
+public class BookmarksFragment extends Fragment {
+    private static final String LOG_TAG = BookmarksFragment.class.getSimpleName();
     private static final String LAYOUT_STATE = "state";
     private static final String SEARCH_QUERY = "search-query";
     @BindView(R.id.rv_recipe_steps) RecyclerView mRecyclerView;
@@ -36,10 +36,10 @@ public class NotebookFragment extends Fragment {
     private FragmentScrollListener fragmentScrollListener;
     private RecipeClickListener mClickListener;
     private StaggeredGridLayoutManager mLayoutManager;
-    private NotebookAdapter mAdapter;
+    private BookmarksAdapter mAdapter;
     private String mQuery;
 
-    public NotebookFragment() {
+    public BookmarksFragment() {
         // Required empty public constructor
     }
 
@@ -77,7 +77,7 @@ public class NotebookFragment extends Fragment {
         }
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
-        mAdapter = new NotebookAdapter(mContext, mClickListener);
+        mAdapter = new BookmarksAdapter(mContext, mClickListener);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

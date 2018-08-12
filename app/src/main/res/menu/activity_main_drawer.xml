@@ -12,8 +12,8 @@
             android:title="@string/recipes" />
         <item
             android:id="@+id/nav_notebook"
-            android:icon="@drawable/ic_menu_notebook"
-            android:title="@string/notebook" />
+            android:icon="@drawable/ic_menu_bookmarks"
+            android:title="@string/bookmarks" />
     </group>
 
     <group
@@ -30,8 +30,8 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_meal_board"
-            android:icon="@drawable/ic_menu_board"
-            android:title="@string/meal_board" />
+            android:icon="@drawable/ic_menu_calendar"
+            android:title="@string/meal_plan" />
         <item
             android:id="@+id/nav_routines"
             android:icon="@drawable/ic_menu_routines"
@@ -44,7 +44,7 @@
         <item
             android:id="@+id/nav_food_storage"
             android:icon="@drawable/ic_menu_food"
-            android:title="@string/food" />
+            android:title="@string/food_storage" />
         <item
             android:id="@+id/nav_shopping_list"
             android:icon="@drawable/ic_menu_shopping"

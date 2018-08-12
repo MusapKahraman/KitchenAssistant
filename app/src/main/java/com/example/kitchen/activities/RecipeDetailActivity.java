@@ -24,6 +24,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -64,8 +65,8 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
     @BindView(R.id.tv_prep_time) TextView mPrepTimeTextView;
     @BindView(R.id.tv_cook_time) TextView mCookTimeTextView;
     @BindView(R.id.tv_servings) TextView mServingsTextView;
-    @BindView(R.id.btn_servings_decrement) Button mDecrementButton;
-    @BindView(R.id.btn_servings_increment) Button mIncrementButton;
+    @BindView(R.id.btn_servings_decrement) ImageButton mDecrementButton;
+    @BindView(R.id.btn_servings_increment) ImageButton mIncrementButton;
     @BindView(R.id.btn_finished) Button mFinishedButton;
     @BindView(R.id.container_ingredients) LinearLayout mIngredientsContainer;
     @BindView(R.id.container_steps) LinearLayout mStepsContainer;

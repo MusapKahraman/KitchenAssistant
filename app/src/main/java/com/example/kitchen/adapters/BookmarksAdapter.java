@@ -35,10 +35,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.RecipeCardViewHolder> {
+public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.RecipeCardViewHolder> {
     private final RecipeClickListener mRecipeClickListener;
     private final ArrayList<Recipe> mSelectedRecipes = new ArrayList<>();
     private KitchenViewModel mKitchenViewModel;
+    private FragmentActivity mFragmentActivity;
     private List<Recipe> mRecipes;
     private List<Recipe> mFilteredRecipes;
     private boolean mMultiSelect = false;
@@ -46,7 +47,7 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             mMultiSelect = true;
-            menu.add(R.string.delete);
+            mFragmentActivity.getMenuInflater().inflate(R.menu.action_mode, menu);
             return true;
         }
 
@@ -57,13 +58,15 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
 
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            if (item.getItemId() == 0) {
-                for (Recipe recipe : mSelectedRecipes) {
-                    int position = mRecipes.indexOf(recipe);
-                    mRecipes.remove(recipe);
-                    mKitchenViewModel.deleteRecipes(recipe);
-                    notifyItemRemoved(position);
-                }
+            switch (item.getItemId()) {
+                case R.id.action_mode_delete:
+                    for (Recipe recipe : mSelectedRecipes) {
+                        int position = mRecipes.indexOf(recipe);
+                        mRecipes.remove(recipe);
+                        mKitchenViewModel.deleteRecipes(recipe);
+                        notifyItemRemoved(position);
+                    }
+                    break;
             }
             mode.finish();
             return true;
@@ -77,11 +80,11 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Recipe
         }
     };
 
-    public NotebookAdapter(Context context, RecipeClickListener recipeClickListener) {
+    public BookmarksAdapter(Context context, RecipeClickListener recipeClickListener) {
         mRecipeClickListener = recipeClickListener;
         if (context instanceof FragmentActivity) {
-            FragmentActivity activity = (FragmentActivity) context;
-            mKitchenViewModel = ViewModelProviders.of(activity).get(KitchenViewModel.class);
+            mFragmentActivity = (FragmentActivity) context;
+            mKitchenViewModel = ViewModelProviders.of(mFragmentActivity).get(KitchenViewModel.class);
         }
     }
 

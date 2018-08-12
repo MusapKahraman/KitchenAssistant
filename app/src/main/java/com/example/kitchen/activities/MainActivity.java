@@ -31,9 +31,9 @@ import com.example.kitchen.data.firebase.RecipeViewModel;
 import com.example.kitchen.data.firebase.models.RecipeModel;
 import com.example.kitchen.data.local.KitchenViewModel;
 import com.example.kitchen.data.local.entities.Recipe;
+import com.example.kitchen.fragments.BookmarksFragment;
 import com.example.kitchen.fragments.FragmentScrollListener;
 import com.example.kitchen.fragments.MealBoardFragment;
-import com.example.kitchen.fragments.NotebookFragment;
 import com.example.kitchen.fragments.RecipesFragment;
 import com.example.kitchen.utility.AppConstants;
 import com.firebase.ui.auth.AuthUI;
@@ -222,18 +222,18 @@ public class MainActivity extends AppCompatActivity
         for (Recipe recipe : recipes)
             Log.v("MainActivity", recipe.toString());
         if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(R.string.notebook);
+            getSupportActionBar().setTitle(R.string.bookmarks);
         Bundle bundle = new Bundle();
         bundle.putBundle(AppConstants.KEY_SAVED_STATE, mNotebookFragmentSavedState);
         bundle.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
-        NotebookFragment notebookFragment = new NotebookFragment();
+        BookmarksFragment notebookFragment = new BookmarksFragment();
         notebookFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, notebookFragment).commit();
     }
 
     private void showMealBoard(List<Recipe> recipes) {
         if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(R.string.meal_board);
+            getSupportActionBar().setTitle(R.string.meal_plan);
         Bundle bundle = new Bundle();
         bundle.putBundle(AppConstants.KEY_SAVED_STATE, mMealBoardFragmentSavedState);
         bundle.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);

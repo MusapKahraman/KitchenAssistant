@@ -1,3 +1,8 @@
+/*
+ * Reference
+ * https://futurestud.io/tutorials/glide-exceptions-debugging-and-error-handling
+ */
+
 package com.example.kitchen.fragments;
 
 import android.Manifest;
@@ -80,7 +85,6 @@ public class OverallFragment extends Fragment implements LocalDatabaseInsertList
     private Recipe mRecipe;
     private boolean mDoNotRequestPermission;
     // Deal with write permission to external storage in Glide
-    // Reference => https://futurestud.io/tutorials/glide-exceptions-debugging-and-error-handling
     private final RequestListener<Drawable> requestListener = new RequestListener<Drawable>() {
         @Override
         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -100,7 +104,13 @@ public class OverallFragment extends Fragment implements LocalDatabaseInsertList
 
         @Override
         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-            // everything worked out, so probably nothing to do
+            // everything worked out
+            // There is nothing to rotate if there is no picture.
+            if (resource == null) {
+                mRotateButton.setVisibility(View.GONE);
+            } else {
+                mRotateButton.setVisibility(View.VISIBLE);
+            }
             return false;
         }
     };
@@ -125,9 +135,48 @@ public class OverallFragment extends Fragment implements LocalDatabaseInsertList
         // Inflate the layout for this fragment.
         View rootView = inflater.inflate(R.layout.fragment_overall, container, false);
         ButterKnife.bind(this, rootView);
+        // ViewModels for local database and firebase.
         mKitchenViewModel = ViewModelProviders.of(OverallFragment.this).get(KitchenViewModel.class);
         mRecipeViewModel = ViewModelProviders.of(OverallFragment.this).get(RecipeViewModel.class);
-        // Take a picture and load the thumbnail to the image view.
+        if (savedInstanceState != null) {
+            mRecipeImageView.setRotation(savedInstanceState.getFloat(KEY_IMAGE_ROTATION));
+            mDoNotRequestPermission = savedInstanceState.getBoolean(KEY_REQUEST_PERMISSION);
+            mRecipe = savedInstanceState.getParcelable(AppConstants.KEY_RECIPE);
+        } else {
+            Bundle arguments = getArguments();
+            if (arguments != null) {
+                mRecipe = arguments.getParcelable(AppConstants.KEY_RECIPE);
+            }
+        }
+        if (mRecipe == null) {
+            return rootView;
+        }
+        // Fill the edit texts with data from corresponding fields.
+        mTitleView.setText(mRecipe.title);
+        mServingsView.setText(String.valueOf(mRecipe.servings));
+        mPrepTimeView.setText(String.valueOf(mRecipe.prepTime));
+        mCookTimeView.setText(String.valueOf(mRecipe.cookTime));
+        // Set spinners for courses, cuisines and languages.
+        ArrayAdapter<CharSequence> courseAdapter = ArrayAdapter.createFromResource(mContext,
+                R.array.course_array, android.R.layout.simple_spinner_item);
+        courseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mCourseSpinner.setAdapter(courseAdapter);
+        mCourseSpinner.setSelection(courseAdapter.getPosition(mRecipe.course));
+        ArrayAdapter<CharSequence> cuisineAdapter = ArrayAdapter.createFromResource(mContext,
+                R.array.cuisine_array, android.R.layout.simple_spinner_item);
+        cuisineAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mCuisineSpinner.setAdapter(cuisineAdapter);
+        mCuisineSpinner.setSelection(cuisineAdapter.getPosition(mRecipe.cuisine));
+        ArrayAdapter<CharSequence> languageAdapter = ArrayAdapter.createFromResource(mContext,
+                R.array.language_array, android.R.layout.simple_spinner_item);
+        languageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mLanguageSpinner.setAdapter(languageAdapter);
+        mLanguageSpinner.setSelection(languageAdapter.getPosition(mRecipe.language));
+        // Fill the recipe image view.
+        if (!TextUtils.isEmpty(mRecipe.imagePath)) {
+            loadRecipeImage();
+        }
+        // Listen for clicks on recipe image view to take a picture and show in it.
         mRecipeImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,29 +188,7 @@ public class OverallFragment extends Fragment implements LocalDatabaseInsertList
                 mDoNotRequestPermission = false;
             }
         });
-
-        if (savedInstanceState != null) {
-            mRecipeImageView.setRotation(savedInstanceState.getFloat(KEY_IMAGE_ROTATION));
-            mDoNotRequestPermission = savedInstanceState.getBoolean(KEY_REQUEST_PERMISSION);
-            mRecipe = savedInstanceState.getParcelable(AppConstants.KEY_RECIPE);
-        } else {
-            Bundle arguments = getArguments();
-            if (arguments != null) {
-                mRecipe = arguments.getParcelable(AppConstants.KEY_RECIPE);
-            }
-        }
-
-        if (mRecipe != null && !TextUtils.isEmpty(mRecipe.imagePath)) {
-            int size = getResources().getInteger(R.integer.image_size_px);
-            RequestOptions options = new RequestOptions()
-                    .centerCrop()
-                    .override(size);
-            Glide.with(mContext)
-                    .load(mRecipe.imagePath)
-                    .listener(requestListener)
-                    .apply(options)
-                    .into(mRecipeImageView);
-        }
+        // Listen for clicks on rotate button to rotate the taken image.
         mRotateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,54 +196,36 @@ public class OverallFragment extends Fragment implements LocalDatabaseInsertList
                 mRecipeImageView.setRotation(rotation);
             }
         });
-        if (mRecipeImageView == null)
-            mRotateButton.setVisibility(View.GONE);
-        else
-            mRotateButton.setVisibility(View.VISIBLE);
+        // Listen for clicks on publish button to publish the recipe on firebase.
         mPublishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 publishRecipe();
             }
         });
-        mTitleView.setText(mRecipe.title);
-        mServingsView.setText(String.valueOf(mRecipe.servings));
-        mPrepTimeView.setText(String.valueOf(mRecipe.prepTime));
-        mCookTimeView.setText(String.valueOf(mRecipe.cookTime));
-
-        ArrayAdapter<CharSequence> courseAdapter = ArrayAdapter.createFromResource(mContext,
-                R.array.course_array, android.R.layout.simple_spinner_item);
-        courseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mCourseSpinner.setAdapter(courseAdapter);
-        mCourseSpinner.setSelection(courseAdapter.getPosition(mRecipe.course));
-
-        ArrayAdapter<CharSequence> cuisineAdapter = ArrayAdapter.createFromResource(mContext,
-                R.array.cuisine_array, android.R.layout.simple_spinner_item);
-        cuisineAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mCuisineSpinner.setAdapter(cuisineAdapter);
-        mCuisineSpinner.setSelection(cuisineAdapter.getPosition(mRecipe.cuisine));
-
-        ArrayAdapter<CharSequence> languageAdapter = ArrayAdapter.createFromResource(mContext,
-                R.array.language_array, android.R.layout.simple_spinner_item);
-        languageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mLanguageSpinner.setAdapter(languageAdapter);
-        mLanguageSpinner.setSelection(languageAdapter.getPosition(mRecipe.language));
+        // Listen for losing focus from title edit text.
+        mTitleView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    saveRecipe();
+                }
+            }
+        });
 
         return rootView;
     }
 
-    @Override
-    public void onPause() {
-        saveRecipe();
-        super.onPause();
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putFloat(KEY_IMAGE_ROTATION, mRecipeImageView.getRotation());
-        outState.putBoolean(KEY_REQUEST_PERMISSION, mDoNotRequestPermission);
-        outState.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
+    private void loadRecipeImage() {
+        int size = getResources().getInteger(R.integer.image_size_px);
+        RequestOptions options = new RequestOptions()
+                .centerCrop()
+                .override(size);
+        Glide.with(mContext)
+                .load(mRecipe.imagePath)
+                .listener(requestListener)
+                .apply(options)
+                .into(mRecipeImageView);
     }
 
     private boolean saveRecipe() {
@@ -226,18 +235,6 @@ public class OverallFragment extends Fragment implements LocalDatabaseInsertList
         String title = mTitleView.getText().toString();
         mRecipe.title = CheckUtils.validateTitle(title);
         mTitleView.setText(mRecipe.title);
-        // Take the image from the image view.
-        BitmapDrawable drawable = (BitmapDrawable) mRecipeImageView.getDrawable();
-        // Create a new file with the image and change value of mImageFilePath to this file. Then delete the older one.
-        if (drawable != null) {
-            File oldFile = new File(mRecipe.imagePath);
-            mRecipe.imagePath = BitmapUtils.writeJpegPrivate(mContext, drawable.getBitmap(), title);
-            if (!oldFile.getName().equals(title + ".jpg") && oldFile.getAbsolutePath().contains(mContext.getPackageName())) {
-                Boolean deleted = oldFile.delete();
-                if (deleted)
-                    Log.v(LOG_TAG, "Temporary image file is deleted.");
-            }
-        }
         mRecipe.cookTime = CheckUtils.getPositiveIntegerFromField(mContext, mCookTimeView);
         if (mRecipe.cookTime == -1)
             return false;
@@ -251,6 +248,18 @@ public class OverallFragment extends Fragment implements LocalDatabaseInsertList
         mRecipe.cuisine = mCuisineSpinner.getSelectedItem().toString();
         mRecipe.language = mLanguageSpinner.getSelectedItem().toString();
         mRecipe.timeStamp = new Date().getTime();
+        // Take the image from the image view.
+        BitmapDrawable drawable = (BitmapDrawable) mRecipeImageView.getDrawable();
+        // Create a new file with the image and save reference to this file. Then delete the older file.
+        if (drawable != null) {
+            File oldFile = new File(mRecipe.imagePath);
+            mRecipe.imagePath = BitmapUtils.writeJpegPrivate(mContext, drawable.getBitmap(), mRecipe.title);
+            if (!oldFile.getName().equals(mRecipe.title + ".jpg") && oldFile.getAbsolutePath().contains(mContext.getPackageName())) {
+                Boolean deleted = oldFile.delete();
+                if (deleted)
+                    Log.v(LOG_TAG, "Temporary image file is deleted.");
+            }
+        }
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             mRecipe.writerName = user.getDisplayName();
@@ -259,6 +268,7 @@ public class OverallFragment extends Fragment implements LocalDatabaseInsertList
         Bundle bundle = new Bundle();
         bundle.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
         mMessageListener.onFragmentMessage(0, bundle);
+        Log.v(LOG_TAG, "Saving...");
         mKitchenViewModel.insertRecipe(mRecipe, this);
         return true;
     }
@@ -309,14 +319,7 @@ public class OverallFragment extends Fragment implements LocalDatabaseInsertList
                 if (grantResults.length > 0) {
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         if (mRecipe != null && !TextUtils.isEmpty(mRecipe.imagePath)) {
-                            int size = getResources().getInteger(R.integer.image_size_px);
-                            RequestOptions options = new RequestOptions()
-                                    .centerCrop()
-                                    .override(size);
-                            Glide.with(mContext)
-                                    .load(mRecipe.imagePath)
-                                    .apply(options)
-                                    .into(mRecipeImageView);
+                            loadRecipeImage();
                         }
                     } else {
                         mDoNotRequestPermission = true;
@@ -328,13 +331,28 @@ public class OverallFragment extends Fragment implements LocalDatabaseInsertList
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mMessageListener = null;
+    public void onDataInsert(long id) {
+        mRecipe.id = (int) id;
+        Log.v(LOG_TAG, "Recipe saved with id: " + mRecipe.id);
     }
 
     @Override
-    public void onDataInsert(long id) {
-        mRecipe.id = (int) id;
+    public void onPause() {
+        saveRecipe();
+        super.onPause();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putFloat(KEY_IMAGE_ROTATION, mRecipeImageView.getRotation());
+        outState.putBoolean(KEY_REQUEST_PERMISSION, mDoNotRequestPermission);
+        outState.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mMessageListener = null;
     }
 }

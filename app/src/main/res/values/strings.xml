@@ -1,6 +1,5 @@
 <resources>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="section_format">Welcome! This is section: %1$d</string>
 
     <!-- Navigation Drawer -->
@@ -10,9 +9,9 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">User Image</string>
     <string name="recipes">Recipes</string>
-    <string name="notebook">Notebook</string>
+    <string name="bookmarks">Bookmarks</string>
     <string name="suggestions">Suggestions</string>
-    <string name="meal_board">Meal Board</string>
+    <string name="meal_plan">Meal Plan</string>
     <string name="routines">Routines</string>
     <string name="shopping_list">Shopping List</string>
     <string name="food">Food</string>
@@ -114,7 +113,7 @@
     <string name="delete">Delete</string>
     <string name="new_recipe">New Recipe</string>
     <string name="edit_recipe">Edit Recipe</string>
-    <string name="overview">Overview</string>
+    <string name="overall">Overall</string>
     <string name="ingredients">Ingredients</string>
     <string name="instruction">Instruction</string>
     <string name="instructions">Instructions</string>
@@ -138,10 +137,8 @@
     <string name="share">Share</string>
     <string name="bookmark">Bookmark</string>
     <string name="recipe_finished">The meal is ready!</string>
-    <string name="decrement">-</string>
-    <string name="increment">+</string>
     <string name="bullet">Bullet</string>
-    <string name="recipe_bookmarked">Recipe is saved in the notebook.</string>
+    <string name="recipe_bookmarked">Recipe is saved in bookmarks.</string>
     <string name="publish_successful">Recipe is now public.</string>
     <string name="publishing">Publishing recipe.</string>
     <string name="missing_picture">Not published due to missing picture.</string>
@@ -163,4 +160,8 @@
     <string name="add_ingredient">Add ingredient</string>
     <string name="add_instruction">Add instruction</string>
     <string name="must_be_integer">Must be a positive integer.</string>
+    <string name="decrement_servings">Decrement servings</string>
+    <string name="increment_servings">Increment servings</string>
+    <string name="food_storage">Storage</string>
+    <string name="can_not_add_ingredient">Cannot add ingredient. You need to give a title for the recipe.</string>
 </resources>
