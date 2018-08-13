@@ -53,6 +53,9 @@ import butterknife.ButterKnife;
 public class RecipeDetailActivity extends AppCompatActivity implements RecipeViewModel.RatingPostListener, LocalDatabaseInsertListener {
     private static final String KEY_SERVINGS = "servings-key";
     private static final String KEY_RATING_TRANSACTION = "rating-transaction-status-key";
+    private static final String KEY_EDITABLE = "editable-key";
+    private static final String KEY_BOOKABLE = "bookable-key";
+    private static final String KEY_INSERTED_FOR_EDIT = "key-inserted-for-edit";
     @BindView(R.id.app_bar) AppBarLayout mAppBarLayout;
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.iv_recipe_image) ImageView mRecipeImageView;
@@ -77,8 +80,9 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
     private Recipe mRecipe;
     private int mServings;
     private boolean mIsRatingProcessing;
-    private boolean mIsBookable;
     private boolean mIsInsertedForEdit;
+    private boolean mIsBookable;
+    private boolean mIsEditable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,13 +92,19 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
         mSharedPreferences = getPreferences(Context.MODE_PRIVATE);
         mRecipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
         mKitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
-        boolean isEditable;
         if (getIntent() != null) {
             mRecipe = getIntent().getParcelableExtra(AppConstants.EXTRA_RECIPE);
-            isEditable = getIntent().getBooleanExtra(AppConstants.EXTRA_EDITABLE, false);
             mIsBookable = getIntent().getBooleanExtra(AppConstants.EXTRA_BOOKABLE, false);
+            mIsEditable = getIntent().getBooleanExtra(AppConstants.EXTRA_EDITABLE, false);
+        }
+        if (savedInstanceState == null) {
+            mServings = mRecipe.servings;
         } else {
-            return;
+            mServings = savedInstanceState.getInt(KEY_SERVINGS);
+            mIsRatingProcessing = savedInstanceState.getBoolean(KEY_RATING_TRANSACTION);
+            mIsInsertedForEdit = savedInstanceState.getBoolean(KEY_INSERTED_FOR_EDIT);
+            mIsBookable = savedInstanceState.getBoolean(KEY_BOOKABLE);
+            mIsEditable = savedInstanceState.getBoolean(KEY_EDITABLE);
         }
         // Change ActionBar title as the name of the recipe.
         setSupportActionBar(mToolbar);
@@ -150,7 +160,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
                 }
             }
         });
-        if (!isEditable) {
+        if (!mIsEditable) {
             mFab.setVisibility(View.GONE);
             mWriterTextView.setText(mRecipe.writerName);
         } else {
@@ -162,12 +172,6 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
         mCuisineTextView.setText(mRecipe.cuisine);
         mPrepTimeTextView.setText(String.valueOf(mRecipe.prepTime));
         mCookTimeTextView.setText(String.valueOf(mRecipe.cookTime));
-        if (savedInstanceState == null) {
-            mServings = mRecipe.servings;
-        } else {
-            mServings = savedInstanceState.getInt(KEY_SERVINGS);
-            mIsRatingProcessing = savedInstanceState.getBoolean(KEY_RATING_TRANSACTION);
-        }
         mServingsTextView.setText(String.valueOf(mServings));
         mDecrementButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -234,6 +238,9 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_SERVINGS, mServings);
         outState.putBoolean(KEY_RATING_TRANSACTION, mIsRatingProcessing);
+        outState.putBoolean(KEY_INSERTED_FOR_EDIT, mIsInsertedForEdit);
+        outState.putBoolean(KEY_BOOKABLE, mIsBookable);
+        outState.putBoolean(KEY_EDITABLE, mIsEditable);
     }
 
     @Override
@@ -241,8 +248,12 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
         MenuInflater inflater = getMenuInflater();
         if (mIsBookable) {
             inflater.inflate(R.menu.menu_recipe_detail_bookable, menu);
+            mFab.setVisibility(View.GONE);
         } else {
             inflater.inflate(R.menu.menu_recipe_detail, menu);
+            if (mIsEditable) {
+                mFab.setVisibility(View.VISIBLE);
+            }
         }
         return super.onCreateOptionsMenu(menu);
     }
