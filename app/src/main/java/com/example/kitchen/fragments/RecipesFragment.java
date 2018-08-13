@@ -1,3 +1,8 @@
+/*
+ * Reference
+ * https://stackoverflow.com/questions/13626756/how-can-i-get-onbackpressed-while-searchview-is-activated/22730635#22730635
+ */
+
 package com.example.kitchen.fragments;
 
 import android.content.Context;
@@ -7,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -95,9 +101,9 @@ public class RecipesFragment extends Fragment {
             mAdapter.setRecipes(recipes);
             savedInstanceState = arguments.getBundle(AppConstants.KEY_SAVED_STATE);
             if (savedInstanceState != null) {
-                mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(LAYOUT_STATE));
                 mQuery = savedInstanceState.getString(SEARCH_QUERY);
                 mAdapter.filter(mQuery);
+                mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(LAYOUT_STATE));
             }
         }
         return rootView;
@@ -116,8 +122,8 @@ public class RecipesFragment extends Fragment {
     }
 
     private void sendToActivity(Bundle outState) {
-        outState.putParcelable(LAYOUT_STATE, mLayoutManager.onSaveInstanceState());
         outState.putString(SEARCH_QUERY, mQuery);
+        outState.putParcelable(LAYOUT_STATE, mLayoutManager.onSaveInstanceState());
         MainActivity activity = null;
         try {
             activity = (MainActivity) getActivity();
@@ -137,7 +143,25 @@ public class RecipesFragment extends Fragment {
         // Add new menu items
         inflater.inflate(R.menu.menu_recipes, menu);
         // Associate searchable configuration with the SearchView
-        SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
+        MenuItem searchMenuItem = menu.findItem(R.id.app_bar_search);
+        searchMenuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true; // KEEP IT TO TRUE OR IT DOESN'T OPEN !!
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                mQuery = "";
+                sendToActivity(new Bundle());
+                return true; // OR FALSE IF YOU DIDN'T WANT IT TO CLOSE!
+            }
+        });
+        final SearchView searchView = (SearchView) searchMenuItem.getActionView();
+        if (!TextUtils.isEmpty(mQuery)) {
+            searchMenuItem.expandActionView();
+            searchView.setQuery(mQuery, true);
+        }
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
