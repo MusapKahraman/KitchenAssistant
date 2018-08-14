@@ -33,21 +33,24 @@ public class Ingredient implements Parcelable {
     public String food;
     public int amount;
     public String amountType;
+    public String publicKey;
 
     @Ignore
-    public Ingredient(int id, int recipeId, String food, int amount, String amountType) {
+    public Ingredient(int id, int recipeId, String food, int amount, String amountType, String publicKey) {
         this.id = id;
         this.recipeId = recipeId;
         this.food = food;
         this.amount = amount;
         this.amountType = amountType;
+        this.publicKey = publicKey;
     }
 
-    public Ingredient(int recipeId, String food, int amount, String amountType) {
+    public Ingredient(int recipeId, String food, int amount, String amountType, String publicKey) {
         this.recipeId = recipeId;
         this.food = food;
         this.amount = amount;
         this.amountType = amountType;
+        this.publicKey = publicKey;
     }
 
     private Ingredient(Parcel in) {
@@ -56,6 +59,7 @@ public class Ingredient implements Parcelable {
         food = in.readString();
         amount = in.readInt();
         amountType = in.readString();
+        publicKey = in.readString();
     }
 
     @Override
@@ -70,6 +74,7 @@ public class Ingredient implements Parcelable {
         dest.writeString(food);
         dest.writeInt(amount);
         dest.writeString(amountType);
+        dest.writeString(publicKey);
     }
 
     @Override
@@ -79,6 +84,7 @@ public class Ingredient implements Parcelable {
                 "\nrecipeId: " + recipeId +
                 "\nfood: " + food +
                 "\namount: " + amount +
-                "\namountType: " + amountType;
+                "\namountType: " + amountType +
+                "\npublicKey: " + publicKey;
     }
 }

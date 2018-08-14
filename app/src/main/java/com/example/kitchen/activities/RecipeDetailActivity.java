@@ -19,6 +19,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,21 +37,31 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.kitchen.R;
+import com.example.kitchen.data.firebase.IngredientViewModel;
 import com.example.kitchen.data.firebase.RecipeViewModel;
+import com.example.kitchen.data.firebase.StepViewModel;
+import com.example.kitchen.data.firebase.models.IngredientModel;
+import com.example.kitchen.data.firebase.models.StepModel;
 import com.example.kitchen.data.local.KitchenViewModel;
-import com.example.kitchen.data.local.LocalDatabaseInsertListener;
+import com.example.kitchen.data.local.RecipeInsertListener;
 import com.example.kitchen.data.local.entities.Ingredient;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.data.local.entities.Step;
 import com.example.kitchen.utility.AppConstants;
 import com.example.kitchen.utility.MeasurementUtils;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseException;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RecipeDetailActivity extends AppCompatActivity implements RecipeViewModel.RatingPostListener, LocalDatabaseInsertListener {
+public class RecipeDetailActivity extends AppCompatActivity implements RecipeViewModel.RatingPostListener, RecipeInsertListener {
+    private static final String LOG_TAG = RecipeDetailActivity.class.getSimpleName();
     private static final String KEY_SERVINGS = "servings-key";
     private static final String KEY_RATING_TRANSACTION = "rating-transaction-status-key";
     private static final String KEY_EDITABLE = "editable-key";
@@ -74,10 +85,15 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
     @BindView(R.id.btn_finished) Button mFinishedButton;
     @BindView(R.id.container_ingredients) LinearLayout mIngredientsContainer;
     @BindView(R.id.container_steps) LinearLayout mStepsContainer;
-    private RecipeViewModel mRecipeViewModel;
+    private LayoutInflater mLayoutInflater;
     private KitchenViewModel mKitchenViewModel;
+    private RecipeViewModel mRecipeViewModel;
+    private IngredientViewModel mIngredientViewModel;
+    private StepViewModel mStepViewModel;
     private SharedPreferences mSharedPreferences;
     private Recipe mRecipe;
+    private List<Ingredient> mIngredients;
+    private List<Step> mSteps;
     private int mServings;
     private boolean mIsRatingProcessing;
     private boolean mIsInsertedForEdit;
@@ -85,13 +101,15 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
     private boolean mIsEditable;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
         ButterKnife.bind(this);
         mSharedPreferences = getPreferences(Context.MODE_PRIVATE);
-        mRecipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
         mKitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
+        mRecipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
+        mIngredientViewModel = ViewModelProviders.of(this).get(IngredientViewModel.class);
+        mStepViewModel = ViewModelProviders.of(this).get(StepViewModel.class);
         if (getIntent() != null) {
             mRecipe = getIntent().getParcelableExtra(AppConstants.EXTRA_RECIPE);
             mIsBookable = getIntent().getBooleanExtra(AppConstants.EXTRA_BOOKABLE, false);
@@ -197,40 +215,105 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
             }
         });
 
-        final LayoutInflater inflater = LayoutInflater.from(this);
-        mKitchenViewModel.getIngredientsByRecipe(mRecipe.id).observe(this, new Observer<List<Ingredient>>() {
-            @Override
-            public void onChanged(@Nullable List<Ingredient> ingredients) {
-                if (ingredients == null)
-                    return;
-                for (Ingredient ingredient : ingredients) {
-                    View ingredientView = inflater.inflate(R.layout.item_ingredient, mIngredientsContainer, false);
-                    TextView ingredientAmountTextView = ingredientView.findViewById(R.id.tv_ingredient_amount);
-                    TextView ingredientTextView = ingredientView.findViewById(R.id.tv_ingredient);
-                    String text = ingredient.amount +
-                            " " + MeasurementUtils.getAbbreviation(RecipeDetailActivity.this, ingredient.amountType);
-                    ingredientAmountTextView.setText(text);
-                    ingredientTextView.setText(ingredient.food);
-                    mIngredientsContainer.addView(ingredientView);
-                }
-            }
-        });
+        mLayoutInflater = LayoutInflater.from(this);
 
-        mKitchenViewModel.getStepsByRecipe(mRecipe.id).observe(this, new Observer<List<Step>>() {
-            @Override
-            public void onChanged(@Nullable List<Step> steps) {
-                if (steps == null)
-                    return;
-                for (Step step : steps) {
-                    View stepView = inflater.inflate(R.layout.item_step, mStepsContainer, false);
-                    TextView stepNumberView = stepView.findViewById(R.id.tv_step_number);
-                    stepNumberView.setText(String.valueOf(step.stepNumber));
-                    TextView instructionTextView = stepView.findViewById(R.id.tv_instruction);
-                    instructionTextView.setText(step.instruction);
-                    mStepsContainer.addView(stepView);
+        if (mRecipe.id != 0) {
+            mKitchenViewModel.getIngredientsByRecipe(mRecipe.id).observe(this, new Observer<List<Ingredient>>() {
+                @Override
+                public void onChanged(@Nullable List<Ingredient> ingredients) {
+                    showIngredients(ingredients);
                 }
-            }
-        });
+            });
+
+            mKitchenViewModel.getStepsByRecipe(mRecipe.id).observe(this, new Observer<List<Step>>() {
+                @Override
+                public void onChanged(@Nullable List<Step> steps) {
+                    showSteps(steps);
+                }
+            });
+        } else {
+            mIngredientViewModel.getDataSnapshotLiveData(mRecipe.publicKey)
+                    .observe(this, new Observer<DataSnapshot>() {
+                        @Override
+                        public void onChanged(@Nullable DataSnapshot dataSnapshot) {
+                            mIngredients = new ArrayList<>();
+                            if (dataSnapshot != null) {
+                                for (DataSnapshot ingredientSnapshot : dataSnapshot.getChildren()) {
+                                    IngredientModel ingredient = null;
+                                    try {
+                                        ingredient = ingredientSnapshot.getValue(IngredientModel.class);
+                                    } catch (DatabaseException e) {
+                                        Log.e(LOG_TAG, e.getMessage());
+                                    }
+                                    // Translate data from snapshot into local database version.
+                                    if (ingredient != null) {
+                                        mIngredients.add(new Ingredient(0, ingredient.food,
+                                                ingredient.amount, ingredient.amountType,
+                                                ingredientSnapshot.getKey()));
+                                    }
+                                }
+                            }
+                            showIngredients(mIngredients);
+                        }
+                    });
+            mStepViewModel.getDataSnapshotLiveData(mRecipe.publicKey)
+                    .observe(this, new Observer<DataSnapshot>() {
+                        @Override
+                        public void onChanged(@Nullable DataSnapshot dataSnapshot) {
+                            mSteps = new ArrayList<>();
+                            if (dataSnapshot != null) {
+                                for (DataSnapshot stepSnapshot : dataSnapshot.getChildren()) {
+                                    StepModel step = null;
+                                    try {
+                                        step = stepSnapshot.getValue(StepModel.class);
+                                    } catch (DatabaseException e) {
+                                        Log.e(LOG_TAG, e.getMessage());
+                                    }
+                                    if (step != null) {
+                                        mSteps.add(new Step(step.instruction, step.stepNumber, 0,
+                                                stepSnapshot.getKey()));
+                                    }
+                                }
+                            }
+                            // Sort the list in ascending order of step number.
+                            Collections.sort(mSteps, new Comparator<Step>() {
+                                @Override
+                                public int compare(Step o1, Step o2) {
+                                    return Integer.compare(o1.stepNumber, o2.stepNumber);
+                                }
+                            });
+                            showSteps(mSteps);
+                        }
+                    });
+        }
+    }
+
+    private void showIngredients(List<Ingredient> ingredients) {
+        if (ingredients == null)
+            return;
+        for (Ingredient ingredient : ingredients) {
+            View ingredientView = mLayoutInflater.inflate(R.layout.item_ingredient, mIngredientsContainer, false);
+            TextView ingredientAmountTextView = ingredientView.findViewById(R.id.tv_ingredient_amount);
+            TextView ingredientTextView = ingredientView.findViewById(R.id.tv_ingredient);
+            String text = ingredient.amount +
+                    " " + MeasurementUtils.getAbbreviation(RecipeDetailActivity.this, ingredient.amountType);
+            ingredientAmountTextView.setText(text);
+            ingredientTextView.setText(ingredient.food);
+            mIngredientsContainer.addView(ingredientView);
+        }
+    }
+
+    private void showSteps(List<Step> steps) {
+        if (steps == null)
+            return;
+        for (Step step : steps) {
+            View stepView = mLayoutInflater.inflate(R.layout.item_step, mStepsContainer, false);
+            TextView stepNumberView = stepView.findViewById(R.id.tv_step_number);
+            stepNumberView.setText(String.valueOf(step.stepNumber));
+            TextView instructionTextView = stepView.findViewById(R.id.tv_instruction);
+            instructionTextView.setText(step.instruction);
+            mStepsContainer.addView(stepView);
+        }
     }
 
     @Override
@@ -288,8 +371,20 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
     }
 
     @Override
-    public void onDataInsert(long id) {
+    public void onRecipeInserted(long id) {
         mRecipe.id = (int) id;
+        if (mIngredients != null) {
+            for (Ingredient i : mIngredients) {
+                i.recipeId = mRecipe.id;
+                mKitchenViewModel.insertIngredients(i);
+            }
+        }
+        if (mSteps != null) {
+            for (Step s : mSteps) {
+                s.recipeId = mRecipe.id;
+                mKitchenViewModel.insertSteps(s);
+            }
+        }
         if (mIsInsertedForEdit) {
             startEditingActivity(mRecipe);
         }

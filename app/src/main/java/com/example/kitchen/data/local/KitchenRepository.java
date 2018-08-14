@@ -59,7 +59,7 @@ class KitchenRepository {
 
     // Insert and delete methods need to be run on an asynchronous thread.
 
-    public void insertRecipe(Recipe recipe, LocalDatabaseInsertListener listener) {
+    public void insertRecipe(Recipe recipe, RecipeInsertListener listener) {
         new InsertRecipeTask(mRecipesDao, listener).execute(recipe);
     }
 
@@ -85,9 +85,9 @@ class KitchenRepository {
 
     private static class InsertRecipeTask extends AsyncTask<Recipe, Void, Void> {
         private final RecipesDao mAsyncTaskDao;
-        private final LocalDatabaseInsertListener listener;
+        private final RecipeInsertListener listener;
 
-        InsertRecipeTask(RecipesDao dao, LocalDatabaseInsertListener listener) {
+        InsertRecipeTask(RecipesDao dao, RecipeInsertListener listener) {
             mAsyncTaskDao = dao;
             this.listener = listener;
         }
@@ -99,9 +99,9 @@ class KitchenRepository {
                     long id = mAsyncTaskDao.insert(recipe);
                     if (id == -1) {
                         mAsyncTaskDao.update(recipe);
-                        listener.onDataInsert(recipe.id);
+                        listener.onRecipeInserted(recipe.id);
                     } else {
-                        listener.onDataInsert(id);
+                        listener.onRecipeInserted(id);
                     }
                 }
             }

@@ -16,11 +16,10 @@ import com.google.firebase.database.FirebaseDatabase;
 public class FoodViewModel extends ViewModel {
     private static final DatabaseReference FOOD_REF =
             FirebaseDatabase.getInstance().getReference(References.FOOD);
-    private final FirebaseQueryLiveData liveData = new FirebaseQueryLiveData(FOOD_REF);
 
     @NonNull
     public LiveData<DataSnapshot> getDataSnapshotLiveData() {
-        return liveData;
+        return new FirebaseQueryLiveData(FOOD_REF.orderByKey());
     }
 
     public void addFood(String name, float conversionMultiplier) {

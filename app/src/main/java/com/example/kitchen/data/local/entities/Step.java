@@ -33,19 +33,22 @@ public class Step implements Parcelable {
     @NonNull public String instruction;
     public int stepNumber;
     public int recipeId;
+    public String publicKey;
 
     @Ignore
-    public Step(int id, @NonNull String instruction, int stepNumber, int recipeId) {
+    public Step(int id, @NonNull String instruction, int stepNumber, int recipeId, String publicKey) {
         this.id = id;
         this.instruction = instruction;
         this.stepNumber = stepNumber;
         this.recipeId = recipeId;
+        this.publicKey = publicKey;
     }
 
-    public Step(@NonNull String instruction, int stepNumber, int recipeId) {
+    public Step(@NonNull String instruction, int stepNumber, int recipeId, String publicKey) {
         this.instruction = instruction;
         this.stepNumber = stepNumber;
         this.recipeId = recipeId;
+        this.publicKey = publicKey;
     }
 
     private Step(Parcel in) {
@@ -53,6 +56,7 @@ public class Step implements Parcelable {
         instruction = in.readString();
         stepNumber = in.readInt();
         recipeId = in.readInt();
+        publicKey = in.readString();
     }
 
     @Override
@@ -66,6 +70,7 @@ public class Step implements Parcelable {
         dest.writeString(instruction);
         dest.writeInt(stepNumber);
         dest.writeInt(recipeId);
+        dest.writeString(publicKey);
     }
 
     @Override
@@ -74,6 +79,7 @@ public class Step implements Parcelable {
                 "\nid: " + id +
                 "\nname: " + instruction +
                 "\nrecipeId: " + stepNumber +
-                "\nfood_id: " + recipeId;
+                "\nfood_id: " + recipeId +
+                "\npublicKey: " + publicKey;
     }
 }

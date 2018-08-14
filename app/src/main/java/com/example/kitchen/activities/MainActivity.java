@@ -45,6 +45,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseException;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -52,6 +54,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, RecipeClickListener, FragmentScrollListener {
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String KEY_NAV_INDEX = "navigator-index-key";
     private static final String KEY_RECIPES_FRAG = "recipes-fragment-key";
     private static final String KEY_NOTEBOOK_FRAG = "notebook-fragment-key";
@@ -145,115 +148,6 @@ public class MainActivity extends AppCompatActivity
         outState.putBundle(KEY_MEAL_BOARD_FRAG, mMealBoardFragmentSavedState);
     }
 
-    private void changeContent() {
-        mProgressBar.setVisibility(View.GONE);
-        mNavigatorIndex = mSharedPreferences.getInt(KEY_NAV_INDEX, 0);
-        switch (mNavigatorIndex) {
-            case 0:
-                mFab.show();
-                mProgressBar.setVisibility(View.VISIBLE);
-                mRecipeViewModel.getDataSnapshotLiveData().observe(this, new Observer<DataSnapshot>() {
-                    @Override
-                    public void onChanged(@Nullable DataSnapshot dataSnapshot) {
-                        if (mNavigatorIndex != 0) {
-                            // Prevent turning back to online recipes fragment after publishing a recipe.
-                            return;
-                        }
-                        List<Recipe> recipes = new ArrayList<>();
-                        if (dataSnapshot != null) {
-                            for (DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
-                                RecipeModel recipe = null;
-                                try {
-                                    recipe = recipeSnapshot.getValue(RecipeModel.class);
-                                } catch (DatabaseException e) {
-                                    Log.e("MainActivity", e.getMessage());
-                                }
-                                if (recipe != null) {
-                                    int total = recipe.totalRating;
-                                    int count = recipe.ratingCount;
-                                    float rating = 0;
-                                    if (count != 0) rating = (float) total / (float) count;
-                                    recipes.add(new Recipe(0, recipe.title, recipe.imageUrl, recipe.prepTime, recipe.cookTime,
-                                            recipe.language, recipe.cuisine, recipe.course, recipe.writerUid, recipe.writerName,
-                                            recipe.servings, 0, recipeSnapshot.getKey(), rating));
-                                }
-                            }
-                        }
-                        showRecipes(recipes);
-                        mProgressBar.setVisibility(View.GONE);
-                    }
-                });
-                break;
-            case 1:
-                mFab.show();
-                mKitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
-                    @Override
-                    public void onChanged(@Nullable List<Recipe> recipes) {
-                        if (recipes != null)
-                            showNotebook(recipes);
-                    }
-                });
-                break;
-            case 6:
-                mKitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
-                    @Override
-                    public void onChanged(@Nullable List<Recipe> recipes) {
-                        showMealBoard(recipes);
-                    }
-                });
-                break;
-        }
-    }
-
-    private void showRecipes(List<Recipe> recipes) {
-        for (Recipe recipe : recipes)
-            Log.v("MainActivity", recipe.toString());
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(R.string.recipes);
-        Bundle bundle = new Bundle();
-        bundle.putBundle(AppConstants.KEY_SAVED_STATE, mRecipesFragmentSavedState);
-        bundle.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
-        RecipesFragment recipesFragment = new RecipesFragment();
-        recipesFragment.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, recipesFragment).commit();
-    }
-
-    private void showNotebook(List<Recipe> recipes) {
-        for (Recipe recipe : recipes)
-            Log.v("MainActivity", recipe.toString());
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(R.string.bookmarks);
-        Bundle bundle = new Bundle();
-        bundle.putBundle(AppConstants.KEY_SAVED_STATE, mNotebookFragmentSavedState);
-        bundle.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
-        BookmarksFragment notebookFragment = new BookmarksFragment();
-        notebookFragment.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, notebookFragment).commit();
-    }
-
-    private void showMealBoard(List<Recipe> recipes) {
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(R.string.meal_plan);
-        Bundle bundle = new Bundle();
-        bundle.putBundle(AppConstants.KEY_SAVED_STATE, mMealBoardFragmentSavedState);
-        bundle.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
-        MealBoardFragment mealBoardFragment = new MealBoardFragment();
-        mealBoardFragment.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mealBoardFragment).commit();
-    }
-
-    public void fromRecipesFragment(Bundle fragmentOutState) {
-        mRecipesFragmentSavedState = fragmentOutState;
-    }
-
-    public void fromNotebookFragment(Bundle fragmentOutState) {
-        mNotebookFragmentSavedState = fragmentOutState;
-    }
-
-    public void fromMealBoardFragment(Bundle fragmentOutState) {
-        mMealBoardFragmentSavedState = fragmentOutState;
-    }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -339,5 +233,127 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onScrollUp() {
         mFab.show();
+    }
+
+    public void fromRecipesFragment(Bundle fragmentOutState) {
+        mRecipesFragmentSavedState = fragmentOutState;
+    }
+
+    public void fromNotebookFragment(Bundle fragmentOutState) {
+        mNotebookFragmentSavedState = fragmentOutState;
+    }
+
+    public void fromMealBoardFragment(Bundle fragmentOutState) {
+        mMealBoardFragmentSavedState = fragmentOutState;
+    }
+
+    private void changeContent() {
+        mProgressBar.setVisibility(View.GONE);
+        mNavigatorIndex = mSharedPreferences.getInt(KEY_NAV_INDEX, 0);
+        switch (mNavigatorIndex) {
+            case 0:
+                mFab.show();
+                mProgressBar.setVisibility(View.VISIBLE);
+                fetchRecipesInPages();
+                break;
+            case 1:
+                mFab.show();
+                mKitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Recipe> recipes) {
+                        if (recipes != null)
+                            showNotebook(recipes);
+                    }
+                });
+                break;
+            case 6:
+                mKitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Recipe> recipes) {
+                        showMealBoard(recipes);
+                    }
+                });
+                break;
+        }
+    }
+
+    private void showRecipes(List<Recipe> recipes) {
+        mProgressBar.setVisibility(View.GONE);
+        for (Recipe recipe : recipes)
+            Log.v("MainActivity", recipe.toString());
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(R.string.recipes);
+        Bundle bundle = new Bundle();
+        bundle.putBundle(AppConstants.KEY_SAVED_STATE, mRecipesFragmentSavedState);
+        bundle.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
+        RecipesFragment recipesFragment = new RecipesFragment();
+        recipesFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, recipesFragment).commit();
+    }
+
+    private void showNotebook(List<Recipe> recipes) {
+        for (Recipe recipe : recipes)
+            Log.v("MainActivity", recipe.toString());
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(R.string.bookmarks);
+        Bundle bundle = new Bundle();
+        bundle.putBundle(AppConstants.KEY_SAVED_STATE, mNotebookFragmentSavedState);
+        bundle.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
+        BookmarksFragment notebookFragment = new BookmarksFragment();
+        notebookFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, notebookFragment).commit();
+    }
+
+    private void showMealBoard(List<Recipe> recipes) {
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(R.string.meal_plan);
+        Bundle bundle = new Bundle();
+        bundle.putBundle(AppConstants.KEY_SAVED_STATE, mMealBoardFragmentSavedState);
+        bundle.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
+        MealBoardFragment mealBoardFragment = new MealBoardFragment();
+        mealBoardFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mealBoardFragment).commit();
+    }
+
+    private void fetchRecipesInPages() {
+        // Fetch recipe data from firebase.
+        mRecipeViewModel.getPagedDataSnapshotLiveData(10, "rating")
+                .observe(this, new Observer<DataSnapshot>() {
+                    @Override
+                    public void onChanged(@Nullable DataSnapshot dataSnapshot) {
+                        // Prevent turning back to online recipes fragment after publishing a recipe.
+                        if (mNavigatorIndex != 0) return;
+                        List<Recipe> recipes = new ArrayList<>();
+                        if (dataSnapshot != null) {
+                            for (DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
+                                RecipeModel recipe = null;
+                                try {
+                                    recipe = recipeSnapshot.getValue(RecipeModel.class);
+                                } catch (DatabaseException e) {
+                                    Log.e(LOG_TAG, e.getMessage());
+                                }
+                                // Translate data from snapshot into local database version.
+                                if (recipe != null) {
+                                    float total = (float) recipe.totalRating;
+                                    float count = (float) recipe.ratingCount;
+                                    float rating = count != 0 ? total / count : 0;
+                                    recipes.add(new Recipe(0, recipe.title, recipe.imageUrl,
+                                            recipe.prepTime, recipe.cookTime, recipe.language,
+                                            recipe.cuisine, recipe.course, recipe.writerUid,
+                                            recipe.writerName, recipe.servings, 0,
+                                            recipeSnapshot.getKey(), rating));
+                                }
+                            }
+                        }
+                        // Sort the list in descending order of ratings.
+                        Collections.sort(recipes, new Comparator<Recipe>() {
+                            @Override
+                            public int compare(Recipe o1, Recipe o2) {
+                                return (int) (o2.rating - o1.rating);
+                            }
+                        });
+                        showRecipes(recipes);
+                    }
+                });
     }
 }

@@ -16,6 +16,7 @@ public class RecipeModel {
     public String writerName;
     public int totalRating;
     public int ratingCount;
+    public int rating;
 
     public RecipeModel() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)

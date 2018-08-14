@@ -19,7 +19,6 @@ import com.google.firebase.database.ValueEventListener;
 
 class FirebaseQueryLiveData extends LiveData<DataSnapshot> {
     private static final String LOG_TAG = "FirebaseQueryLiveData";
-
     private final Query query;
     private final MyValueEventListener listener = new MyValueEventListener();
     private final Handler handler = new Handler();
@@ -31,6 +30,10 @@ class FirebaseQueryLiveData extends LiveData<DataSnapshot> {
             listenerRemovePending = false;
         }
     };
+
+    FirebaseQueryLiveData(Query query) {
+        this.query = query;
+    }
 
     FirebaseQueryLiveData(DatabaseReference ref) {
         this.query = ref;

@@ -25,16 +25,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RecipeViewModel extends ViewModel {
-    private static final String TAG = "FirebaseDatabase";
-    private static final int NONE = 0;
+    private static final String LOG_TAG = RecipeViewModel.class.getSimpleName();
+    private static final int RATING_FULL_POINT = 1000;
     private static final int HIGHEST = 5;
+    private static final int NONE = 0;
     private static final DatabaseReference RECIPE_REF =
             FirebaseDatabase.getInstance().getReference(References.RECIPES);
-    private final FirebaseQueryLiveData liveData = new FirebaseQueryLiveData(RECIPE_REF);
 
     @NonNull
     public LiveData<DataSnapshot> getDataSnapshotLiveData() {
-        return liveData;
+        return new FirebaseQueryLiveData(RECIPE_REF.orderByChild("rating"));
+    }
+
+    public LiveData<DataSnapshot> getPagedDataSnapshotLiveData(int itemsPerPage, String fieldToOrderBy) {
+        return new FirebaseQueryLiveData(RECIPE_REF.orderByChild(fieldToOrderBy).limitToLast(itemsPerPage));
     }
 
     public String postRecipe(Recipe recipe, String imageUrl) {
@@ -75,6 +79,10 @@ public class RecipeViewModel extends ViewModel {
                         recipe.ratingCount = recipe.ratingCount + 1;
                     }
                     recipe.totalRating = recipe.totalRating + rating - lastRating;
+                    float total = (float) recipe.totalRating;
+                    float count = (float) recipe.ratingCount;
+                    float rating = count != 0 ? total / count : 0;
+                    recipe.rating = (int) (rating * RATING_FULL_POINT / HIGHEST);
                     // Set value and report transaction success
                     mutableData.setValue(recipe);
                 }
@@ -85,7 +93,7 @@ public class RecipeViewModel extends ViewModel {
             public void onComplete(DatabaseError databaseError, boolean b,
                                    DataSnapshot dataSnapshot) {
                 // Transaction completed
-                Log.d(TAG, "postTransaction:onComplete:" + databaseError);
+                Log.d(LOG_TAG, "postTransaction:onComplete:" + databaseError);
                 listener.onRatingTransactionSuccessful(rating);
             }
         });

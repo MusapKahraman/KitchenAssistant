@@ -36,7 +36,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StepsFragment extends Fragment implements RecyclerViewItemTouchHelper.RecyclerItemTouchHelperListener, StepClickListener {
+public class StepsFragment extends Fragment
+        implements RecyclerViewItemTouchHelper.RecyclerItemTouchHelperListener, StepClickListener {
     private static final String KEY_STEP_NUMBER = "step-number-key";
     @BindView(R.id.rv_steps) RecyclerView mRecyclerView;
     @BindView(R.id.text_edit_instruction) EditText mInstructionText;
@@ -111,9 +112,9 @@ public class StepsFragment extends Fragment implements RecyclerViewItemTouchHelp
                     }
                 }
                 if (shownId == 0) {
-                    mKitchenViewModel.insertSteps(new Step(instruction, mSteps.size() + 1, mRecipe.id));
+                    mKitchenViewModel.insertSteps(new Step(instruction, mSteps.size() + 1, mRecipe.id, ""));
                 } else {
-                    mKitchenViewModel.insertSteps(new Step(shownId, instruction, mStepNumber, mRecipe.id));
+                    mKitchenViewModel.insertSteps(new Step(shownId, instruction, mStepNumber, mRecipe.id, ""));
                 }
                 DeviceUtils.hideKeyboardFrom(mContext, mInstructionText);
                 mStepNumber = 0;
@@ -149,7 +150,8 @@ public class StepsFragment extends Fragment implements RecyclerViewItemTouchHelp
             mAdapter.removeItem(viewHolder.getAdapterPosition());
             mKitchenViewModel.deleteSteps(deletedStep);
             // showing snack bar with Undo option
-            Snackbar snackbar = Snackbar.make(mRecyclerView, String.format(getString(R.string.removed_step), stepNumber), Snackbar.LENGTH_LONG);
+            Snackbar snackbar = Snackbar.make(mRecyclerView,
+                    String.format(getString(R.string.removed_step), stepNumber), Snackbar.LENGTH_LONG);
             snackbar.setAction(R.string.undo, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

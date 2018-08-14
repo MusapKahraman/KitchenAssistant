@@ -47,7 +47,9 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class IngredientsFragment extends Fragment implements RecyclerViewItemTouchHelper.RecyclerItemTouchHelperListener {
+public class IngredientsFragment extends Fragment
+        implements RecyclerViewItemTouchHelper.RecyclerItemTouchHelperListener {
+    private static final String LOG_TAG = IngredientsFragment.class.getSimpleName();
     private static final String KEY_OBSERVER_ATTACH = "observer-attachment-key";
     @BindView(R.id.rv_ingredients) RecyclerView mRecyclerView;
     @BindView(R.id.btn_add_food) Button mAddFoodLink;
@@ -132,7 +134,7 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
                                 mFoodMap.put(foodSnapShot.getKey(), foodSnapShot.getValue().toString());
                             mFoods.add(foodSnapShot.getKey());
                         } catch (DatabaseException e) {
-                            Log.e("IngredientsFragment", e.getMessage());
+                            Log.e(LOG_TAG, e.getMessage());
                         }
                     }
                     ArrayAdapter<String> foodAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_item, mFoods);
@@ -166,17 +168,19 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
             @Override
             public void onClick(View v) {
                 if (mRecipe.id == 0) {
-                    Snackbar.make(mAddButton, R.string.can_not_add_ingredient, Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(mAddButton,
+                            R.string.can_not_add_ingredient, Snackbar.LENGTH_LONG).show();
                     return;
                 }
                 if (!mIsObserverAttached) {
-                    mKitchenViewModel.getIngredientsByRecipe(mRecipe.id).observe(IngredientsFragment.this, new Observer<List<Ingredient>>() {
-                        @Override
-                        public void onChanged(@Nullable List<Ingredient> ingredients) {
-                            mAdapter.setIngredients(ingredients);
-                            mIngredients = (ArrayList<Ingredient>) ingredients;
-                        }
-                    });
+                    mKitchenViewModel.getIngredientsByRecipe(mRecipe.id)
+                            .observe(IngredientsFragment.this, new Observer<List<Ingredient>>() {
+                                @Override
+                                public void onChanged(@Nullable List<Ingredient> ingredients) {
+                                    mAdapter.setIngredients(ingredients);
+                                    mIngredients = (ArrayList<Ingredient>) ingredients;
+                                }
+                            });
                     mIsObserverAttached = true;
                 }
                 if (mFoodSpinner.getSelectedItem() == null)
@@ -198,9 +202,11 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
                     }
                 }
                 if (shownId == 0) {
-                    mKitchenViewModel.insertIngredients(new Ingredient(mRecipe.id, name, amount, amountType));
+                    mKitchenViewModel.insertIngredients(
+                            new Ingredient(mRecipe.id, name, amount, amountType, ""));
                 } else {
-                    mKitchenViewModel.insertIngredients(new Ingredient(shownId, mRecipe.id, name, amount + shownAmount, amountType));
+                    mKitchenViewModel.insertIngredients(
+                            new Ingredient(shownId, mRecipe.id, name, amount + shownAmount, amountType, ""));
                 }
                 DeviceUtils.hideKeyboardFrom(mContext, mAmountEditText);
             }
@@ -228,7 +234,8 @@ public class IngredientsFragment extends Fragment implements RecyclerViewItemTou
             mAdapter.removeItem(viewHolder.getAdapterPosition());
             mKitchenViewModel.deleteIngredients(deletedIngredient);
             // showing snack bar with Undo option
-            Snackbar snackbar = Snackbar.make(mRecyclerView, String.format(getString(R.string.removed_ingredient), food), Snackbar.LENGTH_LONG);
+            Snackbar snackbar = Snackbar.make(mRecyclerView,
+                    String.format(getString(R.string.removed_ingredient), food), Snackbar.LENGTH_LONG);
             snackbar.setAction(R.string.undo, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

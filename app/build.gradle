@@ -22,7 +22,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.example.kitchen"
-        minSdkVersion 17
+        minSdkVersion 19
         //noinspection OldTargetApi
         targetSdkVersion 27
         versionCode 1

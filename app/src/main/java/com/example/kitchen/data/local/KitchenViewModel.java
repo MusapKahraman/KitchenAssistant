@@ -50,7 +50,7 @@ public class KitchenViewModel extends AndroidViewModel {
         return mRepository.getStepsByRecipe(recipeId);
     }
 
-    public void insertRecipe(Recipe recipe, LocalDatabaseInsertListener listener) {
+    public void insertRecipe(Recipe recipe, RecipeInsertListener listener) {
         mRepository.insertRecipe(recipe, listener);
     }
 
