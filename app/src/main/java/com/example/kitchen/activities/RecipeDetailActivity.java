@@ -1,6 +1,7 @@
 /*
  * Reference
  * https://stackoverflow.com/questions/5767570/how-to-update-a-menu-item-shown-in-the-actionbar/5767673#5767673
+ * https://developer.android.com/training/sharing/shareaction
  */
 
 package com.example.kitchen.activities;
@@ -88,8 +89,6 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
     private LayoutInflater mLayoutInflater;
     private KitchenViewModel mKitchenViewModel;
     private RecipeViewModel mRecipeViewModel;
-    private IngredientViewModel mIngredientViewModel;
-    private StepViewModel mStepViewModel;
     private SharedPreferences mSharedPreferences;
     private Recipe mRecipe;
     private List<Ingredient> mIngredients;
@@ -108,8 +107,8 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
         mSharedPreferences = getPreferences(Context.MODE_PRIVATE);
         mKitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
         mRecipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
-        mIngredientViewModel = ViewModelProviders.of(this).get(IngredientViewModel.class);
-        mStepViewModel = ViewModelProviders.of(this).get(StepViewModel.class);
+        IngredientViewModel ingredientViewModel = ViewModelProviders.of(this).get(IngredientViewModel.class);
+        StepViewModel stepViewModel = ViewModelProviders.of(this).get(StepViewModel.class);
         if (getIntent() != null) {
             mRecipe = getIntent().getParcelableExtra(AppConstants.EXTRA_RECIPE);
             mIsBookable = getIntent().getBooleanExtra(AppConstants.EXTRA_BOOKABLE, false);
@@ -221,18 +220,20 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
             mKitchenViewModel.getIngredientsByRecipe(mRecipe.id).observe(this, new Observer<List<Ingredient>>() {
                 @Override
                 public void onChanged(@Nullable List<Ingredient> ingredients) {
-                    showIngredients(ingredients);
+                    mIngredients = ingredients;
+                    showIngredients();
                 }
             });
 
             mKitchenViewModel.getStepsByRecipe(mRecipe.id).observe(this, new Observer<List<Step>>() {
                 @Override
                 public void onChanged(@Nullable List<Step> steps) {
-                    showSteps(steps);
+                    mSteps = steps;
+                    showSteps();
                 }
             });
         } else {
-            mIngredientViewModel.getDataSnapshotLiveData(mRecipe.publicKey)
+            ingredientViewModel.getDataSnapshotLiveData(mRecipe.publicKey)
                     .observe(this, new Observer<DataSnapshot>() {
                         @Override
                         public void onChanged(@Nullable DataSnapshot dataSnapshot) {
@@ -253,10 +254,10 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
                                     }
                                 }
                             }
-                            showIngredients(mIngredients);
+                            showIngredients();
                         }
                     });
-            mStepViewModel.getDataSnapshotLiveData(mRecipe.publicKey)
+            stepViewModel.getDataSnapshotLiveData(mRecipe.publicKey)
                     .observe(this, new Observer<DataSnapshot>() {
                         @Override
                         public void onChanged(@Nullable DataSnapshot dataSnapshot) {
@@ -282,16 +283,16 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
                                     return Integer.compare(o1.stepNumber, o2.stepNumber);
                                 }
                             });
-                            showSteps(mSteps);
+                            showSteps();
                         }
                     });
         }
     }
 
-    private void showIngredients(List<Ingredient> ingredients) {
-        if (ingredients == null)
+    private void showIngredients() {
+        if (mIngredients == null)
             return;
-        for (Ingredient ingredient : ingredients) {
+        for (Ingredient ingredient : mIngredients) {
             View ingredientView = mLayoutInflater.inflate(R.layout.item_ingredient, mIngredientsContainer, false);
             TextView ingredientAmountTextView = ingredientView.findViewById(R.id.tv_ingredient_amount);
             TextView ingredientTextView = ingredientView.findViewById(R.id.tv_ingredient);
@@ -303,10 +304,10 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
         }
     }
 
-    private void showSteps(List<Step> steps) {
-        if (steps == null)
+    private void showSteps() {
+        if (mSteps == null)
             return;
-        for (Step step : steps) {
+        for (Step step : mSteps) {
             View stepView = mLayoutInflater.inflate(R.layout.item_step, mStepsContainer, false);
             TextView stepNumberView = stepView.findViewById(R.id.tv_step_number);
             stepNumberView.setText(String.valueOf(step.stepNumber));
@@ -345,21 +346,44 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.app_bar_board:
-                Snackbar.make(mAppBarLayout, "Boarding...", Snackbar.LENGTH_SHORT).show();
-                return true;
-            case R.id.app_bar_bookmark:
+            case R.id.menu_item_bookmark:
                 mKitchenViewModel.insertRecipe(mRecipe, this);
                 Snackbar.make(mAppBarLayout, R.string.recipe_bookmarked, Snackbar.LENGTH_SHORT).show();
-                // Delete bookmark icon from action bar menu.
+                // Do not show bookmark icon from action bar menu anymore.
                 mIsBookable = false;
                 invalidateOptionsMenu();
                 return true;
-            case R.id.app_bar_share:
-                Snackbar.make(mAppBarLayout, "Sharing...", Snackbar.LENGTH_SHORT).show();
+            case R.id.menu_item_share:
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, generateShareString());
+                shareIntent.setType("text/plain");
+                startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.send_to)));
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private String generateShareString() {
+        // TODO: Make servings, cuisine and course translatable.
+        StringBuilder result = new StringBuilder(mRecipe.title +
+                "\n\n" + getString(R.string.servings) + ": " + mRecipe.servings +
+                "\n" + getString(R.string.cuisine) + ": " + mRecipe.cuisine +
+                "\n" + getString(R.string.course) + ": " + mRecipe.course +
+                "\n\n" + getString(R.string.ingredients));
+        for (Ingredient ingredient : mIngredients) {
+            String text = ingredient.amount +
+                    " " + MeasurementUtils.getAbbreviation(RecipeDetailActivity.this, ingredient.amountType) +
+                    " " + ingredient.food;
+            result.append("\n").append(text);
+        }
+        result.append("\n\n").append(getString(R.string.instructions));
+        for (Step step : mSteps) {
+            String text = step.stepNumber +
+                    ". " + step.instruction;
+            result.append("\n").append(text);
+        }
+        return result.toString();
     }
 
     @Override

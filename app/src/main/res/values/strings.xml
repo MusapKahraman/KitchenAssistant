@@ -165,4 +165,5 @@
     <string name="food_storage">Storage</string>
     <string name="can_not_add_ingredient">Cannot add ingredient. You need to give a title for the recipe.</string>
     <string name="connect_internet_try_again">Please connect your device to internet and try again.</string>
+    <string name="send_to">Send to</string>
 </resources>
