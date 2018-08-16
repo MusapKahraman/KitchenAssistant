@@ -10,7 +10,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.example.kitchen.R;
 import com.example.kitchen.fragments.IngredientsFragment;
-import com.example.kitchen.fragments.OverallFragment;
+import com.example.kitchen.fragments.OverviewFragment;
 import com.example.kitchen.fragments.StepsFragment;
 
 public class RecipeEditAdapter extends FragmentStatePagerAdapter {
@@ -33,7 +33,7 @@ public class RecipeEditAdapter extends FragmentStatePagerAdapter {
         Fragment fragment = null;
         switch (position) {
             case 0:
-                fragment = new OverallFragment();
+                fragment = new OverviewFragment();
                 break;
             case 1:
                 fragment = new IngredientsFragment();
@@ -52,7 +52,7 @@ public class RecipeEditAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return mContext.getString(R.string.overall);
+                return mContext.getString(R.string.overview);
             case 1:
                 return mContext.getString(R.string.ingredients);
             case 2:

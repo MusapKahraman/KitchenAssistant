@@ -152,22 +152,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btn_servings_increment" />
 
+        <TextView
+            android:id="@+id/label_ingredients"
+            style="@style/TextStyleDataLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/ingredients"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider_ingredients" />
+
         <LinearLayout
             android:id="@+id/container_ingredients"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider_ingredients">
-
-            <TextView
-                android:id="@+id/label_ingredients"
-                style="@style/TextStyleDataLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:text="@string/ingredients" />
-        </LinearLayout>
+            app:layout_constraintTop_toBottomOf="@+id/label_ingredients" />
 
         <View
             android:id="@+id/divider_steps"
@@ -179,22 +180,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/container_ingredients" />
 
+
+        <TextView
+            android:id="@+id/label_steps"
+            style="@style/TextStyleDataLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/instructions"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider_steps" />
+
         <LinearLayout
             android:id="@+id/container_steps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider_steps">
-
-            <TextView
-                android:id="@+id/label_steps"
-                style="@style/TextStyleDataLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:text="@string/instructions" />
-        </LinearLayout>
+            app:layout_constraintTop_toBottomOf="@+id/label_steps" />
 
         <View
             android:id="@+id/divider_rating"

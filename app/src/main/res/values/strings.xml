@@ -113,7 +113,7 @@
     <string name="delete">Delete</string>
     <string name="new_recipe">New Recipe</string>
     <string name="edit_recipe">Edit Recipe</string>
-    <string name="overall">Overall</string>
+    <string name="overview">Overview</string>
     <string name="ingredients">Ingredients</string>
     <string name="instruction">Instruction</string>
     <string name="instructions">Instructions</string>

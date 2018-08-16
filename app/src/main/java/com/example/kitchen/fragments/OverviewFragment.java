@@ -75,8 +75,8 @@ import butterknife.ButterKnife;
 
 import static android.support.v4.content.ContextCompat.checkSelfPermission;
 
-public class OverallFragment extends Fragment implements RecipeInsertListener {
-    private static final String LOG_TAG = OverallFragment.class.getSimpleName();
+public class OverviewFragment extends Fragment implements RecipeInsertListener {
+    private static final String LOG_TAG = OverviewFragment.class.getSimpleName();
     private static final String KEY_IMAGE_ROTATION = "image-rotation";
     private static final String KEY_REQUEST_PERMISSION = "request-permission";
     private static final String KEY_OBSERVABLE_INGREDIENT = "observable-ingredient";
@@ -136,7 +136,7 @@ public class OverallFragment extends Fragment implements RecipeInsertListener {
     private boolean mIngredientIsObservable;
     private boolean mStepIsObservable;
 
-    public OverallFragment() {
+    public OverviewFragment() {
         // Required empty public constructor
     }
 
@@ -439,7 +439,7 @@ public class OverallFragment extends Fragment implements RecipeInsertListener {
 
     private void uploadRecipeData(String imageUrl) {
         mRecipe.publicKey = mRecipeViewModel.postRecipe(mRecipe, imageUrl);
-        mKitchenViewModel.insertRecipe(mRecipe, OverallFragment.this);
+        mKitchenViewModel.insertRecipe(mRecipe, OverviewFragment.this);
         mIngredientIsObservable = true;
         mKitchenViewModel.getIngredientsByRecipe(mRecipe.id).observe(this, new Observer<List<Ingredient>>() {
             @Override
