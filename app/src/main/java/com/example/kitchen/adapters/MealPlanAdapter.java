@@ -13,13 +13,13 @@ import com.example.kitchen.R;
 import java.util.HashMap;
 import java.util.List;
 
-public class ExpandableListAdapter extends BaseExpandableListAdapter {
+public class MealPlanAdapter extends BaseExpandableListAdapter {
 
     private final Context mContext;
     private final List<String> mGroupTitles;
     private final HashMap<String, List<String>> mChildren;
 
-    public ExpandableListAdapter(Context context, List<String> groupTitles, HashMap<String, List<String>> children) {
+    public MealPlanAdapter(Context context, List<String> groupTitles, HashMap<String, List<String>> children) {
         mContext = context;
         mGroupTitles = groupTitles;
         mChildren = children;

@@ -48,7 +48,6 @@ public class StepsFragment extends Fragment
     private StepsAdapter mAdapter;
     private Context mContext;
     private int mStepNumber;
-    private FragmentMessageListener mMessageListener;
 
     public StepsFragment() {
         // Required empty public constructor
@@ -58,11 +57,6 @@ public class StepsFragment extends Fragment
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
-        if (context instanceof FragmentMessageListener) {
-            mMessageListener = (FragmentMessageListener) context;
-        } else {
-            throw new ClassCastException(context.toString() + "must implement FragmentMessageListener");
-        }
     }
 
     @Override
@@ -130,12 +124,6 @@ public class StepsFragment extends Fragment
         outState.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
         outState.putParcelableArrayList(AppConstants.KEY_STEPS, mSteps);
         outState.putInt(KEY_STEP_NUMBER, mStepNumber);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mMessageListener = null;
     }
 
     @Override

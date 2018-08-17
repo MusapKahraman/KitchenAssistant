@@ -16,7 +16,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,8 +32,9 @@ import com.example.kitchen.data.local.KitchenViewModel;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.fragments.BookmarksFragment;
 import com.example.kitchen.fragments.FragmentScrollListener;
-import com.example.kitchen.fragments.MealBoardFragment;
+import com.example.kitchen.fragments.MealPlanFragment;
 import com.example.kitchen.fragments.RecipesFragment;
+import com.example.kitchen.fragments.StorageFragment;
 import com.example.kitchen.utility.AppConstants;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -53,12 +53,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, RecipeClickListener, FragmentScrollListener {
+        implements NavigationView.OnNavigationItemSelectedListener, RecipeClickListener,
+        FragmentScrollListener {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String KEY_NAV_INDEX = "navigator-index-key";
-    private static final String KEY_RECIPES_FRAG = "recipes-fragment-key";
-    private static final String KEY_NOTEBOOK_FRAG = "notebook-fragment-key";
-    private static final String KEY_MEAL_BOARD_FRAG = "meal-board-fragment-key";
     @BindView(R.id.fab) FloatingActionButton mFab;
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
@@ -67,32 +65,28 @@ public class MainActivity extends AppCompatActivity
     private KitchenViewModel mKitchenViewModel;
     private RecipeViewModel mRecipeViewModel;
     private SharedPreferences mSharedPreferences;
-    private Bundle mRecipesFragmentSavedState;
-    private Bundle mNotebookFragmentSavedState;
-    private Bundle mMealBoardFragmentSavedState;
-    private List<Recipe> mBookedRecipes;
-    private int mNavigatorIndex;
+    private int mSelectionIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        if (savedInstanceState != null) {
-            mRecipesFragmentSavedState = savedInstanceState.getBundle(KEY_RECIPES_FRAG);
-            mNotebookFragmentSavedState = savedInstanceState.getBundle(KEY_NOTEBOOK_FRAG);
-            mMealBoardFragmentSavedState = savedInstanceState.getBundle(KEY_MEAL_BOARD_FRAG);
-        }
+        setSupportActionBar(mToolbar);
         mKitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
         mRecipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
         mSharedPreferences = getPreferences(Context.MODE_PRIVATE);
-        changeContent();
-        setSupportActionBar(mToolbar);
+        if (savedInstanceState == null) {
+            mSelectionIndex = mSharedPreferences.getInt(KEY_NAV_INDEX, 0);
+            showSelectedContent();
+        } else {
+            mSelectionIndex = savedInstanceState.getInt(KEY_NAV_INDEX);
+        }
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent;
-                switch (mNavigatorIndex) {
+                switch (mSelectionIndex) {
                     case 0:
                     case 1:
                         intent = new Intent(MainActivity.this, RecipeEditActivity.class);
@@ -101,28 +95,23 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-        mKitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
-            @Override
-            public void onChanged(@Nullable List<Recipe> recipes) {
-                if (recipes != null)
-                    mBookedRecipes = recipes;
-            }
-        });
+        // Set navigation drawer.
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
+                // Save index in local storage to be able to start from the point where the user leaves the app.
                 SharedPreferences.Editor editor = mSharedPreferences.edit();
-                editor.putInt(KEY_NAV_INDEX, mNavigatorIndex);
+                editor.putInt(KEY_NAV_INDEX, mSelectionIndex);
                 editor.apply();
-                changeContent();
+                showSelectedContent();
             }
         };
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         mNavigationView.setNavigationItemSelectedListener(this);
-        // Populate navigation header with user data.
+        // Show user image, name and email address in navigation header.
         View navHeader = mNavigationView.getHeaderView(0);
         ImageView userImage = navHeader.findViewById(R.id.iv_nav_header);
         TextView userName = navHeader.findViewById(R.id.tv_nav_header_title);
@@ -143,9 +132,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBundle(KEY_RECIPES_FRAG, mRecipesFragmentSavedState);
-        outState.putBundle(KEY_NOTEBOOK_FRAG, mNotebookFragmentSavedState);
-        outState.putBundle(KEY_MEAL_BOARD_FRAG, mMealBoardFragmentSavedState);
+        outState.putInt(KEY_NAV_INDEX, mSelectionIndex);
     }
 
     @Override
@@ -161,28 +148,28 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        int oldNavigatorIndex = mNavigatorIndex;
+        int lastIndex = mSelectionIndex;
         switch (id) {
             case R.id.nav_recipes:
-                mNavigatorIndex = 0;
+                mSelectionIndex = 0;
                 break;
-            case R.id.nav_notebook:
-                mNavigatorIndex = 1;
+            case R.id.nav_bookmarks:
+                mSelectionIndex = 1;
                 break;
             case R.id.nav_suggestions:
-                mNavigatorIndex = 2;
+                mSelectionIndex = 2;
                 break;
-            case R.id.nav_food_storage:
-                mNavigatorIndex = 3;
+            case R.id.nav_storage:
+                mSelectionIndex = 3;
                 break;
             case R.id.nav_shopping_list:
-                mNavigatorIndex = 4;
+                mSelectionIndex = 4;
+                break;
+            case R.id.nav_meal_plan:
+                mSelectionIndex = 5;
                 break;
             case R.id.nav_routines:
-                mNavigatorIndex = 5;
-                break;
-            case R.id.nav_meal_board:
-                mNavigatorIndex = 6;
+                mSelectionIndex = 6;
                 break;
             case R.id.nav_logout:
                 AuthUI.getInstance()
@@ -198,7 +185,7 @@ public class MainActivity extends AppCompatActivity
                         });
                 break;
         }
-        if (mNavigatorIndex != oldNavigatorIndex) {
+        if (mSelectionIndex != lastIndex) {
             mFab.hide();
             DrawerLayout drawer = findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
@@ -213,15 +200,6 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, RecipeDetailActivity.class);
         intent.putExtra(AppConstants.EXTRA_RECIPE, recipe);
         intent.putExtra(AppConstants.EXTRA_EDITABLE, isEditable);
-        if (mNavigatorIndex == 0) {
-            boolean isBookable = true;
-            for (Recipe r : mBookedRecipes) {
-                if (!TextUtils.isEmpty(r.publicKey) && r.publicKey.equals(recipe.publicKey)) {
-                    isBookable = false;
-                }
-            }
-            intent.putExtra(AppConstants.EXTRA_BOOKABLE, isBookable);
-        }
         startActivity(intent);
     }
 
@@ -235,22 +213,9 @@ public class MainActivity extends AppCompatActivity
         mFab.show();
     }
 
-    public void fromRecipesFragment(Bundle fragmentOutState) {
-        mRecipesFragmentSavedState = fragmentOutState;
-    }
-
-    public void fromNotebookFragment(Bundle fragmentOutState) {
-        mNotebookFragmentSavedState = fragmentOutState;
-    }
-
-    public void fromMealBoardFragment(Bundle fragmentOutState) {
-        mMealBoardFragmentSavedState = fragmentOutState;
-    }
-
-    private void changeContent() {
+    private void showSelectedContent() {
         mProgressBar.setVisibility(View.GONE);
-        mNavigatorIndex = mSharedPreferences.getInt(KEY_NAV_INDEX, 0);
-        switch (mNavigatorIndex) {
+        switch (mSelectionIndex) {
             case 0:
                 mFab.show();
                 mProgressBar.setVisibility(View.VISIBLE);
@@ -262,17 +227,15 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onChanged(@Nullable List<Recipe> recipes) {
                         if (recipes != null)
-                            showNotebook(recipes);
+                            showBookmarks(recipes);
                     }
                 });
                 break;
-            case 6:
-                mKitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
-                    @Override
-                    public void onChanged(@Nullable List<Recipe> recipes) {
-                        showMealBoard(recipes);
-                    }
-                });
+            case 3:
+                showStorage();
+                break;
+            case 5:
+                showMealBoard();
                 break;
         }
     }
@@ -283,35 +246,36 @@ public class MainActivity extends AppCompatActivity
             Log.v("MainActivity", recipe.toString());
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.recipes);
-        Bundle bundle = new Bundle();
-        bundle.putBundle(AppConstants.KEY_SAVED_STATE, mRecipesFragmentSavedState);
-        bundle.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
+        Bundle args = new Bundle();
+        args.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
         RecipesFragment recipesFragment = new RecipesFragment();
-        recipesFragment.setArguments(bundle);
+        recipesFragment.setArguments(args);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, recipesFragment).commit();
     }
 
-    private void showNotebook(List<Recipe> recipes) {
+    private void showBookmarks(List<Recipe> recipes) {
         for (Recipe recipe : recipes)
             Log.v("MainActivity", recipe.toString());
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.bookmarks);
-        Bundle bundle = new Bundle();
-        bundle.putBundle(AppConstants.KEY_SAVED_STATE, mNotebookFragmentSavedState);
-        bundle.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
-        BookmarksFragment notebookFragment = new BookmarksFragment();
-        notebookFragment.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, notebookFragment).commit();
+        Bundle args = new Bundle();
+        args.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
+        BookmarksFragment bookmarksFragment = new BookmarksFragment();
+        bookmarksFragment.setArguments(args);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, bookmarksFragment).commit();
     }
 
-    private void showMealBoard(List<Recipe> recipes) {
+    private void showStorage() {
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(R.string.storage);
+        StorageFragment storageFragment = new StorageFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, storageFragment).commit();
+    }
+
+    private void showMealBoard() {
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.meal_plan);
-        Bundle bundle = new Bundle();
-        bundle.putBundle(AppConstants.KEY_SAVED_STATE, mMealBoardFragmentSavedState);
-        bundle.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
-        MealBoardFragment mealBoardFragment = new MealBoardFragment();
-        mealBoardFragment.setArguments(bundle);
+        MealPlanFragment mealBoardFragment = new MealPlanFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mealBoardFragment).commit();
     }
 
@@ -322,7 +286,7 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onChanged(@Nullable DataSnapshot dataSnapshot) {
                         // Prevent turning back to online recipes fragment after publishing a recipe.
-                        if (mNavigatorIndex != 0) return;
+                        if (mSelectionIndex != 0) return;
                         List<Recipe> recipes = new ArrayList<>();
                         if (dataSnapshot != null) {
                             for (DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {

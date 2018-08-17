@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class DataPlaceholders {
+public class Placeholders {
 
     public static List<String> getGroups() {
         List<String> groups = new ArrayList<>();

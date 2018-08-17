@@ -58,30 +58,13 @@ public class RecipeEditActivity extends AppCompatActivity implements PictureDial
         outState.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
     }
 
-    private void updateFragments() {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
-        FragmentStatePagerAdapter pagerAdapter = new RecipeEditAdapter(this, getSupportFragmentManager(), bundle);
-        mViewPager.setAdapter(pagerAdapter);
-        TabLayout tabLayout = findViewById(R.id.tabLayout);
-        tabLayout.setupWithViewPager(mViewPager);
+    @Override
+    public void onSaveRecipeOverview(Bundle bundle) {
+        mRecipe = bundle.getParcelable(AppConstants.KEY_RECIPE);
     }
 
     @Override
-    public void onFragmentMessage(int fragmentIndex, Bundle bundle) {
-        switch (fragmentIndex) {
-            case 0:
-                mRecipe = bundle.getParcelable(AppConstants.KEY_RECIPE);
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
-        }
-    }
-
-    @Override
-    public void onCameraSelected() {
+    public void onSelectCamera() {
         // Reference -> https://developer.android.com/training/camera/photobasics
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
@@ -106,7 +89,7 @@ public class RecipeEditActivity extends AppCompatActivity implements PictureDial
     }
 
     @Override
-    public void onGallerySelected() {
+    public void onSelectGallery() {
         // Reference -> https://developer.android.com/training/camera/photobasics
         Intent intent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -141,5 +124,14 @@ public class RecipeEditActivity extends AppCompatActivity implements PictureDial
                     }
                 }
         }
+    }
+
+    private void updateFragments() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
+        FragmentStatePagerAdapter pagerAdapter = new RecipeEditAdapter(this, getSupportFragmentManager(), bundle);
+        mViewPager.setAdapter(pagerAdapter);
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+        tabLayout.setupWithViewPager(mViewPager);
     }
 }

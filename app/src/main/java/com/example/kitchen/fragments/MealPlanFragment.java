@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,16 +17,14 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.example.kitchen.R;
-import com.example.kitchen.activities.MainActivity;
-import com.example.kitchen.adapters.ExpandableListAdapter;
-import com.example.kitchen.data.DataPlaceholders;
-import com.example.kitchen.utility.AppConstants;
+import com.example.kitchen.adapters.MealPlanAdapter;
+import com.example.kitchen.data.Placeholders;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MealBoardFragment extends Fragment {
-    private static final String TAG = MealBoardFragment.class.getSimpleName();
+public class MealPlanFragment extends Fragment {
+    private static final String TAG = MealPlanFragment.class.getSimpleName();
     private static final String TAB_LAST = "tab-last_opened";
     private static final String TAB_MONDAY = "tab-monday";
     private static final String TAB_TUESDAY = "tab-tuesday";
@@ -46,7 +43,7 @@ public class MealBoardFragment extends Fragment {
     @BindView(R.id.horizontalScrollView) HorizontalScrollView mHorizontalScrollView;
     @BindView(R.id.tab_host) TabHost mTabHost;
 
-    public MealBoardFragment() {
+    public MealPlanFragment() {
         // Required empty public constructor
     }
 
@@ -58,14 +55,12 @@ public class MealBoardFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
         final View rootView = inflater.inflate(R.layout.fragment_meal_board, container, false);
         ButterKnife.bind(this, rootView);
         // Set tabs as week days.
         mTabHost.setup();
         setWeekDayTabs();
-        ExpandableListAdapter adapter = new ExpandableListAdapter(getContext(), DataPlaceholders.getGroups(), DataPlaceholders.getChildren());
+        MealPlanAdapter adapter = new MealPlanAdapter(getContext(), Placeholders.getGroups(), Placeholders.getChildren());
         mMonday.setAdapter(adapter);
         mTuesday.setAdapter(adapter);
         mWednesday.setAdapter(adapter);
@@ -78,19 +73,15 @@ public class MealBoardFragment extends Fragment {
             TextView tv = mTabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
             tv.setTextColor(getResources().getColor(R.color.tab_text));
         }
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            savedInstanceState = arguments.getBundle(AppConstants.KEY_SAVED_STATE);
-            if (savedInstanceState != null) {
-                mMonday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_MONDAY));
-                mTuesday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_TUESDAY));
-                mWednesday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_WEDNESDAY));
-                mThursday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_THURSDAY));
-                mFriday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_FRIDAY));
-                mSaturday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_SATURDAY));
-                mSunday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_SUNDAY));
-                mTabHost.setCurrentTab(savedInstanceState.getInt(TAB_LAST));
-            }
+        if (savedInstanceState != null) {
+            mMonday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_MONDAY));
+            mTuesday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_TUESDAY));
+            mWednesday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_WEDNESDAY));
+            mThursday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_THURSDAY));
+            mFriday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_FRIDAY));
+            mSaturday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_SATURDAY));
+            mSunday.onRestoreInstanceState(savedInstanceState.getParcelable(TAB_SUNDAY));
+            mTabHost.setCurrentTab(savedInstanceState.getInt(TAB_LAST));
         }
         mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
@@ -101,14 +92,14 @@ public class MealBoardFragment extends Fragment {
         mMonday.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
-                Snackbar.make(rootView, DataPlaceholders.getGroups().get(groupPosition)
+                Snackbar.make(rootView, Placeholders.getGroups().get(groupPosition)
                         + " Expanded", Snackbar.LENGTH_SHORT).show();
             }
         });
         mMonday.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
             @Override
             public void onGroupCollapse(int groupPosition) {
-                Snackbar.make(rootView, DataPlaceholders.getGroups().get(groupPosition)
+                Snackbar.make(rootView, Placeholders.getGroups().get(groupPosition)
                         + " Collapsed", Snackbar.LENGTH_SHORT).show();
             }
         });
@@ -116,15 +107,47 @@ public class MealBoardFragment extends Fragment {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 Snackbar.make(rootView,
-                        DataPlaceholders.getGroups().get(groupPosition) + " : "
-                                + DataPlaceholders.getChildren()
-                                .get(DataPlaceholders.getGroups().get(groupPosition))
+                        Placeholders.getGroups().get(groupPosition) + " : "
+                                + Placeholders.getChildren()
+                                .get(Placeholders.getGroups().get(groupPosition))
                                 .get(childPosition),
                         Snackbar.LENGTH_SHORT).show();
                 return false;
             }
         });
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(TAB_LAST, mTabHost.getCurrentTab());
+        outState.putParcelable(TAB_MONDAY, mMonday.onSaveInstanceState());
+        outState.putParcelable(TAB_TUESDAY, mTuesday.onSaveInstanceState());
+        outState.putParcelable(TAB_WEDNESDAY, mWednesday.onSaveInstanceState());
+        outState.putParcelable(TAB_THURSDAY, mThursday.onSaveInstanceState());
+        outState.putParcelable(TAB_FRIDAY, mFriday.onSaveInstanceState());
+        outState.putParcelable(TAB_SATURDAY, mSaturday.onSaveInstanceState());
+        outState.putParcelable(TAB_SUNDAY, mSunday.onSaveInstanceState());
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Clear all current menu items
+        menu.clear();
+        // Add new menu items
+        inflater.inflate(R.menu.menu_meal_board, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.app_bar_auto_complete:
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -145,52 +168,6 @@ public class MealBoardFragment extends Fragment {
         int currentScrollX = mHorizontalScrollView.getScrollX();
         int deltaX = (int) (targetX - currentScrollX + headerFixedWidth * 0.5 - screenWidth * 0.5);
         return currentScrollX + deltaX;
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        sendToActivity(outState);
-    }
-
-    private void sendToActivity(Bundle outState) {
-        outState.putInt(TAB_LAST, mTabHost.getCurrentTab());
-        outState.putParcelable(TAB_MONDAY, mMonday.onSaveInstanceState());
-        outState.putParcelable(TAB_TUESDAY, mTuesday.onSaveInstanceState());
-        outState.putParcelable(TAB_WEDNESDAY, mWednesday.onSaveInstanceState());
-        outState.putParcelable(TAB_THURSDAY, mThursday.onSaveInstanceState());
-        outState.putParcelable(TAB_FRIDAY, mFriday.onSaveInstanceState());
-        outState.putParcelable(TAB_SATURDAY, mSaturday.onSaveInstanceState());
-        outState.putParcelable(TAB_SUNDAY, mSunday.onSaveInstanceState());
-
-        MainActivity activity = null;
-        try {
-            activity = (MainActivity) getActivity();
-        } catch (ClassCastException e) {
-            Log.e(TAG, e.getMessage());
-        }
-
-        if (activity != null) {
-            activity.fromMealBoardFragment(outState);
-        }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Clear all current menu items
-        menu.clear();
-        // Add new menu items
-        inflater.inflate(R.menu.menu_meal_board, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.app_bar_auto_complete:
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void setWeekDayTabs() {

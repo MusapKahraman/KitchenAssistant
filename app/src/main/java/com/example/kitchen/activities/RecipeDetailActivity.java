@@ -110,15 +110,36 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
         mRecipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
         if (getIntent() != null) {
             mRecipe = getIntent().getParcelableExtra(AppConstants.EXTRA_RECIPE);
-            mIsBookable = getIntent().getBooleanExtra(AppConstants.EXTRA_BOOKABLE, false);
             mIsEditable = getIntent().getBooleanExtra(AppConstants.EXTRA_EDITABLE, false);
         }
         if (savedInstanceState == null) {
+            // This activity is just started.
+            if (!TextUtils.isEmpty(mRecipe.publicKey)) {
+                // This recipe is a published recipe. It might not be already bookmarked.
+                mIsBookable = true;
+                // Take a look at the bookmarked recipes.
+                mKitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Recipe> recipes) {
+                        if (recipes != null) {
+                            for (Recipe r : recipes) {
+                                if (r.publicKey.equals(mRecipe.publicKey)) {
+                                    // This recipe is already bookmarked and it's saved in local storage.
+                                    mIsBookable = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                });
+                // Re-draw options menu if this recipe is not bookmarked.
+                if (mIsBookable) invalidateOptionsMenu();
+            }
             mServings = mRecipe.servings;
             fetchIngredients();
             fetchSteps();
         } else {
-            // Device configuration is changed. Reload instance states.
+            // Device configuration is changed, reload instances.
             mServings = savedInstanceState.getInt(KEY_SERVINGS);
             mIsRatingProcessing = savedInstanceState.getBoolean(KEY_RATING_TRANSACTION);
             mIsInsertedForEdit = savedInstanceState.getBoolean(KEY_INSERTED_FOR_EDIT);
@@ -267,7 +288,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
         switch (id) {
             case R.id.menu_item_bookmark:
                 mKitchenViewModel.insertRecipe(mRecipe, this);
-                Snackbar.make(mAppBarLayout, R.string.recipe_bookmarked, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(mAppBarLayout, String.format(getString(R.string.recipe_bookmarked), mRecipe.title), Snackbar.LENGTH_SHORT).show();
                 // Do not show bookmark icon from action bar menu anymore.
                 mIsBookable = false;
                 invalidateOptionsMenu();
@@ -354,7 +375,6 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
         LayoutInflater layoutInflater = LayoutInflater.from(this);
         if (mSteps == null)
             return;
-        mStepsContainer.removeAllViews();
         for (Step step : mSteps) {
             View stepView = layoutInflater.inflate(R.layout.item_step, mStepsContainer, false);
             TextView stepNumberView = stepView.findViewById(R.id.tv_step_number);

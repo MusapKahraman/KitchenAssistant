@@ -11,7 +11,7 @@
             android:icon="@drawable/ic_menu_recipes"
             android:title="@string/recipes" />
         <item
-            android:id="@+id/nav_notebook"
+            android:id="@+id/nav_bookmarks"
             android:icon="@drawable/ic_menu_bookmarks"
             android:title="@string/bookmarks" />
     </group>
@@ -26,29 +26,29 @@
     </group>
 
     <group
+        android:id="@+id/group_storage"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_storage"
+            android:icon="@drawable/ic_menu_food"
+            android:title="@string/storage" />
+        <item
+            android:id="@+id/nav_shopping_list"
+            android:icon="@drawable/ic_menu_shopping"
+            android:title="@string/shopping_list" />
+    </group>
+
+    <group
         android:id="@+id/group_weekly"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_meal_board"
+            android:id="@+id/nav_meal_plan"
             android:icon="@drawable/ic_menu_calendar"
             android:title="@string/meal_plan" />
         <item
             android:id="@+id/nav_routines"
             android:icon="@drawable/ic_menu_routines"
             android:title="@string/routines" />
-    </group>
-
-    <group
-        android:id="@+id/group_storage"
-        android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_food_storage"
-            android:icon="@drawable/ic_menu_food"
-            android:title="@string/food_storage" />
-        <item
-            android:id="@+id/nav_shopping_list"
-            android:icon="@drawable/ic_menu_shopping"
-            android:title="@string/shopping_list" />
     </group>
 
     <group>

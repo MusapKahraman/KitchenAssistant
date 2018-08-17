@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.kitchen.R;
-import com.example.kitchen.activities.MainActivity;
 import com.example.kitchen.adapters.BookmarksAdapter;
 import com.example.kitchen.adapters.RecipeClickListener;
 import com.example.kitchen.data.local.entities.Recipe;
@@ -72,8 +70,7 @@ public class BookmarksFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipes, container, false);
         ButterKnife.bind(this, rootView);
         if (getResources().getBoolean(R.bool.landscape)) {
@@ -100,40 +97,27 @@ public class BookmarksFragment extends Fragment {
         if (arguments != null) {
             List<Recipe> recipes = arguments.getParcelableArrayList(AppConstants.KEY_RECIPES);
             mAdapter.setRecipes(recipes);
-            savedInstanceState = arguments.getBundle(AppConstants.KEY_SAVED_STATE);
-            if (savedInstanceState != null) {
-                mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(LAYOUT_STATE));
-                mQuery = savedInstanceState.getString(SEARCH_QUERY);
-                mAdapter.filter(mQuery);
-            }
+        }
+        if (savedInstanceState != null) {
+            mQuery = savedInstanceState.getString(SEARCH_QUERY);
+            mAdapter.filter(mQuery);
+            mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(LAYOUT_STATE));
         }
         return rootView;
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        sendToActivity(outState);
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(LAYOUT_STATE, mLayoutManager.onSaveInstanceState());
+        outState.putString(SEARCH_QUERY, mQuery);
     }
 
     @Override
     public void onDetach() {
+        super.onDetach();
         mClickListener = null;
         fragmentScrollListener = null;
-        super.onDetach();
-    }
-
-    private void sendToActivity(Bundle outState) {
-        outState.putParcelable(LAYOUT_STATE, mLayoutManager.onSaveInstanceState());
-        outState.putString(SEARCH_QUERY, mQuery);
-        MainActivity activity = null;
-        try {
-            activity = (MainActivity) getActivity();
-        } catch (ClassCastException e) {
-            Log.e(LOG_TAG, e.getMessage());
-        }
-        if (activity != null) {
-            activity.fromNotebookFragment(outState);
-        }
     }
 
     @Override
@@ -147,14 +131,16 @@ public class BookmarksFragment extends Fragment {
         searchMenuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                return true; // KEEP IT TO TRUE OR IT DOESN'T OPEN !!
+                // Return true to make it expand.
+                return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Delete query when collapsed.
                 mQuery = "";
-                sendToActivity(new Bundle());
-                return true; // OR FALSE IF YOU DIDN'T WANT IT TO CLOSE!
+                // Return true to make it collapse.
+                return true;
             }
         });
         final SearchView searchView = (SearchView) searchMenuItem.getActionView();

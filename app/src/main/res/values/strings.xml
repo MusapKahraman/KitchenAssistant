@@ -10,6 +10,7 @@
     <string name="nav_header_desc">User Image</string>
     <string name="recipes">Recipes</string>
     <string name="bookmarks">Bookmarks</string>
+    <string name="storage">Storage</string>
     <string name="suggestions">Suggestions</string>
     <string name="meal_plan">Meal Plan</string>
     <string name="routines">Routines</string>
@@ -138,8 +139,8 @@
     <string name="bookmark">Bookmark</string>
     <string name="recipe_finished">The meal is ready!</string>
     <string name="bullet">Bullet</string>
-    <string name="recipe_bookmarked">Recipe is saved in bookmarks.</string>
-    <string name="publish_successful">Recipe is now public.</string>
+    <string name="recipe_bookmarked">%1$s is saved in bookmarks.</string>
+    <string name="publish_successful">%1$s is now public.</string>
     <string name="publishing">Publishing recipe.</string>
     <string name="missing_picture">Not published due to missing picture.</string>
     <string name="weight">Weight</string>
@@ -162,8 +163,10 @@
     <string name="must_be_integer">Must be a positive integer.</string>
     <string name="decrement_servings">Decrement servings</string>
     <string name="increment_servings">Increment servings</string>
-    <string name="food_storage">Storage</string>
     <string name="can_not_add_ingredient">Cannot add ingredient. You need to give a title for the recipe.</string>
     <string name="connect_internet_try_again">Please connect your device to internet and try again.</string>
     <string name="send_to">Send to</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

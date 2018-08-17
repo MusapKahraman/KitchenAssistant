@@ -10,7 +10,6 @@ public class AppConstants {
     // Intent extras
     public static final String EXTRA_RECIPE = "recipe-intent-extra";
     public static final String EXTRA_EDITABLE = "recipe-editable";
-    public static final String EXTRA_BOOKABLE = "intent-is-started-by";
     // Request codes
     public static final int REQUEST_GALLERY = 1;
     public static final int REQUEST_CAMERA = 2;

@@ -396,7 +396,7 @@ public class OverviewFragment extends Fragment implements RecipeInsertListener {
         }
         Bundle bundle = new Bundle();
         bundle.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
-        mMessageListener.onFragmentMessage(0, bundle);
+        mMessageListener.onSaveRecipeOverview(bundle);
         Log.v(LOG_TAG, "Saving...");
         mKitchenViewModel.insertRecipe(mRecipe, this);
         return true;
@@ -500,6 +500,6 @@ public class OverviewFragment extends Fragment implements RecipeInsertListener {
         });
         mPublishButton.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.GONE);
-        Snackbar.make(mProgressBar, R.string.publish_successful, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(mProgressBar, String.format(getString(R.string.publish_successful), mRecipe.title), Snackbar.LENGTH_SHORT).show();
     }
 }
