@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity
         FragmentScrollListener {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String KEY_NAV_INDEX = "navigator-index-key";
+    private static final String KEY_ACTIVITY_TITLE = "activity-title-key";
     @BindView(R.id.fab) FloatingActionButton mFab;
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity
     private KitchenViewModel mKitchenViewModel;
     private RecipeViewModel mRecipeViewModel;
     private SharedPreferences mSharedPreferences;
+    private String mActivityTitle;
     private int mSelectionIndex;
 
     @Override
@@ -81,6 +83,8 @@ public class MainActivity extends AppCompatActivity
             showSelectedContent();
         } else {
             mSelectionIndex = savedInstanceState.getInt(KEY_NAV_INDEX);
+            mActivityTitle = savedInstanceState.getString(KEY_ACTIVITY_TITLE);
+            if (getSupportActionBar() != null) getSupportActionBar().setTitle(mActivityTitle);
         }
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,6 +137,7 @@ public class MainActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_NAV_INDEX, mSelectionIndex);
+        outState.putString(KEY_ACTIVITY_TITLE, mActivityTitle);
     }
 
     @Override
@@ -219,7 +224,7 @@ public class MainActivity extends AppCompatActivity
             case 0:
                 mFab.show();
                 mProgressBar.setVisibility(View.VISIBLE);
-                fetchRecipesInPages();
+                fetchRecipes();
                 break;
             case 1:
                 mFab.show();
@@ -235,17 +240,16 @@ public class MainActivity extends AppCompatActivity
                 showStorage();
                 break;
             case 5:
-                showMealBoard();
+                showMealPlan();
                 break;
         }
     }
 
     private void showRecipes(List<Recipe> recipes) {
         mProgressBar.setVisibility(View.GONE);
-        for (Recipe recipe : recipes)
-            Log.v("MainActivity", recipe.toString());
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(R.string.recipes);
+        for (Recipe recipe : recipes) Log.v(LOG_TAG, recipe.toString());
+        mActivityTitle = getString(R.string.recipes);
+        if (getSupportActionBar() != null) getSupportActionBar().setTitle(mActivityTitle);
         Bundle args = new Bundle();
         args.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
         RecipesFragment recipesFragment = new RecipesFragment();
@@ -254,10 +258,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void showBookmarks(List<Recipe> recipes) {
-        for (Recipe recipe : recipes)
-            Log.v("MainActivity", recipe.toString());
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(R.string.bookmarks);
+        for (Recipe recipe : recipes) Log.v(LOG_TAG, recipe.toString());
+        mActivityTitle = getString(R.string.bookmarks);
+        if (getSupportActionBar() != null) getSupportActionBar().setTitle(mActivityTitle);
         Bundle args = new Bundle();
         args.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
         BookmarksFragment bookmarksFragment = new BookmarksFragment();
@@ -266,58 +269,57 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void showStorage() {
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(R.string.storage);
+        mActivityTitle = getString(R.string.storage);
+        if (getSupportActionBar() != null) getSupportActionBar().setTitle(mActivityTitle);
         StorageFragment storageFragment = new StorageFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, storageFragment).commit();
     }
 
-    private void showMealBoard() {
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(R.string.meal_plan);
-        MealPlanFragment mealBoardFragment = new MealPlanFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mealBoardFragment).commit();
+    private void showMealPlan() {
+        mActivityTitle = getString(R.string.meal_plan);
+        if (getSupportActionBar() != null) getSupportActionBar().setTitle(mActivityTitle);
+        MealPlanFragment mealPlanFragment = new MealPlanFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mealPlanFragment).commit();
     }
 
-    private void fetchRecipesInPages() {
+    private void fetchRecipes() {
         // Fetch recipe data from firebase.
-        mRecipeViewModel.getPagedDataSnapshotLiveData(10, "rating")
-                .observe(this, new Observer<DataSnapshot>() {
-                    @Override
-                    public void onChanged(@Nullable DataSnapshot dataSnapshot) {
-                        // Prevent turning back to online recipes fragment after publishing a recipe.
-                        if (mSelectionIndex != 0) return;
-                        List<Recipe> recipes = new ArrayList<>();
-                        if (dataSnapshot != null) {
-                            for (DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
-                                RecipeModel recipe = null;
-                                try {
-                                    recipe = recipeSnapshot.getValue(RecipeModel.class);
-                                } catch (DatabaseException e) {
-                                    Log.e(LOG_TAG, e.getMessage());
-                                }
-                                // Translate data from snapshot into local database version.
-                                if (recipe != null) {
-                                    float total = (float) recipe.totalRating;
-                                    float count = (float) recipe.ratingCount;
-                                    float rating = count != 0 ? total / count : 0;
-                                    recipes.add(new Recipe(0, recipe.title, recipe.imageUrl,
-                                            recipe.prepTime, recipe.cookTime, recipe.language,
-                                            recipe.cuisine, recipe.course, recipe.writerUid,
-                                            recipe.writerName, recipe.servings, 0,
-                                            recipeSnapshot.getKey(), rating));
-                                }
-                            }
+        mRecipeViewModel.getDataSnapshotLiveData().observe(this, new Observer<DataSnapshot>() {
+            @Override
+            public void onChanged(@Nullable DataSnapshot dataSnapshot) {
+                // Prevent turning back to online recipes fragment after publishing a recipe.
+                if (mSelectionIndex != 0) return;
+                // Translate data from snapshot data set into local data set.
+                List<Recipe> localRecipes = new ArrayList<>();
+                if (dataSnapshot != null) {
+                    for (DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
+                        RecipeModel fetchedRecipe = null;
+                        try {
+                            fetchedRecipe = recipeSnapshot.getValue(RecipeModel.class);
+                        } catch (DatabaseException e) {
+                            Log.e(LOG_TAG, e.getMessage());
                         }
-                        // Sort the list in descending order of ratings.
-                        Collections.sort(recipes, new Comparator<Recipe>() {
-                            @Override
-                            public int compare(Recipe o1, Recipe o2) {
-                                return (int) (o2.rating - o1.rating);
-                            }
-                        });
-                        showRecipes(recipes);
+                        if (fetchedRecipe != null) {
+                            float total = (float) fetchedRecipe.totalRating;
+                            float count = (float) fetchedRecipe.ratingCount;
+                            float rating = count != 0 ? total / count : 0;
+                            localRecipes.add(new Recipe(0, fetchedRecipe.title, fetchedRecipe.imageUrl,
+                                    fetchedRecipe.prepTime, fetchedRecipe.cookTime, fetchedRecipe.language,
+                                    fetchedRecipe.cuisine, fetchedRecipe.course, fetchedRecipe.writerUid,
+                                    fetchedRecipe.writerName, fetchedRecipe.servings, 0,
+                                    recipeSnapshot.getKey(), rating));
+                        }
+                    }
+                }
+                // Sort the list in descending order by rating.
+                Collections.sort(localRecipes, new Comparator<Recipe>() {
+                    @Override
+                    public int compare(Recipe o1, Recipe o2) {
+                        return (int) (o2.rating - o1.rating);
                     }
                 });
+                showRecipes(localRecipes);
+            }
+        });
     }
 }
