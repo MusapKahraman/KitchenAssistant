@@ -65,7 +65,7 @@ public class RecipeViewModel extends ViewModel {
         return key;
     }
 
-    public void postRating(String publicKey, final int rating, final int lastRating, final RatingPostListener listener) {
+    public void postRating(String publicKey, final int rating, final int lastRating, final OnPostRatingListener listener) {
         RECIPE_REF.child(publicKey).runTransaction(new Transaction.Handler() {
             @NonNull
             @Override
@@ -94,12 +94,12 @@ public class RecipeViewModel extends ViewModel {
                                    DataSnapshot dataSnapshot) {
                 // Transaction completed
                 Log.d(LOG_TAG, "postTransaction:onComplete:" + databaseError);
-                listener.onRatingTransactionSuccessful(rating);
+                listener.onSuccessfulRatingPost(rating);
             }
         });
     }
 
-    public interface RatingPostListener {
-        void onRatingTransactionSuccessful(int rating);
+    public interface OnPostRatingListener {
+        void onSuccessfulRatingPost(int rating);
     }
 }

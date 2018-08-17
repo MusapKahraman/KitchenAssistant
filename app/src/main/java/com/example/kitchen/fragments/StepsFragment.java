@@ -20,8 +20,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.kitchen.R;
+import com.example.kitchen.adapters.OnStepClickListener;
 import com.example.kitchen.adapters.RecyclerViewItemTouchHelper;
-import com.example.kitchen.adapters.StepClickListener;
 import com.example.kitchen.adapters.StepsAdapter;
 import com.example.kitchen.data.local.KitchenViewModel;
 import com.example.kitchen.data.local.entities.Recipe;
@@ -37,7 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class StepsFragment extends Fragment
-        implements RecyclerViewItemTouchHelper.RecyclerItemTouchHelperListener, StepClickListener {
+        implements RecyclerViewItemTouchHelper.RecyclerItemTouchHelperListener, OnStepClickListener {
     private static final String KEY_STEP_NUMBER = "step-number-key";
     @BindView(R.id.rv_steps) RecyclerView mRecyclerView;
     @BindView(R.id.text_edit_instruction) EditText mInstructionText;
@@ -106,9 +106,9 @@ public class StepsFragment extends Fragment
                     }
                 }
                 if (shownId == 0) {
-                    mKitchenViewModel.insertSteps(new Step(instruction, mSteps.size() + 1, mRecipe.id, ""));
+                    mKitchenViewModel.insertStep(new Step(instruction, mSteps.size() + 1, mRecipe.id, ""));
                 } else {
-                    mKitchenViewModel.insertSteps(new Step(shownId, instruction, mStepNumber, mRecipe.id, ""));
+                    mKitchenViewModel.insertStep(new Step(shownId, instruction, mStepNumber, mRecipe.id, ""));
                 }
                 DeviceUtils.hideKeyboardFrom(mContext, mInstructionText);
                 mStepNumber = 0;
@@ -136,7 +136,7 @@ public class StepsFragment extends Fragment
             final int deletedIndex = viewHolder.getAdapterPosition();
             // remove the item from recycler view
             mAdapter.removeItem(viewHolder.getAdapterPosition());
-            mKitchenViewModel.deleteSteps(deletedStep);
+            mKitchenViewModel.deleteStep(deletedStep);
             // showing snack bar with Undo option
             Snackbar snackbar = Snackbar.make(mRecyclerView,
                     String.format(getString(R.string.removed_step), stepNumber), Snackbar.LENGTH_LONG);
@@ -145,7 +145,7 @@ public class StepsFragment extends Fragment
                 public void onClick(View view) {
                     // undo is selected, restore the deleted item
                     mAdapter.restoreItem(deletedStep, deletedIndex);
-                    mKitchenViewModel.insertSteps(deletedStep);
+                    mKitchenViewModel.insertStep(deletedStep);
                 }
             });
             snackbar.show();
@@ -153,7 +153,7 @@ public class StepsFragment extends Fragment
     }
 
     @Override
-    public void onStepClicked(Step step) {
+    public void onStepClick(Step step) {
         mInstructionText.setText(step.instruction);
         mStepNumber = step.stepNumber;
     }

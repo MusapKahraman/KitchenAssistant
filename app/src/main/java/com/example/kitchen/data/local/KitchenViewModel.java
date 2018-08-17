@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 
+import com.example.kitchen.data.local.entities.Food;
 import com.example.kitchen.data.local.entities.Ingredient;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.data.local.entities.Step;
@@ -25,52 +26,55 @@ public class KitchenViewModel extends AndroidViewModel {
 
     // In the ViewModel, use LiveData for changeable data that the UI will use or display.
 
+    public LiveData<List<Ingredient>> getIngredientsByRecipe(int recipeId) {
+        return mRepository.getIngredientsByRecipe(recipeId);
+    }
 
-    public LiveData<Recipe> getRecipe(String title) {
-        return mRepository.getRecipe(title);
+    public LiveData<List<Recipe>> getRecipes() {
+        return mRepository.getRecipes();
     }
 
     public LiveData<Recipe> getRecipeByPublicKey(String publicKey) {
         return mRepository.getRecipeByPublicKey(publicKey);
     }
 
-    public LiveData<List<Recipe>> getAllRecipes() {
-        return mRepository.getAllRecipes();
-    }
-
-    public LiveData<List<Ingredient>> getIngredientsByRecipe(int recipeId) {
-        return mRepository.getIngredientsByRecipe(recipeId);
-    }
-
-    public LiveData<List<Ingredient>> getIngredientsByFood(String food) {
-        return mRepository.getIngredientsByFood(food);
-    }
-
     public LiveData<List<Step>> getStepsByRecipe(int recipeId) {
         return mRepository.getStepsByRecipe(recipeId);
     }
 
-    public void insertRecipe(Recipe recipe, RecipeInsertListener listener) {
+    public LiveData<List<Food>> getStorage() {
+        return mRepository.getStorage();
+    }
+
+    public void deleteFood(Food... foods) {
+        mRepository.deleteFood(foods);
+    }
+
+    public void deleteIngredient(Ingredient... ingredients) {
+        mRepository.deleteIngredient(ingredients);
+    }
+
+    public void deleteRecipe(Recipe... recipes) {
+        mRepository.deleteRecipe(recipes);
+    }
+
+    public void deleteStep(Step... steps) {
+        mRepository.deleteStep(steps);
+    }
+
+    public void insertFood(Food... foods) {
+        mRepository.insertFood(foods);
+    }
+
+    public void insertIngredient(Ingredient... ingredients) {
+        mRepository.insertIngredient(ingredients);
+    }
+
+    public void insertRecipe(Recipe recipe, OnRecipeInsertListener listener) {
         mRepository.insertRecipe(recipe, listener);
     }
 
-    public void deleteRecipes(Recipe... recipes) {
-        mRepository.deleteRecipes(recipes);
-    }
-
-    public void insertIngredients(Ingredient... ingredients) {
-        mRepository.insertIngredients(ingredients);
-    }
-
-    public void deleteIngredients(Ingredient... ingredients) {
-        mRepository.deleteIngredients(ingredients);
-    }
-
-    public void insertSteps(Step... steps) {
-        mRepository.insertSteps(steps);
-    }
-
-    public void deleteSteps(Step... steps) {
-        mRepository.deleteSteps(steps);
+    public void insertStep(Step... steps) {
+        mRepository.insertStep(steps);
     }
 }

@@ -1,6 +1,6 @@
 package com.example.kitchen.fragments;
 
-public interface PictureDialogListener {
+public interface OnPictureDialogListener {
     void onSelectCamera();
 
     void onSelectGallery();

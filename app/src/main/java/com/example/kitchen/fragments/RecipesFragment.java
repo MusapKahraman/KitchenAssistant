@@ -21,7 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.kitchen.R;
-import com.example.kitchen.adapters.RecipeClickListener;
+import com.example.kitchen.adapters.OnRecipeClickListener;
 import com.example.kitchen.adapters.RecipesAdapter;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.utility.AppConstants;
@@ -36,8 +36,8 @@ public class RecipesFragment extends Fragment {
     private static final String LAYOUT_STATE = "state";
     private static final String SEARCH_QUERY = "search-query";
     @BindView(R.id.rv_recipe_steps) RecyclerView recyclerView;
-    private FragmentScrollListener fragmentScrollListener;
-    private RecipeClickListener mClickListener;
+    private OnFragmentScrollListener fragmentScrollListener;
+    private OnRecipeClickListener mClickListener;
     private StaggeredGridLayoutManager mLayoutManager;
     private RecipesAdapter mAdapter;
     private String mQuery;
@@ -49,15 +49,15 @@ public class RecipesFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof RecipeClickListener) {
-            mClickListener = (RecipeClickListener) context;
+        if (context instanceof OnRecipeClickListener) {
+            mClickListener = (OnRecipeClickListener) context;
         } else {
-            throw new ClassCastException(context.toString() + "must implement RecipeClickListener");
+            throw new ClassCastException(context.toString() + "must implement OnRecipeClickListener");
         }
-        if (context instanceof FragmentScrollListener) {
-            fragmentScrollListener = (FragmentScrollListener) context;
+        if (context instanceof OnFragmentScrollListener) {
+            fragmentScrollListener = (OnFragmentScrollListener) context;
         } else {
-            throw new ClassCastException(context.toString() + "must implement FragmentScrollListener");
+            throw new ClassCastException(context.toString() + "must implement OnFragmentScrollListener");
         }
     }
 

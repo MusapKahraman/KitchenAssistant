@@ -66,4 +66,9 @@
             android:layout_marginStart="@dimen/space_one_unit"
             android:layout_weight="3" />
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/food_item_tint"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </FrameLayout>

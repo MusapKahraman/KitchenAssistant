@@ -6,11 +6,20 @@ package com.example.kitchen.data.local;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
-import android.os.AsyncTask;
 
+import com.example.kitchen.data.local.async.DeleteFoodTask;
+import com.example.kitchen.data.local.async.DeleteIngredientTask;
+import com.example.kitchen.data.local.async.DeleteRecipeTask;
+import com.example.kitchen.data.local.async.DeleteStepTask;
+import com.example.kitchen.data.local.async.InsertFoodTask;
+import com.example.kitchen.data.local.async.InsertIngredientTask;
+import com.example.kitchen.data.local.async.InsertRecipeTask;
+import com.example.kitchen.data.local.async.InsertStepTask;
 import com.example.kitchen.data.local.daos.IngredientsDao;
 import com.example.kitchen.data.local.daos.RecipesDao;
 import com.example.kitchen.data.local.daos.StepsDao;
+import com.example.kitchen.data.local.daos.StorageDao;
+import com.example.kitchen.data.local.entities.Food;
 import com.example.kitchen.data.local.entities.Ingredient;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.data.local.entities.Step;
@@ -22,35 +31,33 @@ class KitchenRepository {
     private final RecipesDao mRecipesDao;
     private final IngredientsDao mIngredientsDao;
     private final StepsDao mStepsDao;
+    private final StorageDao mStorageDao;
 
     KitchenRepository(Application application) {
         KitchenDatabase db = KitchenDatabase.getDatabase(application);
         mRecipesDao = db.recipesDao();
         mIngredientsDao = db.ingredientsDao();
         mStepsDao = db.stepsDao();
+        mStorageDao = db.storageDao();
     }
 
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
 
-    LiveData<Recipe> getRecipe(String title) {
-        return mRecipesDao.getRecipe(title);
-    }
-
-    LiveData<Recipe> getRecipeByPublicKey(String publicKey) {
-        return mRecipesDao.getRecipeByPublicKey(publicKey);
-    }
-
-    LiveData<List<Recipe>> getAllRecipes() {
-        return mRecipesDao.getAll();
+    LiveData<List<Food>> getStorage() {
+        return mStorageDao.getStorage();
     }
 
     LiveData<List<Ingredient>> getIngredientsByRecipe(int recipeId) {
         return mIngredientsDao.getIngredientsByRecipe(recipeId);
     }
 
-    LiveData<List<Ingredient>> getIngredientsByFood(String food) {
-        return mIngredientsDao.getIngredientsByFood(food);
+    LiveData<Recipe> getRecipeByPublicKey(String publicKey) {
+        return mRecipesDao.getRecipeByPublicKey(publicKey);
+    }
+
+    LiveData<List<Recipe>> getRecipes() {
+        return mRecipesDao.getAll();
     }
 
     LiveData<List<Step>> getStepsByRecipe(int recipeId) {
@@ -59,142 +66,35 @@ class KitchenRepository {
 
     // Insert and delete methods need to be run on an asynchronous thread.
 
-    public void insertRecipe(Recipe recipe, RecipeInsertListener listener) {
-        new InsertRecipeTask(mRecipesDao, listener).execute(recipe);
+    public void deleteFood(Food... foods) {
+        new DeleteFoodTask(mStorageDao).execute(foods);
     }
 
-    public void deleteRecipes(Recipe... recipes) {
-        new DeleteRecipeTask(mRecipesDao).execute(recipes);
-    }
-
-    public void insertIngredients(Ingredient... ingredients) {
-        new InsertIngredientTask(mIngredientsDao).execute(ingredients);
-    }
-
-    public void deleteIngredients(Ingredient... ingredients) {
+    public void deleteIngredient(Ingredient... ingredients) {
         new DeleteIngredientTask(mIngredientsDao).execute(ingredients);
     }
 
-    public void insertSteps(Step... steps) {
-        new InsertStepTask(mStepsDao).execute(steps);
+    public void deleteRecipe(Recipe... recipes) {
+        new DeleteRecipeTask(mRecipesDao).execute(recipes);
     }
 
-    public void deleteSteps(Step... steps) {
+    public void deleteStep(Step... steps) {
         new DeleteStepTask(mStepsDao).execute(steps);
     }
 
-    private static class InsertRecipeTask extends AsyncTask<Recipe, Void, Void> {
-        private final RecipesDao mAsyncTaskDao;
-        private final RecipeInsertListener listener;
-
-        InsertRecipeTask(RecipesDao dao, RecipeInsertListener listener) {
-            mAsyncTaskDao = dao;
-            this.listener = listener;
-        }
-
-        @Override
-        protected Void doInBackground(Recipe... recipes) {
-            for (Recipe recipe : recipes) {
-                if (recipe != null) {
-                    long id = mAsyncTaskDao.insert(recipe);
-                    if (id == -1) {
-                        mAsyncTaskDao.update(recipe);
-                        listener.onRecipeInserted(recipe.id);
-                    } else {
-                        listener.onRecipeInserted(id);
-                    }
-                }
-            }
-            return null;
-        }
+    public void insertFood(Food... foods) {
+        new InsertFoodTask(mStorageDao).execute(foods);
     }
 
-    private static class DeleteRecipeTask extends AsyncTask<Recipe, Void, Void> {
-        private final RecipesDao mAsyncTaskDao;
-
-        DeleteRecipeTask(RecipesDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(Recipe... recipes) {
-            for (Recipe recipe : recipes) {
-                if (recipe != null)
-                    mAsyncTaskDao.delete(recipe);
-            }
-            return null;
-        }
+    public void insertIngredient(Ingredient... ingredients) {
+        new InsertIngredientTask(mIngredientsDao).execute(ingredients);
     }
 
-    private static class InsertIngredientTask extends AsyncTask<Ingredient, Void, Void> {
-        private final IngredientsDao mAsyncTaskDao;
-
-        InsertIngredientTask(IngredientsDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(Ingredient... ingredients) {
-            for (Ingredient ingredient : ingredients) {
-                if (ingredient != null) {
-                    long id = mAsyncTaskDao.insertIngredient(ingredient);
-                    if (id == -1) {
-                        mAsyncTaskDao.update(ingredient);
-                    }
-                }
-            }
-            return null;
-        }
+    public void insertRecipe(Recipe recipe, OnRecipeInsertListener listener) {
+        new InsertRecipeTask(mRecipesDao, listener).execute(recipe);
     }
 
-    private static class DeleteIngredientTask extends AsyncTask<Ingredient, Void, Void> {
-        private final IngredientsDao mAsyncTaskDao;
-
-        DeleteIngredientTask(IngredientsDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(Ingredient... ingredients) {
-            for (Ingredient ingredient : ingredients) {
-                if (ingredient != null)
-                    mAsyncTaskDao.deleteIngredient(ingredient);
-            }
-            return null;
-        }
-    }
-
-    private static class InsertStepTask extends AsyncTask<Step, Void, Void> {
-        private final StepsDao mAsyncTaskDao;
-
-        InsertStepTask(StepsDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(Step... steps) {
-            for (Step step : steps) {
-                if (step != null)
-                    mAsyncTaskDao.insertStep(step);
-            }
-            return null;
-        }
-    }
-
-    private static class DeleteStepTask extends AsyncTask<Step, Void, Void> {
-        private final StepsDao mAsyncTaskDao;
-
-        DeleteStepTask(StepsDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(Step... steps) {
-            for (Step step : steps) {
-                if (step != null)
-                    mAsyncTaskDao.deleteStep(step);
-            }
-            return null;
-        }
+    public void insertStep(Step... steps) {
+        new InsertStepTask(mStepsDao).execute(steps);
     }
 }

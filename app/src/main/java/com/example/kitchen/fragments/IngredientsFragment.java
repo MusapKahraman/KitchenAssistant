@@ -202,10 +202,10 @@ public class IngredientsFragment extends Fragment
                     }
                 }
                 if (shownId == 0) {
-                    mKitchenViewModel.insertIngredients(
+                    mKitchenViewModel.insertIngredient(
                             new Ingredient(mRecipe.id, name, amount, amountType, ""));
                 } else {
-                    mKitchenViewModel.insertIngredients(
+                    mKitchenViewModel.insertIngredient(
                             new Ingredient(shownId, mRecipe.id, name, amount + shownAmount, amountType, ""));
                 }
                 DeviceUtils.hideKeyboardFrom(mContext, mAmountEditText);
@@ -232,7 +232,7 @@ public class IngredientsFragment extends Fragment
             final int deletedIndex = viewHolder.getAdapterPosition();
             // remove the item from recycler view
             mAdapter.removeItem(viewHolder.getAdapterPosition());
-            mKitchenViewModel.deleteIngredients(deletedIngredient);
+            mKitchenViewModel.deleteIngredient(deletedIngredient);
             // showing snack bar with Undo option
             Snackbar snackbar = Snackbar.make(mRecyclerView,
                     String.format(getString(R.string.removed_ingredient), food), Snackbar.LENGTH_LONG);
@@ -241,7 +241,7 @@ public class IngredientsFragment extends Fragment
                 public void onClick(View view) {
                     // undo is selected, restore the deleted item
                     mAdapter.restoreItem(deletedIngredient, deletedIndex);
-                    mKitchenViewModel.insertIngredients(deletedIngredient);
+                    mKitchenViewModel.insertIngredient(deletedIngredient);
                 }
             });
             snackbar.show();

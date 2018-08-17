@@ -45,7 +45,7 @@ import com.example.kitchen.data.firebase.StepViewModel;
 import com.example.kitchen.data.firebase.models.IngredientModel;
 import com.example.kitchen.data.firebase.models.StepModel;
 import com.example.kitchen.data.local.KitchenViewModel;
-import com.example.kitchen.data.local.RecipeInsertListener;
+import com.example.kitchen.data.local.OnRecipeInsertListener;
 import com.example.kitchen.data.local.entities.Ingredient;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.data.local.entities.Step;
@@ -75,7 +75,7 @@ import butterknife.ButterKnife;
 
 import static android.support.v4.content.ContextCompat.checkSelfPermission;
 
-public class OverviewFragment extends Fragment implements RecipeInsertListener {
+public class OverviewFragment extends Fragment implements OnRecipeInsertListener {
     private static final String LOG_TAG = OverviewFragment.class.getSimpleName();
     private static final String KEY_IMAGE_ROTATION = "image-rotation";
     private static final String KEY_REQUEST_PERMISSION = "request-permission";
@@ -97,42 +97,12 @@ public class OverviewFragment extends Fragment implements RecipeInsertListener {
     private RecipeViewModel mRecipeViewModel;
     private IngredientViewModel mIngredientViewModel;
     private StepViewModel mStepViewModel;
-    private FragmentMessageListener mMessageListener;
+    private OnSaveRecipeListener mListener;
     private Context mContext;
     private Recipe mRecipe;
     private ArrayList<Ingredient> mPublicIngredients;
     private ArrayList<Step> mPublicSteps;
-    private boolean mDoNotRequestPermission;
-    // Deal with write permission to external storage in Glide
-    private final RequestListener<Drawable> requestListener = new RequestListener<Drawable>() {
-        @Override
-        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-            if (mDoNotRequestPermission)
-                return false;
-            if (checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                try {
-                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            AppConstants.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-                } catch (IllegalStateException ex) {
-                    ex.fillInStackTrace();
-                }
-            }
-            // important to return false so the error placeholder can be placed
-            return false;
-        }
-
-        @Override
-        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-            // everything worked out
-            // There is nothing to rotate if there is no picture.
-            if (resource == null) {
-                mRotateButton.setVisibility(View.GONE);
-            } else {
-                mRotateButton.setVisibility(View.VISIBLE);
-            }
-            return false;
-        }
-    };
+    private boolean mRequestPermission;
     private boolean mIngredientIsObservable;
     private boolean mStepIsObservable;
 
@@ -144,30 +114,32 @@ public class OverviewFragment extends Fragment implements RecipeInsertListener {
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
-        if (context instanceof FragmentMessageListener) {
-            mMessageListener = (FragmentMessageListener) context;
+        if (context instanceof OnSaveRecipeListener) {
+            mListener = (OnSaveRecipeListener) context;
         } else {
-            throw new ClassCastException(context.toString() + "must implement FragmentMessageListener");
+            throw new ClassCastException(context.toString() + "must implement OnSaveRecipeListener");
         }
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment.
         View rootView = inflater.inflate(R.layout.fragment_overall, container, false);
         ButterKnife.bind(this, rootView);
-        // ViewModels for local database and firebase.
+        // ViewModel for local database.
         mKitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
+        // ViewModels for firebase.
         mRecipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
         mIngredientViewModel = ViewModelProviders.of(this).get(IngredientViewModel.class);
         mStepViewModel = ViewModelProviders.of(this).get(StepViewModel.class);
         if (savedInstanceState != null) {
+            mRequestPermission = savedInstanceState.getBoolean(KEY_REQUEST_PERMISSION);
             mRecipeImageView.setRotation(savedInstanceState.getFloat(KEY_IMAGE_ROTATION));
-            mDoNotRequestPermission = savedInstanceState.getBoolean(KEY_REQUEST_PERMISSION);
             mStepIsObservable = savedInstanceState.getBoolean(KEY_OBSERVABLE_STEP);
             mIngredientIsObservable = savedInstanceState.getBoolean(KEY_OBSERVABLE_INGREDIENT);
             mRecipe = savedInstanceState.getParcelable(AppConstants.KEY_RECIPE);
         } else {
+            // The flag for requesting a permission from the user to access external storage.
+            mRequestPermission = true;
             Bundle arguments = getArguments();
             if (arguments != null) {
                 mRecipe = arguments.getParcelable(AppConstants.KEY_RECIPE);
@@ -176,7 +148,7 @@ public class OverviewFragment extends Fragment implements RecipeInsertListener {
         if (mRecipe == null) {
             return rootView;
         }
-        // Fill the edit texts with data from corresponding fields.
+        // Fill edit texts with data from corresponding fields.
         mTitleView.setText(mRecipe.title);
         mServingsView.setText(String.valueOf(mRecipe.servings));
         mPrepTimeView.setText(String.valueOf(mRecipe.prepTime));
@@ -210,7 +182,9 @@ public class OverviewFragment extends Fragment implements RecipeInsertListener {
                 Activity activity = getActivity();
                 if (activity != null)
                     dialogFragment.show(activity.getFragmentManager(), TAG_PICTURE_DIALOG);
-                mDoNotRequestPermission = false;
+                // Reset the flag. This is a new picture in demand and the user might changed their
+                // mind for allowing access.
+                mRequestPermission = true;
             }
         });
         // Listen for clicks on rotate button to rotate the taken image.
@@ -300,25 +274,25 @@ public class OverviewFragment extends Fragment implements RecipeInsertListener {
     }
 
     @Override
-    public void onPause() {
-        saveRecipe();
-        super.onPause();
-    }
-
-    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putFloat(KEY_IMAGE_ROTATION, mRecipeImageView.getRotation());
-        outState.putBoolean(KEY_REQUEST_PERMISSION, mDoNotRequestPermission);
+        outState.putBoolean(KEY_REQUEST_PERMISSION, mRequestPermission);
         outState.putBoolean(KEY_OBSERVABLE_STEP, mStepIsObservable);
         outState.putBoolean(KEY_OBSERVABLE_INGREDIENT, mIngredientIsObservable);
         outState.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        saveRecipe();
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
-        mMessageListener = null;
+        mListener = null;
     }
 
     @Override
@@ -331,7 +305,7 @@ public class OverviewFragment extends Fragment implements RecipeInsertListener {
                             loadRecipeImage();
                         }
                     } else {
-                        mDoNotRequestPermission = true;
+                        mRequestPermission = false;
                         Snackbar.make(mTitleView, R.string.allow_write_external, Snackbar.LENGTH_LONG).show();
                     }
                 }
@@ -340,7 +314,7 @@ public class OverviewFragment extends Fragment implements RecipeInsertListener {
     }
 
     @Override
-    public void onRecipeInserted(long id) {
+    public void onRecipeInsert(long id) {
         mRecipe.id = (int) id;
         Log.v(LOG_TAG, "Recipe is saved with id: " + mRecipe.id);
     }
@@ -352,27 +326,23 @@ public class OverviewFragment extends Fragment implements RecipeInsertListener {
                 .override(size);
         Glide.with(mContext)
                 .load(mRecipe.imagePath)
-                .listener(requestListener)
+                .listener(getRequestListener())
                 .apply(options)
                 .into(mRecipeImageView);
     }
 
     private boolean saveRecipe() {
         // Do not save if no title is provided for the recipe.
-        if (CheckUtils.isEmptyTextField(mContext, mTitleView))
-            return false;
+        if (CheckUtils.isEmptyTextField(mContext, mTitleView)) return false;
         String title = mTitleView.getText().toString();
         mRecipe.title = CheckUtils.validateTitle(title);
         mTitleView.setText(mRecipe.title);
         mRecipe.cookTime = CheckUtils.getPositiveIntegerFromField(mContext, mCookTimeView);
-        if (mRecipe.cookTime == -1)
-            return false;
+        if (mRecipe.cookTime == -1) return false;
         mRecipe.prepTime = CheckUtils.getPositiveIntegerFromField(mContext, mPrepTimeView);
-        if (mRecipe.prepTime == -1)
-            return false;
+        if (mRecipe.prepTime == -1) return false;
         mRecipe.servings = CheckUtils.getPositiveIntegerFromField(mContext, mServingsView);
-        if (mRecipe.servings == -1)
-            return false;
+        if (mRecipe.servings == -1) return false;
         mRecipe.course = mCourseSpinner.getSelectedItem().toString();
         mRecipe.cuisine = mCuisineSpinner.getSelectedItem().toString();
         mRecipe.language = mLanguageSpinner.getSelectedItem().toString();
@@ -385,8 +355,7 @@ public class OverviewFragment extends Fragment implements RecipeInsertListener {
             mRecipe.imagePath = BitmapUtils.writeJpegPrivate(mContext, drawable.getBitmap(), mRecipe.title);
             if (!oldFile.getName().equals(mRecipe.title + ".jpg") && oldFile.getAbsolutePath().contains(mContext.getPackageName())) {
                 Boolean deleted = oldFile.delete();
-                if (deleted)
-                    Log.v(LOG_TAG, "Temporary image file is deleted.");
+                if (deleted) Log.v(LOG_TAG, "Temporary image file is deleted.");
             }
         }
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -396,7 +365,7 @@ public class OverviewFragment extends Fragment implements RecipeInsertListener {
         }
         Bundle bundle = new Bundle();
         bundle.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
-        mMessageListener.onSaveRecipeOverview(bundle);
+        mListener.onSaveRecipeOverview(bundle);
         Log.v(LOG_TAG, "Saving...");
         mKitchenViewModel.insertRecipe(mRecipe, this);
         return true;
@@ -454,7 +423,7 @@ public class OverviewFragment extends Fragment implements RecipeInsertListener {
                         ArrayList<String> stayList = new ArrayList<>();
                         for (Ingredient ingredient : ingredients) {
                             ingredient.publicKey = mIngredientViewModel.postIngredient(ingredient, mRecipe.publicKey);
-                            mKitchenViewModel.insertIngredients(ingredient);
+                            mKitchenViewModel.insertIngredient(ingredient);
                             for (String removalKey : removalKeys) {
                                 if (removalKey.equals(ingredient.publicKey)) {
                                     stayList.add(removalKey);
@@ -484,7 +453,7 @@ public class OverviewFragment extends Fragment implements RecipeInsertListener {
                         ArrayList<String> stayList = new ArrayList<>();
                         for (Step step : steps) {
                             step.publicKey = mStepViewModel.postStep(step, mRecipe.publicKey);
-                            mKitchenViewModel.insertSteps(step);
+                            mKitchenViewModel.insertStep(step);
                             for (String removalKey : removalKeys) {
                                 if (removalKey.equals(step.publicKey)) {
                                     stayList.add(removalKey);
@@ -501,5 +470,44 @@ public class OverviewFragment extends Fragment implements RecipeInsertListener {
         mPublishButton.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.GONE);
         Snackbar.make(mProgressBar, String.format(getString(R.string.publish_successful), mRecipe.title), Snackbar.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Deal with write permission to external storage in Glide
+     *
+     * @return request listener for glide
+     */
+    private RequestListener<Drawable> getRequestListener() {
+        return new RequestListener<Drawable>() {
+            @Override
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                // Check the flag for requesting a permission from user to access external storage.
+                // This will prevent the request dialog from being shown on configuration changes if
+                // the user has already given a negative answer.
+                if (!mRequestPermission) return false;
+                if (checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    try {
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                AppConstants.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+                    } catch (IllegalStateException ex) {
+                        ex.fillInStackTrace();
+                    }
+                }
+                // Return false to place error placeholder.
+                return false;
+            }
+
+            @Override
+            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                // Everything worked out.
+                // No need for rotate button if there is no picture.
+                if (resource == null) {
+                    mRotateButton.setVisibility(View.GONE);
+                } else {
+                    mRotateButton.setVisibility(View.VISIBLE);
+                }
+                return false;
+            }
+        };
     }
 }

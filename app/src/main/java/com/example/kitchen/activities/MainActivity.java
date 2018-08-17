@@ -25,14 +25,14 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.kitchen.R;
-import com.example.kitchen.adapters.RecipeClickListener;
+import com.example.kitchen.adapters.OnRecipeClickListener;
 import com.example.kitchen.data.firebase.RecipeViewModel;
 import com.example.kitchen.data.firebase.models.RecipeModel;
 import com.example.kitchen.data.local.KitchenViewModel;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.fragments.BookmarksFragment;
-import com.example.kitchen.fragments.FragmentScrollListener;
 import com.example.kitchen.fragments.MealPlanFragment;
+import com.example.kitchen.fragments.OnFragmentScrollListener;
 import com.example.kitchen.fragments.RecipesFragment;
 import com.example.kitchen.fragments.StorageFragment;
 import com.example.kitchen.utility.AppConstants;
@@ -53,11 +53,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, RecipeClickListener,
-        FragmentScrollListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnRecipeClickListener,
+        OnFragmentScrollListener {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String KEY_NAV_INDEX = "navigator-index-key";
     private static final String KEY_ACTIVITY_TITLE = "activity-title-key";
+    private static final int INDEX_RECIPES = 0;
+    private static final int INDEX_BOOKMARKS = 1;
+    private static final int INDEX_SUGGESTIONS = 2;
+    private static final int INDEX_STORAGE = 3;
+    private static final int INDEX_SHOPPING_LIST = 4;
+    private static final int INDEX_MEAL_PLAN = 5;
+    private static final int INDEX_ROUTINES = 6;
     @BindView(R.id.fab) FloatingActionButton mFab;
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
@@ -86,19 +93,7 @@ public class MainActivity extends AppCompatActivity
             mActivityTitle = savedInstanceState.getString(KEY_ACTIVITY_TITLE);
             if (getSupportActionBar() != null) getSupportActionBar().setTitle(mActivityTitle);
         }
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent;
-                switch (mSelectionIndex) {
-                    case 0:
-                    case 1:
-                        intent = new Intent(MainActivity.this, RecipeEditActivity.class);
-                        startActivity(intent);
-                        break;
-                }
-            }
-        });
+        mFab.setOnClickListener(getFabClickListener());
         // Set navigation drawer.
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
@@ -156,25 +151,25 @@ public class MainActivity extends AppCompatActivity
         int lastIndex = mSelectionIndex;
         switch (id) {
             case R.id.nav_recipes:
-                mSelectionIndex = 0;
+                mSelectionIndex = INDEX_RECIPES;
                 break;
             case R.id.nav_bookmarks:
-                mSelectionIndex = 1;
+                mSelectionIndex = INDEX_BOOKMARKS;
                 break;
             case R.id.nav_suggestions:
-                mSelectionIndex = 2;
+                mSelectionIndex = INDEX_SUGGESTIONS;
                 break;
             case R.id.nav_storage:
-                mSelectionIndex = 3;
+                mSelectionIndex = INDEX_STORAGE;
                 break;
             case R.id.nav_shopping_list:
-                mSelectionIndex = 4;
+                mSelectionIndex = INDEX_SHOPPING_LIST;
                 break;
             case R.id.nav_meal_plan:
-                mSelectionIndex = 5;
+                mSelectionIndex = INDEX_MEAL_PLAN;
                 break;
             case R.id.nav_routines:
-                mSelectionIndex = 6;
+                mSelectionIndex = INDEX_ROUTINES;
                 break;
             case R.id.nav_logout:
                 AuthUI.getInstance()
@@ -221,14 +216,14 @@ public class MainActivity extends AppCompatActivity
     private void showSelectedContent() {
         mProgressBar.setVisibility(View.GONE);
         switch (mSelectionIndex) {
-            case 0:
+            case INDEX_RECIPES:
                 mFab.show();
                 mProgressBar.setVisibility(View.VISIBLE);
                 fetchRecipes();
                 break;
-            case 1:
+            case INDEX_BOOKMARKS:
                 mFab.show();
-                mKitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
+                mKitchenViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
                     @Override
                     public void onChanged(@Nullable List<Recipe> recipes) {
                         if (recipes != null)
@@ -236,10 +231,11 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
                 break;
-            case 3:
+            case INDEX_STORAGE:
+                mFab.show();
                 showStorage();
                 break;
-            case 5:
+            case INDEX_MEAL_PLAN:
                 showMealPlan();
                 break;
         }
@@ -321,5 +317,25 @@ public class MainActivity extends AppCompatActivity
                 showRecipes(localRecipes);
             }
         });
+    }
+
+    private View.OnClickListener getFabClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent;
+                switch (mSelectionIndex) {
+                    case INDEX_RECIPES:
+                    case INDEX_BOOKMARKS:
+                        intent = new Intent(MainActivity.this, RecipeEditActivity.class);
+                        startActivity(intent);
+                        break;
+                    case INDEX_STORAGE:
+                        intent = new Intent(MainActivity.this, StorageAddActivity.class);
+                        startActivity(intent);
+                        break;
+                }
+            }
+        };
     }
 }

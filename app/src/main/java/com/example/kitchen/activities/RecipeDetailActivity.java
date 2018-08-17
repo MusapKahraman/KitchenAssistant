@@ -44,7 +44,7 @@ import com.example.kitchen.data.firebase.StepViewModel;
 import com.example.kitchen.data.firebase.models.IngredientModel;
 import com.example.kitchen.data.firebase.models.StepModel;
 import com.example.kitchen.data.local.KitchenViewModel;
-import com.example.kitchen.data.local.RecipeInsertListener;
+import com.example.kitchen.data.local.OnRecipeInsertListener;
 import com.example.kitchen.data.local.entities.Ingredient;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.data.local.entities.Step;
@@ -61,7 +61,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RecipeDetailActivity extends AppCompatActivity implements RecipeViewModel.RatingPostListener, RecipeInsertListener {
+public class RecipeDetailActivity extends AppCompatActivity implements RecipeViewModel.OnPostRatingListener, OnRecipeInsertListener {
     private static final String LOG_TAG = RecipeDetailActivity.class.getSimpleName();
     private static final String KEY_SERVINGS = "servings-key";
     private static final String KEY_INGREDIENTS = "ingredients-key";
@@ -118,7 +118,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
                 // This recipe is a published recipe. It might not be already bookmarked.
                 mIsBookable = true;
                 // Take a look at the bookmarked recipes.
-                mKitchenViewModel.getAllRecipes().observe(this, new Observer<List<Recipe>>() {
+                mKitchenViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
                     @Override
                     public void onChanged(@Nullable List<Recipe> recipes) {
                         if (recipes != null) {
@@ -208,7 +208,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
                         int currentRating = (int) rating;
                         int lastRating = mSharedPreferences.getInt(mRecipe.publicKey, 0);
                         mRecipeViewModel.postRating(mRecipe.publicKey, currentRating, lastRating, RecipeDetailActivity.this);
-                        // Add rating into shared preferences onRatingTransactionSuccessful.
+                        // Add rating into shared preferences onSuccessfulRatingPost.
                     }
                 }
             });
@@ -305,7 +305,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
     }
 
     @Override
-    public void onRatingTransactionSuccessful(int rating) {
+    public void onSuccessfulRatingPost(int rating) {
         mIsRatingProcessing = false;
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putInt(mRecipe.publicKey, rating);
@@ -313,18 +313,18 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
     }
 
     @Override
-    public void onRecipeInserted(long id) {
+    public void onRecipeInsert(long id) {
         mRecipe.id = (int) id;
         if (mIngredients != null) {
             for (Ingredient i : mIngredients) {
                 i.recipeId = mRecipe.id;
-                mKitchenViewModel.insertIngredients(i);
+                mKitchenViewModel.insertIngredient(i);
             }
         }
         if (mSteps != null) {
             for (Step s : mSteps) {
                 s.recipeId = mRecipe.id;
-                mKitchenViewModel.insertSteps(s);
+                mKitchenViewModel.insertStep(s);
             }
         }
         if (mIsInsertedForEdit) {

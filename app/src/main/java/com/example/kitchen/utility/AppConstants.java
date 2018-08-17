@@ -2,7 +2,6 @@ package com.example.kitchen.utility;
 
 public class AppConstants {
     // Bundle keys
-    public static final String KEY_SAVED_STATE = "saved-instance-state-key";
     public static final String KEY_RECIPE = "recipe-key";
     public static final String KEY_RECIPES = "recipes-list-key";
     public static final String KEY_INGREDIENTS = "ingredients-list-key";

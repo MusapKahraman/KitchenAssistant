@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 
 import com.example.kitchen.R;
 import com.example.kitchen.adapters.BookmarksAdapter;
-import com.example.kitchen.adapters.RecipeClickListener;
+import com.example.kitchen.adapters.OnRecipeClickListener;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.utility.AppConstants;
 
@@ -37,8 +37,8 @@ public class BookmarksFragment extends Fragment {
     private static final String SEARCH_QUERY = "search-query";
     @BindView(R.id.rv_recipe_steps) RecyclerView mRecyclerView;
     private Context mContext;
-    private FragmentScrollListener fragmentScrollListener;
-    private RecipeClickListener mClickListener;
+    private OnFragmentScrollListener mScrollListener;
+    private OnRecipeClickListener mClickListener;
     private StaggeredGridLayoutManager mLayoutManager;
     private BookmarksAdapter mAdapter;
     private String mQuery;
@@ -51,15 +51,15 @@ public class BookmarksFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
-        if (context instanceof RecipeClickListener) {
-            mClickListener = (RecipeClickListener) context;
+        if (context instanceof OnRecipeClickListener) {
+            mClickListener = (OnRecipeClickListener) context;
         } else {
-            throw new ClassCastException(context.toString() + "must implement RecipeClickListener");
+            throw new ClassCastException(context.toString() + "must implement OnRecipeClickListener");
         }
-        if (context instanceof FragmentScrollListener) {
-            fragmentScrollListener = (FragmentScrollListener) context;
+        if (context instanceof OnFragmentScrollListener) {
+            mScrollListener = (OnFragmentScrollListener) context;
         } else {
-            throw new ClassCastException(context.toString() + "must implement FragmentScrollListener");
+            throw new ClassCastException(context.toString() + "must implement OnFragmentScrollListener");
         }
     }
 
@@ -87,9 +87,9 @@ public class BookmarksFragment extends Fragment {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dx > 0 || dy > 0) {
-                    fragmentScrollListener.onScrollDown();
+                    mScrollListener.onScrollDown();
                 } else if (dx < 0 || dy < 0) {
-                    fragmentScrollListener.onScrollUp();
+                    mScrollListener.onScrollUp();
                 }
             }
         });
@@ -117,7 +117,7 @@ public class BookmarksFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mClickListener = null;
-        fragmentScrollListener = null;
+        mScrollListener = null;
     }
 
     @Override

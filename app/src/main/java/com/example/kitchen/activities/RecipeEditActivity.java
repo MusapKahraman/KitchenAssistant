@@ -16,8 +16,8 @@ import android.support.v7.app.AppCompatActivity;
 import com.example.kitchen.R;
 import com.example.kitchen.adapters.RecipeEditAdapter;
 import com.example.kitchen.data.local.entities.Recipe;
-import com.example.kitchen.fragments.FragmentMessageListener;
-import com.example.kitchen.fragments.PictureDialogListener;
+import com.example.kitchen.fragments.OnPictureDialogListener;
+import com.example.kitchen.fragments.OnSaveRecipeListener;
 import com.example.kitchen.utility.AppConstants;
 import com.example.kitchen.utility.BitmapUtils;
 
@@ -28,7 +28,7 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RecipeEditActivity extends AppCompatActivity implements PictureDialogListener, FragmentMessageListener {
+public class RecipeEditActivity extends AppCompatActivity implements OnPictureDialogListener, OnSaveRecipeListener {
     @BindView(R.id.viewPager) ViewPager mViewPager;
     private Recipe mRecipe;
 

@@ -24,7 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MealPlanFragment extends Fragment {
-    private static final String TAG = MealPlanFragment.class.getSimpleName();
+    private static final String LOG_TAG = MealPlanFragment.class.getSimpleName();
     private static final String TAB_LAST = "tab-last_opened";
     private static final String TAB_MONDAY = "tab-monday";
     private static final String TAB_TUESDAY = "tab-tuesday";

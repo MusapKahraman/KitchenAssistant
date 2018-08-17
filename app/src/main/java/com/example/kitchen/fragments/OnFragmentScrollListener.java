@@ -1,6 +1,6 @@
 package com.example.kitchen.fragments;
 
-public interface FragmentScrollListener {
+public interface OnFragmentScrollListener {
     void onScrollDown();
 
     void onScrollUp();

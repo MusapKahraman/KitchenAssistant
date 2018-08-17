@@ -12,15 +12,15 @@ import com.example.kitchen.R;
 
 public class PictureDialogFragment extends DialogFragment {
 
-    private PictureDialogListener mListener;
+    private OnPictureDialogListener mListener;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (PictureDialogListener) activity;
+            mListener = (OnPictureDialogListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement PictureDialogListener");
+            throw new ClassCastException(activity.toString() + " must implement OnPictureDialogListener");
         }
     }
 

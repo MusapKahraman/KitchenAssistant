@@ -8,11 +8,13 @@ import android.content.Context;
 import com.example.kitchen.data.local.daos.IngredientsDao;
 import com.example.kitchen.data.local.daos.RecipesDao;
 import com.example.kitchen.data.local.daos.StepsDao;
+import com.example.kitchen.data.local.daos.StorageDao;
+import com.example.kitchen.data.local.entities.Food;
 import com.example.kitchen.data.local.entities.Ingredient;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.data.local.entities.Step;
 
-@Database(entities = {Recipe.class, Ingredient.class, Step.class}, version = 1, exportSchema = false)
+@Database(entities = {Recipe.class, Ingredient.class, Step.class, Food.class}, version = 1, exportSchema = false)
 public abstract class KitchenDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "kitchen_database";
     private static KitchenDatabase sInstance;
@@ -33,4 +35,6 @@ public abstract class KitchenDatabase extends RoomDatabase {
     public abstract IngredientsDao ingredientsDao();
 
     public abstract StepsDao stepsDao();
+
+    public abstract StorageDao storageDao();
 }

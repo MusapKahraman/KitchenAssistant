@@ -36,7 +36,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.RecipeCardViewHolder> {
-    private final RecipeClickListener mRecipeClickListener;
+    private final OnRecipeClickListener mRecipeClickListener;
     private final ArrayList<Recipe> mSelectedRecipes = new ArrayList<>();
     private KitchenViewModel mKitchenViewModel;
     private FragmentActivity mFragmentActivity;
@@ -63,7 +63,7 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.Reci
                     for (Recipe recipe : mSelectedRecipes) {
                         int position = mRecipes.indexOf(recipe);
                         mRecipes.remove(recipe);
-                        mKitchenViewModel.deleteRecipes(recipe);
+                        mKitchenViewModel.deleteRecipe(recipe);
                         notifyItemRemoved(position);
                     }
                     break;
@@ -80,7 +80,7 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.Reci
         }
     };
 
-    public BookmarksAdapter(Context context, RecipeClickListener recipeClickListener) {
+    public BookmarksAdapter(Context context, OnRecipeClickListener recipeClickListener) {
         mRecipeClickListener = recipeClickListener;
         if (context instanceof FragmentActivity) {
             mFragmentActivity = (FragmentActivity) context;

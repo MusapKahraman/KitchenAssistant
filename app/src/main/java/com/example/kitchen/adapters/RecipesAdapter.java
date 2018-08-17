@@ -25,11 +25,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCardViewHolder> {
-    private final RecipeClickListener mRecipeClickListener;
+    private final OnRecipeClickListener mRecipeClickListener;
     private List<Recipe> mRecipes;
     private List<Recipe> mFilteredRecipes;
 
-    public RecipesAdapter(RecipeClickListener recipeClickListener) {
+    public RecipesAdapter(OnRecipeClickListener recipeClickListener) {
         mRecipeClickListener = recipeClickListener;
     }
 

@@ -16,10 +16,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHolder> {
-    private final StepClickListener mClickListener;
+    private final OnStepClickListener mClickListener;
     private List<Step> mSteps;
 
-    public StepsAdapter(StepClickListener listener) {
+    public StepsAdapter(OnStepClickListener listener) {
         mClickListener = listener;
     }
 
@@ -80,7 +80,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mClickListener.onStepClicked(mStep);
+                    mClickListener.onStepClick(mStep);
                 }
             });
         }
