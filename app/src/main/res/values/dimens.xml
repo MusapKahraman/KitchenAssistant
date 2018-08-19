@@ -41,4 +41,5 @@
     <dimen name="recipe_detail_button_heights">48dp</dimen>
     <dimen name="bullet_size">16dp</dimen>
     <dimen name="add_picture_hint_size">72dp</dimen>
+    <dimen name="margin_widget_shopping_list">8dp</dimen>
 </resources>

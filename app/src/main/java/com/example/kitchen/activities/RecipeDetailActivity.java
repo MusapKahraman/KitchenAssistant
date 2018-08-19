@@ -245,7 +245,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
                 mServingsTextView.setText(String.valueOf(mServings));
             }
         });
-        // Send used ingredients to name storage to be removed.
+        // Send used ingredients to food storage to be removed.
         mFinishedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

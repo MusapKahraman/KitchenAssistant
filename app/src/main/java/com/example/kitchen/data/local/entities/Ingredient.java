@@ -84,7 +84,7 @@ public class Ingredient implements Parcelable {
         return super.toString() +
                 "\nid: " + id +
                 "\nrecipeId: " + recipeId +
-                "\nname: " + food +
+                "\nfood: " + food +
                 "\namount: " + amount +
                 "\namountType: " + amountType +
                 "\npublicKey: " + publicKey;
