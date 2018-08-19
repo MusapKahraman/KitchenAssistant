@@ -8,6 +8,7 @@ import com.example.kitchen.data.local.entities.Food;
 import com.example.kitchen.data.local.entities.Ingredient;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.data.local.entities.Step;
+import com.example.kitchen.data.local.entities.Ware;
 
 import java.util.List;
 
@@ -46,6 +47,10 @@ public class KitchenViewModel extends AndroidViewModel {
         return mRepository.getStorage();
     }
 
+    public LiveData<List<Ware>> getShoppingList() {
+        return mRepository.getShoppingList();
+    }
+
     public void deleteFood(Food... foods) {
         mRepository.deleteFood(foods);
     }
@@ -62,6 +67,10 @@ public class KitchenViewModel extends AndroidViewModel {
         mRepository.deleteStep(steps);
     }
 
+    public void deleteWare(Ware... wares) {
+        mRepository.deleteWare(wares);
+    }
+
     public void insertFood(Food... foods) {
         mRepository.insertFood(foods);
     }
@@ -76,5 +85,9 @@ public class KitchenViewModel extends AndroidViewModel {
 
     public void insertStep(Step... steps) {
         mRepository.insertStep(steps);
+    }
+
+    public void insertWare(Ware... wares) {
+        mRepository.insertWare(wares);
     }
 }

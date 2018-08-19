@@ -8,7 +8,7 @@
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">User Image</string>
-    <string name="foods">Recipes</string>
+    <string name="recipes">Recipes</string>
     <string name="bookmarks">Bookmarks</string>
     <string name="storage">Storage</string>
     <string name="suggestions">Suggestions</string>
@@ -151,9 +151,8 @@
     <string name="can_not_add_ingredient">Cannot add ingredient. You need to give a title for the recipe.</string>
     <string name="connect_internet_try_again">Please connect your device to internet and try again.</string>
     <string name="send_to">Send to</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_to_storage">Add to storage</string>
-    <string name="recipes">Recipes</string>
+    <string name="best_before">Best before</string>
+    <string name="added_to_shopping_list">%1$d %2$s %3$s is added to shopping list.</string>
+    <string name="added_to_storage">%1$d %2$s %3$s is added to storage.</string>
 </resources>

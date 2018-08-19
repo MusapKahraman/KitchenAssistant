@@ -13,26 +13,23 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
-import com.example.kitchen.data.local.entities.Recipe;
+import com.example.kitchen.data.local.entities.Ware;
 
 import java.util.List;
 
 @Dao
-public interface RecipesDao {
+public interface ShoppingDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    long insert(Recipe recipe);
+    long insert(Ware ware);
 
     @Update
-    void update(Recipe recipe);
+    void update(Ware ware);
 
     @Delete
-    void delete(Recipe recipe);
+    void delete(Ware ware);
 
-    @Query("SELECT * from recipes WHERE publicKey = :publicKey")
-    LiveData<Recipe> getRecipeByPublicKey(String publicKey);
-
-    @Query("SELECT * from recipes")
-    LiveData<List<Recipe>> getRecipes();
+    @Query("SELECT * from shopping_list")
+    LiveData<List<Ware>> getShoppingList();
 
 }

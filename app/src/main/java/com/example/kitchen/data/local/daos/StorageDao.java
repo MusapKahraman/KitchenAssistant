@@ -21,13 +21,13 @@ import java.util.List;
 public interface StorageDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    long insertFood(Food food);
+    long insert(Food food);
 
     @Update
     void update(Food food);
 
     @Delete
-    void deleteFood(Food food);
+    void delete(Food food);
 
     @Query("SELECT * from storage")
     LiveData<List<Food>> getStorage();

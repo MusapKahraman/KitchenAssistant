@@ -21,13 +21,13 @@ import java.util.List;
 public interface IngredientsDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    long insertIngredient(Ingredient ingredient);
+    long insert(Ingredient ingredient);
 
     @Update
     void update(Ingredient ingredient);
 
     @Delete
-    void deleteIngredient(Ingredient ingredient);
+    void delete(Ingredient ingredient);
 
     @Query("SELECT * from ingredients WHERE recipeId = :recipeId ORDER BY id")
     LiveData<List<Ingredient>> getIngredientsByRecipe(int recipeId);

@@ -40,7 +40,7 @@ public class IngredientViewModel extends ViewModel {
         if (!TextUtils.isEmpty(key)) {
             Map<String, Object> childUpdates = new HashMap<>();
             childUpdates.put("recipeKey", recipeKey);
-            childUpdates.put("food", ingredient.food);
+            childUpdates.put("name", ingredient.food);
             childUpdates.put("amount", ingredient.amount);
             childUpdates.put("amountType", ingredient.amountType);
             INGREDIENT_REF.child(key).updateChildren(childUpdates);

@@ -64,7 +64,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeCa
     }
 
     public void filter(CharSequence charSequence) {
-        if (charSequence == null)
+        if (charSequence == null || mRecipes == null)
             return;
         String charString = charSequence.toString();
         if (!charString.isEmpty()) {

@@ -15,8 +15,12 @@ public class InsertStepTask extends AsyncTask<Step, Void, Void> {
     @Override
     protected Void doInBackground(Step... steps) {
         for (Step step : steps) {
-            if (step != null)
-                mAsyncTaskDao.insertStep(step);
+            if (step != null) {
+                long id = mAsyncTaskDao.insert(step);
+                if (id == -1) {
+                    mAsyncTaskDao.update(step);
+                }
+            }
         }
         return null;
     }

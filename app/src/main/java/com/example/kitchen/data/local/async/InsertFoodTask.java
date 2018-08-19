@@ -16,7 +16,7 @@ public class InsertFoodTask extends AsyncTask<Food, Void, Void> {
     protected Void doInBackground(Food... foods) {
         for (Food food : foods) {
             if (food != null) {
-                long id = mAsyncTaskDao.insertFood(food);
+                long id = mAsyncTaskDao.insert(food);
                 if (id == -1) {
                     mAsyncTaskDao.update(food);
                 }

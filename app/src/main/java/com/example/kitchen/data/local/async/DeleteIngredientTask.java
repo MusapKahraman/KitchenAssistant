@@ -16,7 +16,7 @@ public class DeleteIngredientTask extends AsyncTask<Ingredient, Void, Void> {
     protected Void doInBackground(Ingredient... ingredients) {
         for (Ingredient ingredient : ingredients) {
             if (ingredient != null)
-                mAsyncTaskDao.deleteIngredient(ingredient);
+                mAsyncTaskDao.delete(ingredient);
         }
         return null;
     }

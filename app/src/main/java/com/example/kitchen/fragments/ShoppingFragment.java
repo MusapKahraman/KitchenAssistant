@@ -3,6 +3,7 @@ package com.example.kitchen.fragments;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,29 +20,32 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.kitchen.R;
-import com.example.kitchen.adapters.OnStorageClickListener;
-import com.example.kitchen.adapters.StorageAdapter;
+import com.example.kitchen.adapters.OnShoppingListClickListener;
+import com.example.kitchen.adapters.ShoppingAdapter;
 import com.example.kitchen.data.local.KitchenViewModel;
-import com.example.kitchen.data.local.entities.Food;
+import com.example.kitchen.data.local.entities.Ware;
+import com.example.kitchen.utility.MeasurementUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StorageFragment extends Fragment {
-    private static final String LOG_TAG = StorageFragment.class.getSimpleName();
+public class ShoppingFragment extends Fragment {
+    private static final String LOG_TAG = ShoppingFragment.class.getSimpleName();
     private static final String LAYOUT_STATE = "state";
     private static final String SEARCH_QUERY = "search-query";
-    @BindView(R.id.rv_storage) RecyclerView mRecyclerView;
+    @BindView(R.id.rv_shopping_list) RecyclerView mRecyclerView;
     private OnFragmentScrollListener fragmentScrollListener;
     private Context mContext;
-    private OnStorageClickListener mClickListener;
+    private OnShoppingListClickListener mClickListener;
     private LinearLayoutManager mLayoutManager;
-    private StorageAdapter mAdapter;
+    private ShoppingAdapter mAdapter;
     private String mQuery;
+    private ArrayList<Ware> mShoppingList;
 
-    public StorageFragment() {
+    public ShoppingFragment() {
         // Required empty public constructor
     }
 
@@ -49,10 +53,10 @@ public class StorageFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
-        if (context instanceof OnStorageClickListener) {
-            mClickListener = (OnStorageClickListener) context;
+        if (context instanceof OnShoppingListClickListener) {
+            mClickListener = (OnShoppingListClickListener) context;
         } else {
-            throw new ClassCastException(context.toString() + "must implement OnStorageClickListener");
+            throw new ClassCastException(context.toString() + "must implement OnShoppingListClickListener");
         }
         if (context instanceof OnFragmentScrollListener) {
             fragmentScrollListener = (OnFragmentScrollListener) context;
@@ -68,13 +72,13 @@ public class StorageFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_storage, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_shopping, container, false);
         ButterKnife.bind(this, rootView);
         mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
-        mAdapter = new StorageAdapter(mContext, mClickListener);
+        mAdapter = new ShoppingAdapter(mContext, mClickListener);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -88,10 +92,13 @@ public class StorageFragment extends Fragment {
             }
         });
         KitchenViewModel kitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
-        kitchenViewModel.getStorage().observe(this, new Observer<List<Food>>() {
+        kitchenViewModel.getShoppingList().observe(this, new Observer<List<Ware>>() {
             @Override
-            public void onChanged(@Nullable List<Food> foods) {
-                if (foods != null) mAdapter.setFoods(foods);
+            public void onChanged(@Nullable List<Ware> wares) {
+                if (wares != null) {
+                    mShoppingList = (ArrayList<Ware>) wares;
+                    mAdapter.setWares(wares);
+                }
             }
         });
         if (savedInstanceState != null) {
@@ -114,7 +121,7 @@ public class StorageFragment extends Fragment {
         // Clear all current menu items
         menu.clear();
         // Add new menu items
-        inflater.inflate(R.menu.menu_recipes, menu);
+        inflater.inflate(R.menu.menu_shopping_list, menu);
         // Associate searchable configuration with the SearchView
         MenuItem searchMenuItem = menu.findItem(R.id.app_bar_search);
         searchMenuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
@@ -153,5 +160,34 @@ public class StorageFragment extends Fragment {
             }
         });
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.menu_item_share:
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, generateShareString());
+                shareIntent.setType("text/plain");
+                startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.send_to)));
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private String generateShareString() {
+        StringBuilder result = new StringBuilder(getString(R.string.shopping_list));
+        result.append("\n");
+        for (Ware item : mShoppingList) {
+            String text = item.amount +
+                    " " + MeasurementUtils.getAbbreviation(mContext, item.amountType) +
+                    " " + item.name;
+            result.append("\n").append(text);
+        }
+        return result.toString();
     }
 }

@@ -119,7 +119,7 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.Reci
     }
 
     public void filter(CharSequence charSequence) {
-        if (charSequence == null)
+        if (charSequence == null || mRecipes == null)
             return;
         String charString = charSequence.toString();
         if (!charString.isEmpty()) {

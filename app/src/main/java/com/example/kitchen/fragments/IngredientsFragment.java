@@ -50,7 +50,6 @@ import butterknife.ButterKnife;
 public class IngredientsFragment extends Fragment
         implements RecyclerViewItemTouchHelper.RecyclerItemTouchHelperListener {
     private static final String LOG_TAG = IngredientsFragment.class.getSimpleName();
-    private static final String KEY_OBSERVER_ATTACH = "observer-attachment-key";
     @BindView(R.id.rv_ingredients) RecyclerView mRecyclerView;
     @BindView(R.id.btn_add_food) Button mAddFoodLink;
     @BindView(R.id.spinner_food) SearchableSpinner mFoodSpinner;
@@ -65,7 +64,6 @@ public class IngredientsFragment extends Fragment
     private ArrayList<Ingredient> mIngredients;
     private ArrayList<String> mFoods;
     private Recipe mRecipe;
-    private boolean mIsObserverAttached;
 
     public IngredientsFragment() {
         // Required empty public constructor
@@ -82,12 +80,10 @@ public class IngredientsFragment extends Fragment
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_ingredients, container, false);
         ButterKnife.bind(this, rootView);
-        FoodViewModel foodViewModel = ViewModelProviders.of(this).get(FoodViewModel.class);
         mKitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
         if (savedInstanceState != null) {
             mRecipe = savedInstanceState.getParcelable(AppConstants.KEY_RECIPE);
             mIngredients = savedInstanceState.getParcelableArrayList(AppConstants.KEY_INGREDIENTS);
-            mIsObserverAttached = savedInstanceState.getBoolean(KEY_OBSERVER_ATTACH);
         } else {
             Bundle arguments = getArguments();
             if (arguments != null) {
@@ -111,7 +107,7 @@ public class IngredientsFragment extends Fragment
         mRecyclerView.setHasFixedSize(true);
         mAdapter = new IngredientsAdapter(mContext);
         mRecyclerView.setAdapter(mAdapter);
-        if (!mIsObserverAttached && mRecipe.id != 0) {
+        if (mRecipe.id != 0) {
             mKitchenViewModel.getIngredientsByRecipe(mRecipe.id).observe(this, new Observer<List<Ingredient>>() {
                 @Override
                 public void onChanged(@Nullable List<Ingredient> ingredients) {
@@ -119,9 +115,9 @@ public class IngredientsFragment extends Fragment
                     mIngredients = (ArrayList<Ingredient>) ingredients;
                 }
             });
-            mIsObserverAttached = true;
         }
         mFoodSpinner.setTitle(getString(R.string.select_food));
+        FoodViewModel foodViewModel = ViewModelProviders.of(this).get(FoodViewModel.class);
         foodViewModel.getDataSnapshotLiveData().observe(this, new Observer<DataSnapshot>() {
             @Override
             public void onChanged(@Nullable DataSnapshot dataSnapshot) {
@@ -172,23 +168,10 @@ public class IngredientsFragment extends Fragment
                             R.string.can_not_add_ingredient, Snackbar.LENGTH_LONG).show();
                     return;
                 }
-                if (!mIsObserverAttached) {
-                    mKitchenViewModel.getIngredientsByRecipe(mRecipe.id)
-                            .observe(IngredientsFragment.this, new Observer<List<Ingredient>>() {
-                                @Override
-                                public void onChanged(@Nullable List<Ingredient> ingredients) {
-                                    mAdapter.setIngredients(ingredients);
-                                    mIngredients = (ArrayList<Ingredient>) ingredients;
-                                }
-                            });
-                    mIsObserverAttached = true;
-                }
-                if (mFoodSpinner.getSelectedItem() == null)
-                    return;
+                if (mFoodSpinner.getSelectedItem() == null) return;
                 String name = mFoodSpinner.getSelectedItem().toString();
                 String amountType = mMeasurementSpinner.getSelectedItem().toString();
-                if (CheckUtils.isEmptyTextField(mContext, mAmountEditText))
-                    return;
+                if (CheckUtils.isEmptyTextField(mContext, mAmountEditText)) return;
                 int amount = Integer.valueOf(mAmountEditText.getText().toString());
                 // If there is already an item in the list with the same name then just increase its amount.
                 int shownId = 0;
@@ -219,7 +202,6 @@ public class IngredientsFragment extends Fragment
         super.onSaveInstanceState(outState);
         outState.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
         outState.putParcelableArrayList(AppConstants.KEY_INGREDIENTS, mIngredients);
-        outState.putBoolean(KEY_OBSERVER_ATTACH, mIsObserverAttached);
     }
 
     @Override

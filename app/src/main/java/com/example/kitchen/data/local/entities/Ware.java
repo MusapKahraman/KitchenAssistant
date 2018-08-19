@@ -13,45 +13,41 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 @SuppressWarnings({"NullableProblems", "WeakerAccess", "CanBeFinal"})
-@Entity(tableName = "storage")
-public class Food implements Parcelable {
-    public static final Creator<Food> CREATOR = new Creator<Food>() {
-        public Food createFromParcel(Parcel in) {
-            return new Food(in);
+@Entity(tableName = "shopping_list")
+public class Ware implements Parcelable {
+    public static final Creator<Ware> CREATOR = new Creator<Ware>() {
+        public Ware createFromParcel(Parcel in) {
+            return new Ware(in);
         }
 
-        public Food[] newArray(int size) {
-            return new Food[size];
+        public Ware[] newArray(int size) {
+            return new Ware[size];
         }
     };
     @PrimaryKey(autoGenerate = true) public int id;
     public String name;
     public int amount;
     public String amountType;
-    public long bestBefore;
 
     @Ignore
-    public Food(int id, String name, int amount, String amountType, long bestBefore) {
+    public Ware(int id, String name, int amount, String amountType) {
         this.id = id;
         this.name = name;
         this.amount = amount;
         this.amountType = amountType;
-        this.bestBefore = bestBefore;
     }
 
-    public Food(String name, int amount, String amountType, long bestBefore) {
+    public Ware(String name, int amount, String amountType) {
         this.name = name;
         this.amount = amount;
         this.amountType = amountType;
-        this.bestBefore = bestBefore;
     }
 
-    private Food(Parcel in) {
+    private Ware(Parcel in) {
         id = in.readInt();
         name = in.readString();
         amount = in.readInt();
         amountType = in.readString();
-        bestBefore = in.readLong();
     }
 
     @Override
@@ -65,7 +61,6 @@ public class Food implements Parcelable {
         dest.writeString(name);
         dest.writeInt(amount);
         dest.writeString(amountType);
-        dest.writeLong(bestBefore);
     }
 
     @Override
@@ -74,7 +69,6 @@ public class Food implements Parcelable {
                 "\nid: " + id +
                 "\nname: " + name +
                 "\namount: " + amount +
-                "\namountType: " + amountType +
-                "\nbestBefore: " + bestBefore;
+                "\namountType: " + amountType;
     }
 }

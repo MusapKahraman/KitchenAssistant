@@ -11,18 +11,22 @@ import com.example.kitchen.data.local.async.DeleteFoodTask;
 import com.example.kitchen.data.local.async.DeleteIngredientTask;
 import com.example.kitchen.data.local.async.DeleteRecipeTask;
 import com.example.kitchen.data.local.async.DeleteStepTask;
+import com.example.kitchen.data.local.async.DeleteWareTask;
 import com.example.kitchen.data.local.async.InsertFoodTask;
 import com.example.kitchen.data.local.async.InsertIngredientTask;
 import com.example.kitchen.data.local.async.InsertRecipeTask;
 import com.example.kitchen.data.local.async.InsertStepTask;
+import com.example.kitchen.data.local.async.InsertWareTask;
 import com.example.kitchen.data.local.daos.IngredientsDao;
 import com.example.kitchen.data.local.daos.RecipesDao;
+import com.example.kitchen.data.local.daos.ShoppingDao;
 import com.example.kitchen.data.local.daos.StepsDao;
 import com.example.kitchen.data.local.daos.StorageDao;
 import com.example.kitchen.data.local.entities.Food;
 import com.example.kitchen.data.local.entities.Ingredient;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.data.local.entities.Step;
+import com.example.kitchen.data.local.entities.Ware;
 
 import java.util.List;
 
@@ -32,6 +36,7 @@ class KitchenRepository {
     private final IngredientsDao mIngredientsDao;
     private final StepsDao mStepsDao;
     private final StorageDao mStorageDao;
+    private final ShoppingDao mShoppingDao;
 
     KitchenRepository(Application application) {
         KitchenDatabase db = KitchenDatabase.getDatabase(application);
@@ -39,6 +44,7 @@ class KitchenRepository {
         mIngredientsDao = db.ingredientsDao();
         mStepsDao = db.stepsDao();
         mStorageDao = db.storageDao();
+        mShoppingDao = db.shoppingDao();
     }
 
     // Room executes all queries on a separate thread.
@@ -57,7 +63,11 @@ class KitchenRepository {
     }
 
     LiveData<List<Recipe>> getRecipes() {
-        return mRecipesDao.getAll();
+        return mRecipesDao.getRecipes();
+    }
+
+    LiveData<List<Ware>> getShoppingList() {
+        return mShoppingDao.getShoppingList();
     }
 
     LiveData<List<Step>> getStepsByRecipe(int recipeId) {
@@ -82,6 +92,10 @@ class KitchenRepository {
         new DeleteStepTask(mStepsDao).execute(steps);
     }
 
+    public void deleteWare(Ware... wares) {
+        new DeleteWareTask(mShoppingDao).execute(wares);
+    }
+
     public void insertFood(Food... foods) {
         new InsertFoodTask(mStorageDao).execute(foods);
     }
@@ -96,5 +110,9 @@ class KitchenRepository {
 
     public void insertStep(Step... steps) {
         new InsertStepTask(mStepsDao).execute(steps);
+    }
+
+    public void insertWare(Ware... wares) {
+        new InsertWareTask(mShoppingDao).execute(wares);
     }
 }

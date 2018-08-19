@@ -47,7 +47,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.MainActivity"
-            android:label="@string/foods"
+            android:label="@string/recipes"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -80,6 +80,15 @@
         </activity>
         <activity
             android:name=".activities.StorageAddActivity"
+            android:label="@string/add_food"
+            android:launchMode="singleTop"
+            android:parentActivityName=".activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.kitchen.activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activities.ShoppingAddActivity"
             android:label="@string/add_food"
             android:launchMode="singleTop"
             android:parentActivityName=".activities.MainActivity">

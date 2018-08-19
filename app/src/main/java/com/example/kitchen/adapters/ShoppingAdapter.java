@@ -21,26 +21,23 @@ import android.widget.TextView;
 
 import com.example.kitchen.R;
 import com.example.kitchen.data.local.KitchenViewModel;
-import com.example.kitchen.data.local.entities.Food;
+import com.example.kitchen.data.local.entities.Ware;
 import com.example.kitchen.utility.MeasurementUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StorageAdapter extends RecyclerView.Adapter<StorageAdapter.FoodViewHolder> {
-    private final OnStorageClickListener mOnFoodClickListener;
-    private final ArrayList<Food> mSelectedFoods = new ArrayList<>();
+public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.WareViewHolder> {
+    private final OnShoppingListClickListener mOnWareClickListener;
+    private final ArrayList<Ware> mSelectedWares = new ArrayList<>();
     private final Context mContext;
     private KitchenViewModel mKitchenViewModel;
     private FragmentActivity mFragmentActivity;
-    private List<Food> mFoods;
-    private List<Food> mFilteredFoods;
+    private List<Ware> mWares;
+    private List<Ware> mFilteredWares;
     private boolean mMultiSelect = false;
     private final ActionMode.Callback mActionModeCallbacks = new ActionMode.Callback() {
         @Override
@@ -59,10 +56,10 @@ public class StorageAdapter extends RecyclerView.Adapter<StorageAdapter.FoodView
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.action_mode_delete:
-                    for (Food food : mSelectedFoods) {
-                        int position = mFoods.indexOf(food);
-                        mFoods.remove(food);
-                        mKitchenViewModel.deleteFood(food);
+                    for (Ware ware : mSelectedWares) {
+                        int position = mWares.indexOf(ware);
+                        mWares.remove(ware);
+                        mKitchenViewModel.deleteWare(ware);
                         notifyItemRemoved(position);
                     }
                     break;
@@ -74,14 +71,14 @@ public class StorageAdapter extends RecyclerView.Adapter<StorageAdapter.FoodView
         @Override
         public void onDestroyActionMode(ActionMode mode) {
             mMultiSelect = false;
-            mSelectedFoods.clear();
+            mSelectedWares.clear();
             notifyDataSetChanged();
         }
     };
 
-    public StorageAdapter(Context context, OnStorageClickListener onFoodClickListener) {
+    public ShoppingAdapter(Context context, OnShoppingListClickListener onWareClickListener) {
         mContext = context;
-        mOnFoodClickListener = onFoodClickListener;
+        mOnWareClickListener = onWareClickListener;
         if (context instanceof FragmentActivity) {
             mFragmentActivity = (FragmentActivity) context;
             mKitchenViewModel = ViewModelProviders.of(mFragmentActivity).get(KitchenViewModel.class);
@@ -90,8 +87,8 @@ public class StorageAdapter extends RecyclerView.Adapter<StorageAdapter.FoodView
 
     @Override
     public int getItemCount() {
-        if (mFilteredFoods != null) {
-            return mFilteredFoods.size();
+        if (mFilteredWares != null) {
+            return mFilteredWares.size();
         } else {
             return 0;
         }
@@ -99,69 +96,63 @@ public class StorageAdapter extends RecyclerView.Adapter<StorageAdapter.FoodView
 
     @NonNull
     @Override
-    public FoodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public WareViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.item_food, parent, false);
-        return new FoodViewHolder(view);
+        return new WareViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FoodViewHolder holder, int position) {
-        if (mFilteredFoods != null) {
+    public void onBindViewHolder(@NonNull WareViewHolder holder, int position) {
+        if (mFilteredWares != null) {
             holder.bind(position);
         }
     }
 
-    public void setFoods(List<Food> foods) {
-        mFoods = foods;
-        mFilteredFoods = foods;
+    public void setWares(List<Ware> wares) {
+        mWares = wares;
+        mFilteredWares = wares;
         notifyDataSetChanged();
     }
 
     public void filter(CharSequence charSequence) {
-        if (charSequence == null || mFoods == null)
+        if (charSequence == null || mWares == null)
             return;
         String charString = charSequence.toString();
         if (!charString.isEmpty()) {
-            List<Food> filteredList = new ArrayList<>();
-            for (Food row : mFoods) {
+            List<Ware> filteredList = new ArrayList<>();
+            for (Ware row : mWares) {
                 if (row.name.toLowerCase().contains(charString.toLowerCase())) {
                     filteredList.add(row);
                 }
             }
-            mFilteredFoods = filteredList;
+            mFilteredWares = filteredList;
             notifyDataSetChanged();
         } else {
-            setFoods(mFoods);
+            setWares(mWares);
         }
     }
 
-    class FoodViewHolder extends RecyclerView.ViewHolder {
+    class WareViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.food_item_tint) FrameLayout tint;
         @BindView(R.id.tv_ingredient) TextView foodTextView;
         @BindView(R.id.tv_ingredient_amount) TextView amountTextView;
-        @BindView(R.id.tv_best_before) TextView bestBeforeTextView;
 
-        private FoodViewHolder(View itemView) {
+        private WareViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
         private void bind(int position) {
-            final Food current = mFilteredFoods.get(position);
+            final Ware current = mFilteredWares.get(position);
             foodTextView.setText(current.name);
             String text = current.amount + " " + MeasurementUtils.getAbbreviation(mContext, current.amountType);
             amountTextView.setText(text);
-            Calendar calendar = Calendar.getInstance(Locale.getDefault());
-            calendar.setTimeInMillis(current.bestBefore);
-            String dateFormat = "dd/MM/yyyy";
-            SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.getDefault());
-            bestBeforeTextView.setText(sdf.format(calendar.getTime()));
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
                     ((AppCompatActivity) view.getContext()).startSupportActionMode(mActionModeCallbacks);
-                    selectFood(current);
+                    selectWare(current);
                     return true;
                 }
             });
@@ -169,14 +160,14 @@ public class StorageAdapter extends RecyclerView.Adapter<StorageAdapter.FoodView
                 @Override
                 public void onClick(View view) {
                     if (mMultiSelect) {
-                        selectFood(current);
+                        selectWare(current);
                     } else {
-                        mOnFoodClickListener.onStorageItemClick(current);
+                        mOnWareClickListener.onShoppingListItemClick(current);
                     }
                 }
             });
 
-            if (mSelectedFoods.contains(current)) {
+            if (mSelectedWares.contains(current)) {
                 tint.setBackgroundColor(itemView.getResources().getColor(R.color.card_selected_tint));
             } else {
                 tint.setBackgroundColor(itemView.getResources().getColor(R.color.card_normal_tint));
@@ -184,13 +175,13 @@ public class StorageAdapter extends RecyclerView.Adapter<StorageAdapter.FoodView
 
         }
 
-        void selectFood(Food food) {
+        void selectWare(Ware ware) {
             if (mMultiSelect) {
-                if (mSelectedFoods.contains(food)) {
-                    mSelectedFoods.remove(food);
+                if (mSelectedWares.contains(ware)) {
+                    mSelectedWares.remove(ware);
                     tint.setBackgroundColor(itemView.getResources().getColor(R.color.card_normal_tint));
                 } else {
-                    mSelectedFoods.add(food);
+                    mSelectedWares.add(ware);
                     tint.setBackgroundColor(itemView.getResources().getColor(R.color.card_selected_tint));
                 }
             }

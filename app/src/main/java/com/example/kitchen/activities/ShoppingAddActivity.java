@@ -1,11 +1,5 @@
-/*
- * Reference
- * https://stackoverflow.com/questions/14933330/datepicker-how-to-popup-datepicker-when-click-on-edittext/14933515#14933515
- */
-
 package com.example.kitchen.activities;
 
-import android.app.DatePickerDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -19,64 +13,55 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.example.kitchen.R;
 import com.example.kitchen.data.firebase.FoodViewModel;
 import com.example.kitchen.data.local.KitchenViewModel;
-import com.example.kitchen.data.local.entities.Food;
+import com.example.kitchen.data.local.entities.Ware;
 import com.example.kitchen.utility.CheckUtils;
 import com.example.kitchen.utility.DeviceUtils;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseException;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StorageAddActivity extends AppCompatActivity {
-    private static final String LOG_TAG = StorageAddActivity.class.getSimpleName();
-    private static final String KEY_BEST_BEFORE = "best-before-key";
+public class ShoppingAddActivity extends AppCompatActivity {
+    private static final String LOG_TAG = ShoppingAddActivity.class.getSimpleName();
     @BindView(R.id.btn_add_food) Button mAddFoodLink;
     @BindView(R.id.spinner_food) SearchableSpinner mFoodSpinner;
     @BindView(R.id.text_edit_amount) EditText mAmountEditText;
     @BindView(R.id.spinner_measure) Spinner mMeasurementSpinner;
-    @BindView(R.id.text_edit_date) EditText mBestBeforeDateText;
     @BindView(R.id.btn_add_to_storage) Button mAddButton;
     private KitchenViewModel mKitchenViewModel;
     private Context mContext;
     private ArrayAdapter<CharSequence> mMeasurementAdapter;
-    private ArrayList<String> mFoods;
-    private Map<String, String> mFoodMap;
-    private ArrayList<Food> mFoodList;
-    private long mBestBefore;
+    private ArrayList<String> mWares;
+    private Map<String, String> mWareMap;
+    private ArrayList<Ware> mWareList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_storage_add);
+        setContentView(R.layout.activity_shopping_add);
         ButterKnife.bind(this);
         mContext = this;
         mKitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
         if (savedInstanceState == null) {
-            mKitchenViewModel.getStorage().observe(this, new Observer<List<Food>>() {
+            mKitchenViewModel.getShoppingList().observe(this, new Observer<List<Ware>>() {
                 @Override
-                public void onChanged(@Nullable List<Food> foodList) {
-                    mFoodList = (ArrayList<Food>) foodList;
+                public void onChanged(@Nullable List<Ware> wares) {
+                    mWareList = (ArrayList<Ware>) wares;
                 }
             });
-        } else {
-            mBestBefore = savedInstanceState.getLong(KEY_BEST_BEFORE);
         }
         mAddFoodLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,19 +76,19 @@ public class StorageAddActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable DataSnapshot dataSnapshot) {
                 if (dataSnapshot != null) {
-                    mFoods = new ArrayList<>();
-                    mFoodMap = new HashMap<>();
+                    mWares = new ArrayList<>();
+                    mWareMap = new HashMap<>();
                     for (DataSnapshot foodSnapShot : dataSnapshot.getChildren()) {
                         try {
                             if (foodSnapShot.getValue() != null)
-                                mFoodMap.put(foodSnapShot.getKey(), foodSnapShot.getValue().toString());
-                            mFoods.add(foodSnapShot.getKey());
+                                mWareMap.put(foodSnapShot.getKey(), foodSnapShot.getValue().toString());
+                            mWares.add(foodSnapShot.getKey());
                         } catch (DatabaseException e) {
                             Log.e(LOG_TAG, e.getMessage());
                         }
                     }
                     ArrayAdapter<String> foodAdapter = new ArrayAdapter<>(mContext,
-                            android.R.layout.simple_spinner_item, mFoods);
+                            android.R.layout.simple_spinner_item, mWares);
                     foodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     mFoodSpinner.setAdapter(foodAdapter);
                 }
@@ -112,8 +97,8 @@ public class StorageAddActivity extends AppCompatActivity {
         mFoodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String food = mFoods.get(position);
-                float value = Float.valueOf(mFoodMap.get(food));
+                String food = mWares.get(position);
+                float value = Float.valueOf(mWareMap.get(food));
                 if (value == 0) {
                     mMeasurementAdapter = ArrayAdapter.createFromResource(mContext,
                             R.array.measurement_array_countable, android.R.layout.simple_spinner_item);
@@ -130,16 +115,6 @@ public class StorageAddActivity extends AppCompatActivity {
 
             }
         });
-
-        mBestBeforeDateText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Calendar calendar = Calendar.getInstance();
-                new DatePickerDialog(mContext, getOnDateSetListener(calendar), calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
-
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,8 +126,8 @@ public class StorageAddActivity extends AppCompatActivity {
                 // If there is already an item in the list with the same name then just increase its amount.
                 int shownId = 0;
                 int shownAmount = 0;
-                if (mFoodList != null) {
-                    for (Food shown : mFoodList) {
+                if (mWareList != null) {
+                    for (Ware shown : mWareList) {
                         if (name.equals(shown.name) && amountType.equals(shown.amountType)) {
                             shownId = shown.id;
                             shownAmount = shown.amount;
@@ -160,38 +135,17 @@ public class StorageAddActivity extends AppCompatActivity {
                     }
                 }
                 if (shownId == 0) {
-                    mKitchenViewModel.insertFood(
-                            new Food(name, amount, amountType, mBestBefore));
+                    mKitchenViewModel.insertWare(
+                            new Ware(name, amount, amountType));
                 } else {
-                    mKitchenViewModel.insertFood(
-                            new Food(shownId, name, amount + shownAmount, amountType, mBestBefore));
+                    mKitchenViewModel.insertWare(
+                            new Ware(shownId, name, amount + shownAmount, amountType));
                 }
                 DeviceUtils.hideKeyboardFrom(mContext, mAmountEditText);
                 Snackbar.make(mAmountEditText,
-                        String.format(getString(R.string.added_to_storage), amount, amountType, name),
+                        String.format(getString(R.string.added_to_shopping_list), amount, amountType, name),
                         Snackbar.LENGTH_SHORT).show();
             }
         });
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putLong(KEY_BEST_BEFORE, mBestBefore);
-    }
-
-    private DatePickerDialog.OnDateSetListener getOnDateSetListener(final Calendar calendar) {
-        return new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, monthOfYear);
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                String dateFormat = "dd/MM/yyyy";
-                SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.getDefault());
-                mBestBeforeDateText.setText(sdf.format(calendar.getTime()));
-                mBestBefore = calendar.getTimeInMillis();
-            }
-        };
     }
 }

@@ -136,7 +136,7 @@ public class MealPlanFragment extends Fragment {
         // Clear all current menu items
         menu.clear();
         // Add new menu items
-        inflater.inflate(R.menu.menu_meal_board, menu);
+        inflater.inflate(R.menu.menu_meal_plan, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

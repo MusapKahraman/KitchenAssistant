@@ -9,6 +9,7 @@ package com.example.kitchen.data.local.entities;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -17,6 +18,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @SuppressWarnings({"NullableProblems", "WeakerAccess", "CanBeFinal"})
 @Entity(tableName = "ingredients",
+        indices = {@Index("recipeId")},
         foreignKeys = @ForeignKey(entity = Recipe.class, parentColumns = "id", childColumns = "recipeId", onDelete = CASCADE))
 public class Ingredient implements Parcelable {
     public static final Creator<Ingredient> CREATOR = new Creator<Ingredient>() {
@@ -82,7 +84,7 @@ public class Ingredient implements Parcelable {
         return super.toString() +
                 "\nid: " + id +
                 "\nrecipeId: " + recipeId +
-                "\nfood: " + food +
+                "\nname: " + food +
                 "\namount: " + amount +
                 "\namountType: " + amountType +
                 "\npublicKey: " + publicKey;

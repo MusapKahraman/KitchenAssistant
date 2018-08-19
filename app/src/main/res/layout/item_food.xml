@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_ingredient_amount"
+            style="@style/TextStyleData"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/space_one_unit"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/tv_ingredient"
+            style="@style/TextStyleData"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/space_one_unit"
+            android:layout_weight="3" />
+
+        <TextView
+            android:id="@+id/tv_best_before"
+            style="@style/TextStyleData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/space_one_unit" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/food_item_tint"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</FrameLayout>

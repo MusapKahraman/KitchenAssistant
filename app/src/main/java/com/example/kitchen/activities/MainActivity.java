@@ -26,14 +26,19 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.kitchen.R;
 import com.example.kitchen.adapters.OnRecipeClickListener;
+import com.example.kitchen.adapters.OnShoppingListClickListener;
+import com.example.kitchen.adapters.OnStorageClickListener;
 import com.example.kitchen.data.firebase.RecipeViewModel;
 import com.example.kitchen.data.firebase.models.RecipeModel;
 import com.example.kitchen.data.local.KitchenViewModel;
+import com.example.kitchen.data.local.entities.Food;
 import com.example.kitchen.data.local.entities.Recipe;
+import com.example.kitchen.data.local.entities.Ware;
 import com.example.kitchen.fragments.BookmarksFragment;
 import com.example.kitchen.fragments.MealPlanFragment;
 import com.example.kitchen.fragments.OnFragmentScrollListener;
 import com.example.kitchen.fragments.RecipesFragment;
+import com.example.kitchen.fragments.ShoppingFragment;
 import com.example.kitchen.fragments.StorageFragment;
 import com.example.kitchen.utility.AppConstants;
 import com.firebase.ui.auth.AuthUI;
@@ -54,7 +59,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnRecipeClickListener,
-        OnFragmentScrollListener {
+        OnStorageClickListener, OnShoppingListClickListener, OnFragmentScrollListener {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String KEY_NAV_INDEX = "navigator-index-key";
     private static final String KEY_ACTIVITY_TITLE = "activity-title-key";
@@ -204,6 +209,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onStorageItemClick(Food food) {
+        Log.v(LOG_TAG, "Clicked on: " + food.name);
+    }
+
+    @Override
+    public void onShoppingListItemClick(Ware ware) {
+        Log.v(LOG_TAG, "Clicked on: " + ware.name);
+    }
+
+    @Override
     public void onScrollDown() {
         mFab.hide();
     }
@@ -235,47 +250,14 @@ public class MainActivity extends AppCompatActivity
                 mFab.show();
                 showStorage();
                 break;
+            case INDEX_SHOPPING_LIST:
+                mFab.show();
+                showShoppingList();
+                break;
             case INDEX_MEAL_PLAN:
                 showMealPlan();
                 break;
         }
-    }
-
-    private void showRecipes(List<Recipe> recipes) {
-        mProgressBar.setVisibility(View.GONE);
-        for (Recipe recipe : recipes) Log.v(LOG_TAG, recipe.toString());
-        mActivityTitle = getString(R.string.recipes);
-        if (getSupportActionBar() != null) getSupportActionBar().setTitle(mActivityTitle);
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
-        RecipesFragment recipesFragment = new RecipesFragment();
-        recipesFragment.setArguments(args);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, recipesFragment).commit();
-    }
-
-    private void showBookmarks(List<Recipe> recipes) {
-        for (Recipe recipe : recipes) Log.v(LOG_TAG, recipe.toString());
-        mActivityTitle = getString(R.string.bookmarks);
-        if (getSupportActionBar() != null) getSupportActionBar().setTitle(mActivityTitle);
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
-        BookmarksFragment bookmarksFragment = new BookmarksFragment();
-        bookmarksFragment.setArguments(args);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, bookmarksFragment).commit();
-    }
-
-    private void showStorage() {
-        mActivityTitle = getString(R.string.storage);
-        if (getSupportActionBar() != null) getSupportActionBar().setTitle(mActivityTitle);
-        StorageFragment storageFragment = new StorageFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, storageFragment).commit();
-    }
-
-    private void showMealPlan() {
-        mActivityTitle = getString(R.string.meal_plan);
-        if (getSupportActionBar() != null) getSupportActionBar().setTitle(mActivityTitle);
-        MealPlanFragment mealPlanFragment = new MealPlanFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mealPlanFragment).commit();
     }
 
     private void fetchRecipes() {
@@ -319,6 +301,50 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    private void showRecipes(List<Recipe> recipes) {
+        mProgressBar.setVisibility(View.GONE);
+        for (Recipe recipe : recipes) Log.v(LOG_TAG, recipe.toString());
+        mActivityTitle = getString(R.string.recipes);
+        if (getSupportActionBar() != null) getSupportActionBar().setTitle(mActivityTitle);
+        Bundle args = new Bundle();
+        args.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
+        RecipesFragment recipesFragment = new RecipesFragment();
+        recipesFragment.setArguments(args);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, recipesFragment).commit();
+    }
+
+    private void showBookmarks(List<Recipe> recipes) {
+        for (Recipe recipe : recipes) Log.v(LOG_TAG, recipe.toString());
+        mActivityTitle = getString(R.string.bookmarks);
+        if (getSupportActionBar() != null) getSupportActionBar().setTitle(mActivityTitle);
+        Bundle args = new Bundle();
+        args.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
+        BookmarksFragment bookmarksFragment = new BookmarksFragment();
+        bookmarksFragment.setArguments(args);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, bookmarksFragment).commit();
+    }
+
+    private void showStorage() {
+        mActivityTitle = getString(R.string.storage);
+        if (getSupportActionBar() != null) getSupportActionBar().setTitle(mActivityTitle);
+        StorageFragment storageFragment = new StorageFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, storageFragment).commit();
+    }
+
+    private void showShoppingList() {
+        mActivityTitle = getString(R.string.shopping_list);
+        if (getSupportActionBar() != null) getSupportActionBar().setTitle(mActivityTitle);
+        ShoppingFragment shoppingFragment = new ShoppingFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, shoppingFragment).commit();
+    }
+
+    private void showMealPlan() {
+        mActivityTitle = getString(R.string.meal_plan);
+        if (getSupportActionBar() != null) getSupportActionBar().setTitle(mActivityTitle);
+        MealPlanFragment mealPlanFragment = new MealPlanFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mealPlanFragment).commit();
+    }
+
     private View.OnClickListener getFabClickListener() {
         return new View.OnClickListener() {
             @Override
@@ -332,6 +358,10 @@ public class MainActivity extends AppCompatActivity
                         break;
                     case INDEX_STORAGE:
                         intent = new Intent(MainActivity.this, StorageAddActivity.class);
+                        startActivity(intent);
+                        break;
+                    case INDEX_SHOPPING_LIST:
+                        intent = new Intent(MainActivity.this, ShoppingAddActivity.class);
                         startActivity(intent);
                         break;
                 }

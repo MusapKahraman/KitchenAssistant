@@ -35,7 +35,7 @@ public class RecipesFragment extends Fragment {
     private static final String LOG_TAG = RecipesFragment.class.getSimpleName();
     private static final String LAYOUT_STATE = "state";
     private static final String SEARCH_QUERY = "search-query";
-    @BindView(R.id.rv_recipe_steps) RecyclerView recyclerView;
+    @BindView(R.id.rv_recipe_steps) RecyclerView mRecyclerView;
     private OnFragmentScrollListener fragmentScrollListener;
     private OnRecipeClickListener mClickListener;
     private StaggeredGridLayoutManager mLayoutManager;
@@ -76,11 +76,11 @@ public class RecipesFragment extends Fragment {
         } else {
             mLayoutManager = new StaggeredGridLayoutManager(1, RecyclerView.VERTICAL);
         }
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
         mAdapter = new RecipesAdapter(mClickListener);
-        recyclerView.setAdapter(mAdapter);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);

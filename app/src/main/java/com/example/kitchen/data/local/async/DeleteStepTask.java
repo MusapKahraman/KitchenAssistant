@@ -16,7 +16,7 @@ public class DeleteStepTask extends AsyncTask<Step, Void, Void> {
     protected Void doInBackground(Step... steps) {
         for (Step step : steps) {
             if (step != null)
-                mAsyncTaskDao.deleteStep(step);
+                mAsyncTaskDao.delete(step);
         }
         return null;
     }
