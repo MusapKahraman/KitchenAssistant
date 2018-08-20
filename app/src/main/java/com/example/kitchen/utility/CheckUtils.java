@@ -8,6 +8,9 @@ import com.example.kitchen.R;
 
 public class CheckUtils {
 
+    /**
+     * Makes first letter of each word a capital letter.
+     */
     public static String validateTitle(String title) {
         // Separate each character of the input title.
         char[] chars = title.toCharArray();
@@ -50,7 +53,12 @@ public class CheckUtils {
         return title;
     }
 
-    public static boolean isEmptyTextField(Context context, EditText editText) {
+    /**
+     * Checks emptiness of the given edit text.
+     *
+     * @return true if the edit is text empty.
+     */
+    public static boolean isEmptyEditText(Context context, EditText editText) {
         DeviceUtils.hideKeyboardFrom(context, editText);
         if (TextUtils.isEmpty(editText.getText())) {
             editText.setError(context.getString(R.string.field_required));
@@ -60,37 +68,35 @@ public class CheckUtils {
         return false;
     }
 
+    /**
+     * Checks if the value of number in the given edit text is bigger than zero.
+     *
+     * @return The value of number in the given edit text or -1 if the value is not bigger than zero.
+     */
     public static int getNonZeroPositiveIntegerFromField(Context context, EditText editText) {
-        DeviceUtils.hideKeyboardFrom(context, editText);
-        if (TextUtils.isEmpty(editText.getText())) {
-            editText.setError(context.getString(R.string.field_required));
+        if (isEmptyEditText(context, editText)) return -1;
+        int value = Integer.valueOf(editText.getText().toString());
+        if (value < 1) {
+            editText.setError(context.getString(R.string.must_positive_integer));
             editText.requestFocus();
             return -1;
-        } else {
-            int value = Integer.valueOf(editText.getText().toString());
-            if (value < 1) {
-                editText.setError(context.getString(R.string.must_positive_integer));
-                editText.requestFocus();
-                return -1;
-            }
-            return value;
         }
+        return value;
     }
 
+    /**
+     * Checks if the value of number in the given edit text is smaller than zero.
+     *
+     * @return The value of number in the given edit text or -1 if the value is smaller than zero.
+     */
     public static int getPositiveIntegerFromField(Context context, EditText editText) {
-        DeviceUtils.hideKeyboardFrom(context, editText);
-        if (TextUtils.isEmpty(editText.getText())) {
-            editText.setError(context.getString(R.string.field_required));
+        if (isEmptyEditText(context, editText)) return -1;
+        int value = Integer.valueOf(editText.getText().toString());
+        if (value < 0) {
+            editText.setError(context.getString(R.string.must_be_integer));
             editText.requestFocus();
             return -1;
-        } else {
-            int value = Integer.valueOf(editText.getText().toString());
-            if (value < 0) {
-                editText.setError(context.getString(R.string.must_be_integer));
-                editText.requestFocus();
-                return -1;
-            }
-            return value;
         }
+        return value;
     }
 }

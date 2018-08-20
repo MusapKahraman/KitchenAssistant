@@ -23,4 +23,5 @@
     <color name="nav_header_left">#212121</color>
     <color name="nav_header_center">#455a64</color>
     <color name="nav_header_right">#78909c</color>
+    <color name="widget_background">#a6455a64</color>
 </resources>

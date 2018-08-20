@@ -333,7 +333,7 @@ public class OverviewFragment extends Fragment implements OnRecipeInsertListener
 
     private boolean saveRecipe() {
         // Do not save if no title is provided for the recipe.
-        if (CheckUtils.isEmptyTextField(mContext, mTitleView)) return false;
+        if (CheckUtils.isEmptyEditText(mContext, mTitleView)) return false;
         String title = mTitleView.getText().toString();
         mRecipe.title = CheckUtils.validateTitle(title);
         mTitleView.setText(mRecipe.title);

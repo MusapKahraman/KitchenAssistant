@@ -22,6 +22,7 @@ import com.example.kitchen.data.local.KitchenViewModel;
 import com.example.kitchen.data.local.entities.Ware;
 import com.example.kitchen.utility.CheckUtils;
 import com.example.kitchen.utility.DeviceUtils;
+import com.example.kitchen.widget.ShoppingListWidget;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseException;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
@@ -60,6 +61,7 @@ public class ShoppingAddActivity extends AppCompatActivity {
                 @Override
                 public void onChanged(@Nullable List<Ware> wares) {
                     mWareList = (ArrayList<Ware>) wares;
+                    ShoppingListWidget.fillShoppingListWidget(mContext, wares);
                 }
             });
         }
@@ -121,7 +123,7 @@ public class ShoppingAddActivity extends AppCompatActivity {
                 if (mFoodSpinner.getSelectedItem() == null) return;
                 String name = mFoodSpinner.getSelectedItem().toString();
                 String amountType = mMeasurementSpinner.getSelectedItem().toString();
-                if (CheckUtils.isEmptyTextField(mContext, mAmountEditText)) return;
+                if (CheckUtils.isEmptyEditText(mContext, mAmountEditText)) return;
                 int amount = Integer.valueOf(mAmountEditText.getText().toString());
                 // If there is already an item in the list with the same name then just increase its amount.
                 int shownId = 0;

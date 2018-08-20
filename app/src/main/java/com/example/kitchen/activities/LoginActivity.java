@@ -57,17 +57,20 @@ public class LoginActivity extends AppCompatActivity implements DeviceUtils.Inte
     public void onConnectionResult(boolean success) {
         mProgressBar.setVisibility(View.GONE);
         if (success) {
-            // Set night mode on. This will make visible the password hiding toggle icon for darker backgrounds.
-            // But this line restarts the activity. Using this line in onCreate will result in an unresponsive design.
+            // Set night mode on. This will make the password hiding toggle icon visible for darker
+            // backgrounds. But this line restarts the activity. Using this line in onCreate will
+            // result in an unresponsive design.
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             List<AuthUI.IdpConfig> configList = Arrays.asList(
                     new AuthUI.IdpConfig.GoogleBuilder().build(),
                     new AuthUI.IdpConfig.EmailBuilder().build());
-            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(configList)
+            Intent authIntent = AuthUI.getInstance().createSignInIntentBuilder()
+                    .setAvailableProviders(configList)
                     .setIsSmartLockEnabled(!BuildConfig.DEBUG, true)
                     .setTheme(R.style.LoginTheme)
                     .setLogo(R.mipmap.logo)
-                    .build(), RC_SIGN_IN);
+                    .build();
+            startActivityForResult(authIntent, RC_SIGN_IN);
         } else {
             mNoConnectionTextView.setVisibility(View.VISIBLE);
         }
@@ -105,11 +108,11 @@ public class LoginActivity extends AppCompatActivity implements DeviceUtils.Inte
                     finish();
                     return;
                 }
-                if (idpResponse.getError() != null && idpResponse.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
-                    Log.v(LOG_TAG, "No network");
+                if (idpResponse.getError() != null
+                        && idpResponse.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
+                    Log.e(LOG_TAG, "No network");
                     return;
                 }
-
                 Log.e(LOG_TAG, "Sign-in error: ", idpResponse.getError());
             }
         }

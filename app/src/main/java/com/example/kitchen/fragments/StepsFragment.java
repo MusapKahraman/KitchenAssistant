@@ -95,7 +95,7 @@ public class StepsFragment extends Fragment
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (CheckUtils.isEmptyTextField(mContext, mInstructionText))
+                if (CheckUtils.isEmptyEditText(mContext, mInstructionText))
                     return;
                 String instruction = mInstructionText.getText().toString();
                 // If there is already an item in the list with the same step number then update that item.

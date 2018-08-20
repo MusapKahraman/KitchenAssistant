@@ -146,7 +146,7 @@ public class StorageAddActivity extends AppCompatActivity {
                 if (mFoodSpinner.getSelectedItem() == null) return;
                 String name = mFoodSpinner.getSelectedItem().toString();
                 String amountType = mMeasurementSpinner.getSelectedItem().toString();
-                if (CheckUtils.isEmptyTextField(mContext, mAmountEditText)) return;
+                if (CheckUtils.isEmptyEditText(mContext, mAmountEditText)) return;
                 int amount = Integer.valueOf(mAmountEditText.getText().toString());
                 // If there is already an item in the list with the same name then just increase its amount.
                 int shownId = 0;

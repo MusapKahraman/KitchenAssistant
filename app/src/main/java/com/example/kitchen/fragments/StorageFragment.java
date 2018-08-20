@@ -34,7 +34,7 @@ public class StorageFragment extends Fragment {
     private static final String LOG_TAG = StorageFragment.class.getSimpleName();
     private static final String KEY_LAYOUT_STATE = "state-key";
     private static final String KEY_SEARCH_QUERY = "search-query-key";
-    private static final String KEY_FOOD_LIST = "search-query-key";
+    private static final String KEY_FOOD_LIST = "food-list-key";
     @BindView(R.id.rv_storage) RecyclerView mRecyclerView;
     private OnFragmentScrollListener fragmentScrollListener;
     private Context mContext;

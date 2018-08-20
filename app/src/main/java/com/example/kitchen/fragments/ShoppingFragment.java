@@ -25,6 +25,7 @@ import com.example.kitchen.adapters.ShoppingAdapter;
 import com.example.kitchen.data.local.KitchenViewModel;
 import com.example.kitchen.data.local.entities.Ware;
 import com.example.kitchen.utility.MeasurementUtils;
+import com.example.kitchen.widget.ShoppingListWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +74,7 @@ public class ShoppingFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_shopping, container, false);
         ButterKnife.bind(this, rootView);
         mLayoutManager = new LinearLayoutManager(mContext);
@@ -98,18 +99,18 @@ public class ShoppingFragment extends Fragment {
             mAdapter.setWares(mShoppingList);
             mAdapter.filter(mQuery);
             mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(KEY_LAYOUT_STATE));
-        } else {
-            KitchenViewModel kitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
-            kitchenViewModel.getShoppingList().observe(this, new Observer<List<Ware>>() {
-                @Override
-                public void onChanged(@Nullable List<Ware> wares) {
-                    if (wares != null) {
-                        mShoppingList = (ArrayList<Ware>) wares;
-                        mAdapter.setWares(mShoppingList);
-                    }
-                }
-            });
         }
+        KitchenViewModel kitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
+        kitchenViewModel.getShoppingList().observe(this, new Observer<List<Ware>>() {
+            @Override
+            public void onChanged(@Nullable List<Ware> wares) {
+                if (wares != null) {
+                    mShoppingList = (ArrayList<Ware>) wares;
+                    mAdapter.setWares(mShoppingList);
+                    ShoppingListWidget.fillShoppingListWidget(mContext, wares);
+                }
+            }
+        });
         return rootView;
     }
 
@@ -170,7 +171,6 @@ public class ShoppingFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         switch (id) {
             case R.id.menu_item_share:
                 Intent shareIntent = new Intent();
@@ -180,7 +180,6 @@ public class ShoppingFragment extends Fragment {
                 startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.send_to)));
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

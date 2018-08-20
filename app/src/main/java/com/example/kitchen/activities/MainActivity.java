@@ -1,9 +1,7 @@
 package com.example.kitchen.activities;
 
-import android.appwidget.AppWidgetManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -43,7 +41,6 @@ import com.example.kitchen.fragments.RecipesFragment;
 import com.example.kitchen.fragments.ShoppingFragment;
 import com.example.kitchen.fragments.StorageFragment;
 import com.example.kitchen.utility.AppConstants;
-import com.example.kitchen.widget.ShoppingListWidget;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -94,15 +91,10 @@ public class MainActivity extends AppCompatActivity
         mRecipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
         mSharedPreferences = getPreferences(Context.MODE_PRIVATE);
         if (savedInstanceState == null) {
-            boolean isStartedByWidget = getIntent().getBooleanExtra(AppConstants.EXTRA_WIDGET, false);
+            boolean isStartedByWidget = getIntent()
+                    .getBooleanExtra(AppConstants.EXTRA_WIDGET, false);
             if (isStartedByWidget) {
                 mSelectionIndex = INDEX_SHOPPING_LIST;
-                mKitchenViewModel.getShoppingList().observe(this, new Observer<List<Ware>>() {
-                    @Override
-                    public void onChanged(@Nullable List<Ware> wares) {
-                        populateShoppingListWidget(wares);
-                    }
-                });
             } else {
                 mSelectionIndex = mSharedPreferences.getInt(KEY_NAV_INDEX, 0);
             }
@@ -381,24 +373,5 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         };
-    }
-
-    private void populateShoppingListWidget(List<Ware> wares) {
-        if (wares != null) {
-            StringBuilder shoppingList = new StringBuilder(getString(R.string.shopping_list));
-            shoppingList.append("\n\n");
-            for (Ware item : wares) {
-                shoppingList
-                        .append("* ")
-                        .append(item.amount).append(" ")
-                        .append(item.amountType).append(" ")
-                        .append(item.name).append("\n");
-            }
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
-                    new ComponentName(this, ShoppingListWidget.class));
-            ShoppingListWidget.updateRecipeIngredientsWidget(this, appWidgetManager,
-                    shoppingList.toString(), appWidgetIds);
-        }
     }
 }
