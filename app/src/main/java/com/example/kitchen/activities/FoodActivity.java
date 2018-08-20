@@ -3,13 +3,13 @@ package com.example.kitchen.activities;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -22,14 +22,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FoodActivity extends AppCompatActivity {
-    @BindView(R.id.text_edit_food_name) EditText mFoodNameView;
-    @BindView(R.id.text_edit_volume_amount) EditText mVolumeAmountView;
-    @BindView(R.id.text_edit_weight_amount) EditText mWeightAmountView;
+    @BindView(R.id.text_edit_food_name) TextInputEditText mFoodNameView;
+    @BindView(R.id.text_edit_volume_amount) TextInputEditText mVolumeAmountView;
+    @BindView(R.id.text_edit_weight_amount) TextInputEditText mWeightAmountView;
     @BindView(R.id.spinner_volume) Spinner mVolumeSpinner;
     @BindView(R.id.spinner_weight) Spinner mWeightSpinner;
     @BindView(R.id.tv_equals) TextView mEqualsLabel;
     @BindView(R.id.check_countable) CheckBox mCountableCheckBox;
-    @BindView(R.id.btn_add_food) Button mAddFoodButton;
+    @BindView(R.id.btn_link_define_food) Button mAddFoodButton;
     private FoodViewModel mFoodViewModel;
 
     @Override

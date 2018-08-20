@@ -23,7 +23,7 @@
         app:layout_constraintTop_toBottomOf="@+id/header_food" />
 
     <Button
-        android:id="@+id/btn_add_food"
+        android:id="@+id/btn_link_define_food"
         style="@style/ButtonStyleLink"
         android:layout_width="wrap_content"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
@@ -40,8 +40,8 @@
         app:layout_constraintStart_toStartOf="@+id/spinner_food"
         app:layout_constraintTop_toBottomOf="@+id/spinner_food">
 
-        <EditText
-            android:id="@+id/text_edit_amount"
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/edit_text_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/amount"
@@ -75,7 +75,7 @@
         app:layout_constraintStart_toStartOf="@+id/input_layout_amount"
         app:layout_constraintTop_toBottomOf="@+id/input_layout_amount">
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/text_edit_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

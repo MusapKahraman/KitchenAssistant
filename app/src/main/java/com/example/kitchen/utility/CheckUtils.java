@@ -51,6 +51,7 @@ public class CheckUtils {
     }
 
     public static boolean isEmptyTextField(Context context, EditText editText) {
+        DeviceUtils.hideKeyboardFrom(context, editText);
         if (TextUtils.isEmpty(editText.getText())) {
             editText.setError(context.getString(R.string.field_required));
             editText.requestFocus();
@@ -60,6 +61,7 @@ public class CheckUtils {
     }
 
     public static int getNonZeroPositiveIntegerFromField(Context context, EditText editText) {
+        DeviceUtils.hideKeyboardFrom(context, editText);
         if (TextUtils.isEmpty(editText.getText())) {
             editText.setError(context.getString(R.string.field_required));
             editText.requestFocus();
@@ -76,6 +78,7 @@ public class CheckUtils {
     }
 
     public static int getPositiveIntegerFromField(Context context, EditText editText) {
+        DeviceUtils.hideKeyboardFrom(context, editText);
         if (TextUtils.isEmpty(editText.getText())) {
             editText.setError(context.getString(R.string.field_required));
             editText.requestFocus();

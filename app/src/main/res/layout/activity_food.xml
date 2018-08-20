@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/text_edit_food_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
         app:layout_constraintStart_toStartOf="@+id/check_countable"
         app:layout_constraintTop_toBottomOf="@+id/check_countable">
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/text_edit_volume_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
         app:layout_constraintStart_toStartOf="@+id/input_layout_volume_amount"
         app:layout_constraintTop_toBottomOf="@+id/tv_equals">
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/text_edit_weight_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
         app:layout_constraintTop_toBottomOf="@+id/input_layout_weight_amount" />
 
     <Button
-        android:id="@+id/btn_add_food"
+        android:id="@+id/btn_link_define_food"
         android:layout_width="@dimen/recipe_detail_button_widths"
         android:layout_height="@dimen/recipe_detail_button_heights"
         android:layout_marginTop="@dimen/activity_vertical_margin"

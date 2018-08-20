@@ -125,7 +125,7 @@ https://stackoverflow.com/questions/1555109/stop-edittext-from-gaining-focus-at-
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view_top">
 
-            <EditText
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/text_edit_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -153,7 +153,7 @@ https://stackoverflow.com/questions/1555109/stop-edittext-from-gaining-focus-at-
             app:layout_constraintStart_toStartOf="@+id/input_layout_title"
             app:layout_constraintTop_toTopOf="@+id/divider">
 
-            <EditText
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/text_edit_servings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -172,7 +172,7 @@ https://stackoverflow.com/questions/1555109/stop-edittext-from-gaining-focus-at-
             app:layout_constraintStart_toStartOf="@+id/input_layout_servings"
             app:layout_constraintTop_toBottomOf="@+id/input_layout_servings">
 
-            <EditText
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/text_edit_prep_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -191,7 +191,7 @@ https://stackoverflow.com/questions/1555109/stop-edittext-from-gaining-focus-at-
             app:layout_constraintStart_toStartOf="@+id/input_layout_prep_time"
             app:layout_constraintTop_toBottomOf="@+id/input_layout_prep_time">
 
-            <EditText
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/text_edit_cook_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
