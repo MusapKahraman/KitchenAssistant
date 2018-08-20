@@ -149,7 +149,7 @@
     <string name="decrement_servings">Decrement servings</string>
     <string name="increment_servings">Increment servings</string>
     <string name="can_not_add_ingredient">Cannot add ingredient. You need to give a title for the recipe.</string>
-    <string name="connect_internet_try_again">Please connect your device to internet and try again.</string>
+    <string name="connect_internet_try_again">Please connect to the internet for this app to act properly.</string>
     <string name="send_to">Send to</string>
     <string name="add_to_storage">Add to storage</string>
     <string name="best_before">Best before</string>

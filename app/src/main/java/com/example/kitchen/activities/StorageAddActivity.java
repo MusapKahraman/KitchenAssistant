@@ -44,7 +44,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StorageAddActivity extends AppCompatActivity {
+public class StorageAddActivity extends AppCompatActivity implements DeviceUtils.InternetConnectionListener {
     private static final String LOG_TAG = StorageAddActivity.class.getSimpleName();
     private static final String KEY_BEST_BEFORE = "best-before-key";
     @BindView(R.id.btn_link_define_food) Button mAddFoodLink;
@@ -69,6 +69,7 @@ public class StorageAddActivity extends AppCompatActivity {
         mContext = this;
         mKitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
         if (savedInstanceState == null) {
+            DeviceUtils.startConnectionTest(this);
             mKitchenViewModel.getStorage().observe(this, new Observer<List<Food>>() {
                 @Override
                 public void onChanged(@Nullable List<Food> foodList) {
@@ -178,6 +179,12 @@ public class StorageAddActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong(KEY_BEST_BEFORE, mBestBefore);
+    }
+
+    @Override
+    public void onConnectionResult(boolean success) {
+        if (!success)
+            Snackbar.make(mFoodSpinner, R.string.connect_internet_try_again, Snackbar.LENGTH_LONG).show();
     }
 
     private DatePickerDialog.OnDateSetListener getOnDateSetListener(final Calendar calendar) {

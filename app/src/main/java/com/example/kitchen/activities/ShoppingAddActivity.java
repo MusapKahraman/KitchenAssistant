@@ -35,7 +35,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ShoppingAddActivity extends AppCompatActivity {
+public class ShoppingAddActivity extends AppCompatActivity implements DeviceUtils.InternetConnectionListener {
     private static final String LOG_TAG = ShoppingAddActivity.class.getSimpleName();
     @BindView(R.id.btn_link_define_food) Button mAddFoodLink;
     @BindView(R.id.spinner_food) SearchableSpinner mFoodSpinner;
@@ -57,6 +57,7 @@ public class ShoppingAddActivity extends AppCompatActivity {
         mContext = this;
         mKitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
         if (savedInstanceState == null) {
+            DeviceUtils.startConnectionTest(this);
             mKitchenViewModel.getShoppingList().observe(this, new Observer<List<Ware>>() {
                 @Override
                 public void onChanged(@Nullable List<Ware> wares) {
@@ -149,5 +150,11 @@ public class ShoppingAddActivity extends AppCompatActivity {
                         Snackbar.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onConnectionResult(boolean success) {
+        if (!success)
+            Snackbar.make(mFoodSpinner, R.string.connect_internet_try_again, Snackbar.LENGTH_LONG).show();
     }
 }

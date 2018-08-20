@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -41,6 +42,7 @@ import com.example.kitchen.fragments.RecipesFragment;
 import com.example.kitchen.fragments.ShoppingFragment;
 import com.example.kitchen.fragments.StorageFragment;
 import com.example.kitchen.utility.AppConstants;
+import com.example.kitchen.utility.DeviceUtils;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -59,7 +61,8 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnRecipeClickListener,
-        OnStorageClickListener, OnShoppingListClickListener, OnFragmentScrollListener {
+        OnStorageClickListener, OnShoppingListClickListener, OnFragmentScrollListener,
+        DeviceUtils.InternetConnectionListener {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String KEY_NAV_INDEX = "navigator-index-key";
     private static final String KEY_ACTIVITY_TITLE = "activity-title-key";
@@ -234,6 +237,12 @@ public class MainActivity extends AppCompatActivity
         mFab.show();
     }
 
+    @Override
+    public void onConnectionResult(boolean success) {
+        if (!success)
+            Snackbar.make(mToolbar, R.string.connect_internet_try_again, Snackbar.LENGTH_LONG).show();
+    }
+
     private void showSelectedContent() {
         mProgressBar.setVisibility(View.GONE);
         switch (mSelectionIndex) {
@@ -267,6 +276,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void fetchRecipes() {
+        DeviceUtils.startConnectionTest(this);
         // Fetch recipe data from firebase.
         mRecipeViewModel.getDataSnapshotLiveData().observe(this, new Observer<DataSnapshot>() {
             @Override

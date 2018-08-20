@@ -335,14 +335,14 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeVie
     private String generateShareString() {
         // TODO: Make servings, cuisine and course translatable.
         StringBuilder result = new StringBuilder(mRecipe.title +
-                "\n\n" + getString(R.string.servings) + ": " + mRecipe.servings +
+                "\n\n" + getString(R.string.servings) + ": " + mServings +
                 "\n" + getString(R.string.cuisine) + ": " + mRecipe.cuisine +
                 "\n" + getString(R.string.course) + ": " + mRecipe.course +
                 "\n\n" + getString(R.string.ingredients));
         for (Ingredient ingredient : mIngredients) {
-            String text = ingredient.amount +
-                    " " + MeasurementUtils.getAbbreviation(RecipeDetailActivity.this, ingredient.amountType) +
-                    " " + ingredient.food;
+            String text = ingredient.amount
+                    + " " + MeasurementUtils.getAbbreviation(this, ingredient.amountType)
+                    + " " + ingredient.food;
             result.append("\n").append(text);
         }
         result.append("\n\n").append(getString(R.string.instructions));

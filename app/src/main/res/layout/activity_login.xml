@@ -22,7 +22,7 @@
 
     <TextView
         android:id="@+id/tv_connect_internet_try_again"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
