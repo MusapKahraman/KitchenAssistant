@@ -24,6 +24,7 @@ import com.example.kitchen.adapters.StorageAdapter;
 import com.example.kitchen.data.local.KitchenViewModel;
 import com.example.kitchen.data.local.entities.Food;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -31,8 +32,9 @@ import butterknife.ButterKnife;
 
 public class StorageFragment extends Fragment {
     private static final String LOG_TAG = StorageFragment.class.getSimpleName();
-    private static final String LAYOUT_STATE = "state";
-    private static final String SEARCH_QUERY = "search-query";
+    private static final String KEY_LAYOUT_STATE = "state-key";
+    private static final String KEY_SEARCH_QUERY = "search-query-key";
+    private static final String KEY_FOOD_LIST = "search-query-key";
     @BindView(R.id.rv_storage) RecyclerView mRecyclerView;
     private OnFragmentScrollListener fragmentScrollListener;
     private Context mContext;
@@ -40,6 +42,7 @@ public class StorageFragment extends Fragment {
     private LinearLayoutManager mLayoutManager;
     private StorageAdapter mAdapter;
     private String mQuery;
+    private ArrayList<Food> mFoodList;
 
     public StorageFragment() {
         // Required empty public constructor
@@ -87,17 +90,23 @@ public class StorageFragment extends Fragment {
                 }
             }
         });
-        KitchenViewModel kitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
-        kitchenViewModel.getStorage().observe(this, new Observer<List<Food>>() {
-            @Override
-            public void onChanged(@Nullable List<Food> foods) {
-                if (foods != null) mAdapter.setFoods(foods);
-            }
-        });
         if (savedInstanceState != null) {
-            mQuery = savedInstanceState.getString(SEARCH_QUERY);
+            mQuery = savedInstanceState.getString(KEY_SEARCH_QUERY);
+            mFoodList = savedInstanceState.getParcelableArrayList(KEY_FOOD_LIST);
+            mAdapter.setFoods(mFoodList);
             mAdapter.filter(mQuery);
-            mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(LAYOUT_STATE));
+            mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(KEY_LAYOUT_STATE));
+        } else {
+            KitchenViewModel kitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
+            kitchenViewModel.getStorage().observe(this, new Observer<List<Food>>() {
+                @Override
+                public void onChanged(@Nullable List<Food> foods) {
+                    if (foods != null) {
+                        mFoodList = (ArrayList<Food>) foods;
+                        mAdapter.setFoods(mFoodList);
+                    }
+                }
+            });
         }
         return rootView;
     }
@@ -105,8 +114,9 @@ public class StorageFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(SEARCH_QUERY, mQuery);
-        outState.putParcelable(LAYOUT_STATE, mLayoutManager.onSaveInstanceState());
+        outState.putString(KEY_SEARCH_QUERY, mQuery);
+        outState.putParcelable(KEY_LAYOUT_STATE, mLayoutManager.onSaveInstanceState());
+        outState.putParcelableArrayList(KEY_FOOD_LIST, mFoodList);
     }
 
     @Override

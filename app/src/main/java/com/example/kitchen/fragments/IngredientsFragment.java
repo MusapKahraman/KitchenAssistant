@@ -25,7 +25,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import com.example.kitchen.R;
-import com.example.kitchen.activities.FoodActivity;
+import com.example.kitchen.activities.FoodDefinitionActivity;
 import com.example.kitchen.adapters.IngredientsAdapter;
 import com.example.kitchen.adapters.RecyclerViewItemTouchHelper;
 import com.example.kitchen.data.firebase.FoodViewModel;
@@ -162,7 +162,7 @@ public class IngredientsFragment extends Fragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, FoodActivity.class);
+                Intent intent = new Intent(mContext, FoodDefinitionActivity.class);
                 startActivity(intent);
             }
         };

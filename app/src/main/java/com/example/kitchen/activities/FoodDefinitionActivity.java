@@ -21,7 +21,7 @@ import com.example.kitchen.utility.MeasurementUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class FoodActivity extends AppCompatActivity {
+public class FoodDefinitionActivity extends AppCompatActivity {
     @BindView(R.id.text_edit_food_name) TextInputEditText mFoodNameView;
     @BindView(R.id.text_edit_volume_amount) TextInputEditText mVolumeAmountView;
     @BindView(R.id.text_edit_weight_amount) TextInputEditText mWeightAmountView;
@@ -37,7 +37,7 @@ public class FoodActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food);
         ButterKnife.bind(this);
-        mFoodViewModel = ViewModelProviders.of(FoodActivity.this).get(FoodViewModel.class);
+        mFoodViewModel = ViewModelProviders.of(FoodDefinitionActivity.this).get(FoodViewModel.class);
         ArrayAdapter<CharSequence> volumeAdapter = ArrayAdapter.createFromResource(this,
                 R.array.volume_array, android.R.layout.simple_spinner_item);
         volumeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -67,22 +67,22 @@ public class FoodActivity extends AppCompatActivity {
         mAddFoodButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (CheckUtils.isEmptyTextField(FoodActivity.this, mFoodNameView))
+                if (CheckUtils.isEmptyTextField(FoodDefinitionActivity.this, mFoodNameView))
                     return;
                 String foodName = CheckUtils.validateTitle(mFoodNameView.getText().toString());
                 mFoodNameView.setText(foodName);
                 float conversionMultiplier = 0;
                 if (!mCountableCheckBox.isChecked()) {
-                    int volumeAmount = CheckUtils.getNonZeroPositiveIntegerFromField(FoodActivity.this, mVolumeAmountView);
+                    int volumeAmount = CheckUtils.getNonZeroPositiveIntegerFromField(FoodDefinitionActivity.this, mVolumeAmountView);
                     if (volumeAmount == -1)
                         return;
-                    int weightAmount = CheckUtils.getNonZeroPositiveIntegerFromField(FoodActivity.this, mWeightAmountView);
+                    int weightAmount = CheckUtils.getNonZeroPositiveIntegerFromField(FoodDefinitionActivity.this, mWeightAmountView);
                     if (weightAmount == -1)
                         return;
                     int volumeType = mVolumeSpinner.getSelectedItemPosition();
                     int weightType = mWeightSpinner.getSelectedItemPosition();
                     conversionMultiplier = MeasurementUtils.getConversionMultiplier(
-                            FoodActivity.this, volumeAmount, volumeType, weightAmount, weightType);
+                            FoodDefinitionActivity.this, volumeAmount, volumeType, weightAmount, weightType);
                 }
                 mFoodViewModel.addFood(foodName, conversionMultiplier);
                 Snackbar.make(mFoodNameView,

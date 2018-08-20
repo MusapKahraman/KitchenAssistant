@@ -66,7 +66,7 @@ public class ShoppingAddActivity extends AppCompatActivity {
         mAddFoodLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, FoodActivity.class);
+                Intent intent = new Intent(mContext, FoodDefinitionActivity.class);
                 startActivity(intent);
             }
         });
