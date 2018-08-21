@@ -1,3 +1,9 @@
+/*
+ * Reference
+ * https://developer.android.com/training/camera/photobasics
+ * https://junjunguo.com/blog/android-take-photo-show-in-list-view-b/
+ */
+
 package com.example.kitchen.activities;
 
 import android.content.Intent;
@@ -12,6 +18,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.example.kitchen.R;
 import com.example.kitchen.adapters.RecipeEditAdapter;
@@ -28,7 +35,9 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RecipeEditActivity extends AppCompatActivity implements OnPictureDialogListener, OnSaveRecipeListener {
+public class RecipeEditActivity extends AppCompatActivity
+        implements OnPictureDialogListener, OnSaveRecipeListener {
+    private static final String LOG_TAG = RecipeEditActivity.class.getSimpleName();
     @BindView(R.id.viewPager) ViewPager mViewPager;
     private Recipe mRecipe;
 
@@ -65,32 +74,29 @@ public class RecipeEditActivity extends AppCompatActivity implements OnPictureDi
 
     @Override
     public void onSelectCamera() {
-        // Reference -> https://developer.android.com/training/camera/photobasics
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
+        // Ensure that there's a camera activity to handle the intent.
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
             File photoFile = null;
             try {
                 photoFile = BitmapUtils.createImageFile(this);
             } catch (IOException ex) {
-                // Error occurred while creating the File
+                Log.e(LOG_TAG, "An error occurred while creating the image file.");
             }
             if (photoFile != null) {
                 // File is successfully created
                 mRecipe.imagePath = photoFile.getAbsolutePath();
-                Uri photoURI = FileProvider.getUriForFile(this, "com.example.kitchen.fileprovider", photoFile);
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.kitchen.fileprovider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, AppConstants.REQUEST_CAMERA);
             }
-        } else {
+        } else
             Snackbar.make(mViewPager, R.string.no_camera_app, Snackbar.LENGTH_SHORT).show();
-        }
     }
 
     @Override
     public void onSelectGallery() {
-        // Reference -> https://developer.android.com/training/camera/photobasics
         Intent intent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, AppConstants.REQUEST_GALLERY);
@@ -101,24 +107,20 @@ public class RecipeEditActivity extends AppCompatActivity implements OnPictureDi
         switch (requestCode) {
             case AppConstants.REQUEST_CAMERA:
                 if (resultCode == RESULT_OK) {
-                    // Send mImageFilePath to the fragment.
                     updateFragments();
                 }
             case AppConstants.REQUEST_GALLERY:
-                // Reference -> https://junjunguo.com/blog/android-take-photo-show-in-list-view-b/
                 if (resultCode == RESULT_OK && data != null) {
                     Uri selectedImage = data.getData();
                     if (selectedImage != null) {
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
                         Cursor cursor = getContentResolver()
-                                .query(selectedImage, filePathColumn, null, null,
-                                        null);
+                                .query(selectedImage, filePathColumn, null, null, null);
                         if (cursor != null) {
                             cursor.moveToFirst();
                             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                             mRecipe.imagePath = cursor.getString(columnIndex);
                             cursor.close();
-                            // Send mImageFilePath to the fragment.
                             updateFragments();
                         }
                     }
@@ -129,7 +131,8 @@ public class RecipeEditActivity extends AppCompatActivity implements OnPictureDi
     private void updateFragments() {
         Bundle bundle = new Bundle();
         bundle.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
-        FragmentStatePagerAdapter pagerAdapter = new RecipeEditAdapter(this, getSupportFragmentManager(), bundle);
+        FragmentStatePagerAdapter pagerAdapter =
+                new RecipeEditAdapter(this, getSupportFragmentManager(), bundle);
         mViewPager.setAdapter(pagerAdapter);
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(mViewPager);

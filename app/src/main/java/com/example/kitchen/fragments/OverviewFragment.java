@@ -296,7 +296,8 @@ public class OverviewFragment extends Fragment implements OnRecipeInsertListener
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
         switch (requestCode) {
             case AppConstants.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
                 if (grantResults.length > 0) {
@@ -353,7 +354,8 @@ public class OverviewFragment extends Fragment implements OnRecipeInsertListener
         if (drawable != null) {
             File oldFile = new File(mRecipe.imagePath);
             mRecipe.imagePath = BitmapUtils.writeJpegPrivate(mContext, drawable.getBitmap(), mRecipe.title);
-            if (!oldFile.getName().equals(mRecipe.title + ".jpg") && oldFile.getAbsolutePath().contains(mContext.getPackageName())) {
+            if (!oldFile.getName().equals(mRecipe.title + ".jpg")
+                    && oldFile.getAbsolutePath().contains(mContext.getPackageName())) {
                 Boolean deleted = oldFile.delete();
                 if (deleted) Log.v(LOG_TAG, "Temporary image file is deleted.");
             }
@@ -386,7 +388,8 @@ public class OverviewFragment extends Fragment implements OnRecipeInsertListener
         Snackbar.make(mProgressBar, R.string.publishing, Snackbar.LENGTH_SHORT).show();
         mRecipe.publicKey = mRecipeViewModel.postRecipe(mRecipe, "");
         Uri file = Uri.fromFile(new File(path));
-        final StorageReference ref = FirebaseStorage.getInstance().getReference("images/" + mRecipe.publicKey + ".jpg");
+        final StorageReference ref = FirebaseStorage
+                .getInstance().getReference("images/" + mRecipe.publicKey + ".jpg");
         ref.putFile(file).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -422,21 +425,20 @@ public class OverviewFragment extends Fragment implements OnRecipeInsertListener
                         }
                         ArrayList<String> stayList = new ArrayList<>();
                         for (Ingredient ingredient : ingredients) {
-                            ingredient.publicKey = mIngredientViewModel.postIngredient(ingredient, mRecipe.publicKey);
+                            ingredient.publicKey = mIngredientViewModel
+                                    .postIngredient(ingredient, mRecipe.publicKey);
                             mKitchenViewModel.insertIngredient(ingredient);
                             for (String removalKey : removalKeys) {
                                 if (removalKey.equals(ingredient.publicKey)) {
                                     stayList.add(removalKey);
                                 }
                             }
-
                         }
                         for (String key : stayList) removalKeys.remove(key);
                         for (String removalKey : removalKeys)
                             mIngredientViewModel.removeIngredient(removalKey);
                     }
                 }
-
             }
         });
         mStepIsObservable = true;
@@ -480,12 +482,14 @@ public class OverviewFragment extends Fragment implements OnRecipeInsertListener
     private RequestListener<Drawable> getRequestListener() {
         return new RequestListener<Drawable>() {
             @Override
-            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+            public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                        Target<Drawable> target, boolean isFirstResource) {
                 // Check the flag for requesting a permission from user to access external storage.
                 // This will prevent the request dialog from being shown on configuration changes if
                 // the user has already given a negative answer.
                 if (!mRequestPermission) return false;
-                if (checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (checkSelfPermission(mContext,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     try {
                         requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                                 AppConstants.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
@@ -498,7 +502,8 @@ public class OverviewFragment extends Fragment implements OnRecipeInsertListener
             }
 
             @Override
-            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target,
+                                           DataSource dataSource, boolean isFirstResource) {
                 // Everything worked out.
                 // No need for rotate button if there is no picture.
                 if (resource == null) {
