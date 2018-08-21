@@ -32,8 +32,8 @@ import butterknife.ButterKnife;
 
 public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.WareViewHolder> {
     private final OnShoppingListClickListener mOnWareClickListener;
-    private final ArrayList<Ware> mSelectedWares = new ArrayList<>();
     private final Context mContext;
+    private ArrayList<Ware> mSelectedWares;
     private KitchenViewModel mKitchenViewModel;
     private FragmentActivity mFragmentActivity;
     private List<Ware> mWares;
@@ -77,6 +77,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.WareVi
     };
 
     public ShoppingAdapter(Context context, OnShoppingListClickListener onWareClickListener) {
+        mSelectedWares = new ArrayList<>();
         mContext = context;
         mOnWareClickListener = onWareClickListener;
         if (context instanceof FragmentActivity) {
@@ -113,6 +114,18 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.WareVi
         mWares = wares;
         mFilteredWares = wares;
         notifyDataSetChanged();
+    }
+
+    public ArrayList<Ware> getSelectedWares() {
+        return mSelectedWares;
+    }
+
+    public void setSelectedWares(List<Ware> wares) {
+        if (wares != null && wares.size() > 0) {
+            mSelectedWares = (ArrayList<Ware>) wares;
+            notifyDataSetChanged();
+            ((AppCompatActivity) mContext).startSupportActionMode(mActionModeCallbacks);
+        }
     }
 
     public void filter(CharSequence charSequence) {

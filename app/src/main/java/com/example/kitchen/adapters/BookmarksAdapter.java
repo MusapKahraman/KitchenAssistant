@@ -37,7 +37,8 @@ import butterknife.ButterKnife;
 
 public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.RecipeCardViewHolder> {
     private final OnRecipeClickListener mRecipeClickListener;
-    private final ArrayList<Recipe> mSelectedRecipes = new ArrayList<>();
+    private final Context mContext;
+    private List<Recipe> mSelectedRecipes;
     private KitchenViewModel mKitchenViewModel;
     private FragmentActivity mFragmentActivity;
     private List<Recipe> mRecipes;
@@ -81,6 +82,8 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.Reci
     };
 
     public BookmarksAdapter(Context context, OnRecipeClickListener recipeClickListener) {
+        mSelectedRecipes = new ArrayList<>();
+        mContext = context;
         mRecipeClickListener = recipeClickListener;
         if (context instanceof FragmentActivity) {
             mFragmentActivity = (FragmentActivity) context;
@@ -116,6 +119,18 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.Reci
         mRecipes = recipes;
         mFilteredRecipes = recipes;
         notifyDataSetChanged();
+    }
+
+    public ArrayList<Recipe> getSelectedRecipes() {
+        return (ArrayList<Recipe>) mSelectedRecipes;
+    }
+
+    public void setSelectedRecipes(List<Recipe> recipes) {
+        if (recipes != null && recipes.size() > 0) {
+            mSelectedRecipes = recipes;
+            notifyDataSetChanged();
+            ((AppCompatActivity) mContext).startSupportActionMode(mActionModeCallbacks);
+        }
     }
 
     public void filter(CharSequence charSequence) {
@@ -196,7 +211,7 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.Reci
 
         }
 
-        void selectRecipe(Recipe recipe) {
+        private void selectRecipe(Recipe recipe) {
             if (mMultiSelect) {
                 if (mSelectedRecipes.contains(recipe)) {
                     mSelectedRecipes.remove(recipe);

@@ -31,10 +31,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class StorageFragment extends Fragment {
-    private static final String LOG_TAG = StorageFragment.class.getSimpleName();
     private static final String KEY_LAYOUT_STATE = "state-key";
     private static final String KEY_SEARCH_QUERY = "search-query-key";
     private static final String KEY_FOOD_LIST = "food-list-key";
+    private static final String KEY_SELECTED_FOOD = "selected-food-key";
     @BindView(R.id.rv_storage) RecyclerView mRecyclerView;
     private OnFragmentScrollListener fragmentScrollListener;
     private Context mContext;
@@ -95,6 +95,8 @@ public class StorageFragment extends Fragment {
             mFoodList = savedInstanceState.getParcelableArrayList(KEY_FOOD_LIST);
             mAdapter.setFoods(mFoodList);
             mAdapter.filter(mQuery);
+            List<Food> selected = savedInstanceState.getParcelableArrayList(KEY_SELECTED_FOOD);
+            mAdapter.setSelectedFood(selected);
             mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(KEY_LAYOUT_STATE));
         } else {
             KitchenViewModel kitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
@@ -117,6 +119,7 @@ public class StorageFragment extends Fragment {
         outState.putString(KEY_SEARCH_QUERY, mQuery);
         outState.putParcelable(KEY_LAYOUT_STATE, mLayoutManager.onSaveInstanceState());
         outState.putParcelableArrayList(KEY_FOOD_LIST, mFoodList);
+        outState.putParcelableArrayList(KEY_SELECTED_FOOD, mAdapter.getSelectedFood());
     }
 
     @Override

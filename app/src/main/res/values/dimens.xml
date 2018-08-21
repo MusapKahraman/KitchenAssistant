@@ -31,10 +31,8 @@
     <dimen name="card_height">315dp</dimen>
     <dimen name="edit_image_size">250dp</dimen>
     <dimen name="card_timer_icon_size">20dp</dimen>
-    <dimen name="list_item_height">60dp</dimen>
     <dimen name="list_item_image_size">48dp</dimen>
     <dimen name="list_button_size">48dp</dimen>
-    <dimen name="tab_widget_child_width">50dp</dimen>
     <dimen name="spinner_width">140dp</dimen>
     <dimen name="recipe_overall_divider_length">200dp</dimen>
     <dimen name="recipe_detail_button_widths">256dp</dimen>

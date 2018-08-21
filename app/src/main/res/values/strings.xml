@@ -8,9 +8,6 @@
     <string name="recipes">Recipes</string>
     <string name="bookmarks">Bookmarks</string>
     <string name="storage">Storage</string>
-    <string name="suggestions">Suggestions</string>
-    <string name="meal_plan">Meal Plan</string>
-    <string name="routines">Routines</string>
     <string name="shopping_list">Shopping List</string>
     <string name="food">Food</string>
     <string name="logout">Logout</string>
@@ -79,20 +76,9 @@
     <string name="pieces_abbr">pc</string>
 
     <string name="app_name">Kitchen Assistant</string>
-    <string name="auto_complete">Autocomplete</string>
-    <string name="welcome">Welcome</string>
     <string name="recipe_image_description">Recipe image</string>
     <string name="recipe_detail">Recipe Detail</string>
     <string name="search">Search</string>
-    <string name="filter">Filter</string>
-    <string name="sort">Sort</string>
-    <string name="monday">Monday</string>
-    <string name="tuesday">Tuesday</string>
-    <string name="wednesday">Wednesday</string>
-    <string name="thursday">Thursday</string>
-    <string name="friday">Friday</string>
-    <string name="saturday">Saturday</string>
-    <string name="sunday">Sunday</string>
     <string name="timer_icon">Timer icon</string>
     <string name="delete">Delete</string>
     <string name="new_recipe">New Recipe</string>
@@ -120,7 +106,6 @@
     <string name="rate_this_recipe">Rate this recipe</string>
     <string name="share">Share</string>
     <string name="bookmark">Bookmark</string>
-    <string name="recipe_finished">The meal is ready!</string>
     <string name="bullet">Bullet</string>
     <string name="recipe_bookmarked">%1$s is saved in bookmarks.</string>
     <string name="publish_successful">%1$s is now public.</string>

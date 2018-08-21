@@ -36,7 +36,7 @@ public class LoginActivity extends AppCompatActivity implements DeviceUtils.Inte
     private static final String KEY_APP_WIDGET = "app-widget-key";
     @BindView(R.id.tv_connect_internet_try_again) TextView mNoConnectionTextView;
     @BindView(R.id.progress_bar_connection_check) ProgressBar mProgressBar;
-    boolean mIsStartedByAppWidget;
+    private boolean mIsStartedByAppWidget;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -32,9 +32,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class BookmarksFragment extends Fragment {
-    private static final String LOG_TAG = BookmarksFragment.class.getSimpleName();
-    private static final String LAYOUT_STATE = "state";
-    private static final String SEARCH_QUERY = "search-query";
+    private static final String KEY_LAYOUT_STATE = "state-key";
+    private static final String KEY_SEARCH_QUERY = "search-query-key";
+    private static final String KEY_SELECTED_RECIPES = "selected-recipes-key";
     @BindView(R.id.rv_recipe_steps) RecyclerView mRecyclerView;
     private Context mContext;
     private OnFragmentScrollListener mScrollListener;
@@ -99,9 +99,11 @@ public class BookmarksFragment extends Fragment {
             mAdapter.setRecipes(recipes);
         }
         if (savedInstanceState != null) {
-            mQuery = savedInstanceState.getString(SEARCH_QUERY);
+            mQuery = savedInstanceState.getString(KEY_SEARCH_QUERY);
             mAdapter.filter(mQuery);
-            mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(LAYOUT_STATE));
+            List<Recipe> selected = savedInstanceState.getParcelableArrayList(KEY_SELECTED_RECIPES);
+            mAdapter.setSelectedRecipes(selected);
+            mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(KEY_LAYOUT_STATE));
         }
         return rootView;
     }
@@ -109,8 +111,9 @@ public class BookmarksFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(LAYOUT_STATE, mLayoutManager.onSaveInstanceState());
-        outState.putString(SEARCH_QUERY, mQuery);
+        outState.putParcelable(KEY_LAYOUT_STATE, mLayoutManager.onSaveInstanceState());
+        outState.putString(KEY_SEARCH_QUERY, mQuery);
+        outState.putParcelableArrayList(KEY_SELECTED_RECIPES, mAdapter.getSelectedRecipes());
     }
 
     @Override

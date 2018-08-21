@@ -35,8 +35,8 @@ import butterknife.ButterKnife;
 
 public class StorageAdapter extends RecyclerView.Adapter<StorageAdapter.FoodViewHolder> {
     private final OnStorageClickListener mOnFoodClickListener;
-    private final ArrayList<Food> mSelectedFoods = new ArrayList<>();
     private final Context mContext;
+    private ArrayList<Food> mSelectedFoods;
     private KitchenViewModel mKitchenViewModel;
     private FragmentActivity mFragmentActivity;
     private List<Food> mFoods;
@@ -80,6 +80,7 @@ public class StorageAdapter extends RecyclerView.Adapter<StorageAdapter.FoodView
     };
 
     public StorageAdapter(Context context, OnStorageClickListener onFoodClickListener) {
+        mSelectedFoods = new ArrayList<>();
         mContext = context;
         mOnFoodClickListener = onFoodClickListener;
         if (context instanceof FragmentActivity) {
@@ -116,6 +117,18 @@ public class StorageAdapter extends RecyclerView.Adapter<StorageAdapter.FoodView
         mFoods = foods;
         mFilteredFoods = foods;
         notifyDataSetChanged();
+    }
+
+    public ArrayList<Food> getSelectedFood() {
+        return mSelectedFoods;
+    }
+
+    public void setSelectedFood(List<Food> foods) {
+        if (foods != null && foods.size() > 0) {
+            mSelectedFoods = (ArrayList<Food>) foods;
+            notifyDataSetChanged();
+            ((AppCompatActivity) mContext).startSupportActionMode(mActionModeCallbacks);
+        }
     }
 
     public void filter(CharSequence charSequence) {

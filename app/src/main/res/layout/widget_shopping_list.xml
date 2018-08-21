@@ -2,8 +2,7 @@
     android:id="@+id/frame_app_widget"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/widget_background"
-    android:padding="@dimen/widget_margin">
+    style="@style/AppWidget">
 
     <TextView
         android:id="@+id/tv_app_widget"

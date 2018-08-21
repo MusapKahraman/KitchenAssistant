@@ -34,10 +34,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ShoppingFragment extends Fragment {
-    private static final String LOG_TAG = ShoppingFragment.class.getSimpleName();
     private static final String KEY_LAYOUT_STATE = "state-key";
     private static final String KEY_SEARCH_QUERY = "search-query-key";
     private static final String KEY_SHOPPING_LIST = "shopping-list-key";
+    private static final String KEY_SELECTED_WARES = "selected-wares-key";
     @BindView(R.id.rv_shopping_list) RecyclerView mRecyclerView;
     private OnFragmentScrollListener fragmentScrollListener;
     private Context mContext;
@@ -98,19 +98,22 @@ public class ShoppingFragment extends Fragment {
             mShoppingList = savedInstanceState.getParcelableArrayList(KEY_SHOPPING_LIST);
             mAdapter.setWares(mShoppingList);
             mAdapter.filter(mQuery);
+            List<Ware> selected = savedInstanceState.getParcelableArrayList(KEY_SELECTED_WARES);
+            mAdapter.setSelectedWares(selected);
             mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(KEY_LAYOUT_STATE));
-        }
-        KitchenViewModel kitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
-        kitchenViewModel.getShoppingList().observe(this, new Observer<List<Ware>>() {
-            @Override
-            public void onChanged(@Nullable List<Ware> wares) {
-                if (wares != null) {
-                    mShoppingList = (ArrayList<Ware>) wares;
-                    mAdapter.setWares(mShoppingList);
-                    ShoppingListWidget.fillShoppingListWidget(mContext, wares);
+        } else {
+            KitchenViewModel kitchenViewModel = ViewModelProviders.of(this).get(KitchenViewModel.class);
+            kitchenViewModel.getShoppingList().observe(this, new Observer<List<Ware>>() {
+                @Override
+                public void onChanged(@Nullable List<Ware> wares) {
+                    if (wares != null) {
+                        mShoppingList = (ArrayList<Ware>) wares;
+                        mAdapter.setWares(mShoppingList);
+                        ShoppingListWidget.fillShoppingListWidget(mContext, wares);
+                    }
                 }
-            }
-        });
+            });
+        }
         return rootView;
     }
 
@@ -120,6 +123,7 @@ public class ShoppingFragment extends Fragment {
         outState.putString(KEY_SEARCH_QUERY, mQuery);
         outState.putParcelable(KEY_LAYOUT_STATE, mLayoutManager.onSaveInstanceState());
         outState.putParcelableArrayList(KEY_SHOPPING_LIST, mShoppingList);
+        outState.putParcelableArrayList(KEY_SELECTED_WARES, mAdapter.getSelectedWares());
     }
 
     @Override

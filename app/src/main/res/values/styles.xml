@@ -17,6 +17,11 @@
         <item name="windowActionModeOverlay">true</item>
     </style>
 
+    <style name="AppWidget" parent="AppTheme">
+        <item name="android:background">@color/widget_background</item>
+        <item name="android:padding">@dimen/widget_margin</item>
+    </style>
+
     <style name="AppOpening">
         <item name="android:background">@drawable/kitchen_portrait</item>
     </style>

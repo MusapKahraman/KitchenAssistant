@@ -37,10 +37,6 @@ public class RecipeViewModel extends ViewModel {
         return new FirebaseQueryLiveData(RECIPE_REF.orderByChild("rating"));
     }
 
-    public LiveData<DataSnapshot> getPagedDataSnapshotLiveData(int itemsPerPage, String fieldToOrderBy) {
-        return new FirebaseQueryLiveData(RECIPE_REF.orderByChild(fieldToOrderBy).limitToLast(itemsPerPage));
-    }
-
     public String postRecipe(Recipe recipe, String imageUrl) {
         String key;
         if (TextUtils.isEmpty(recipe.publicKey)) {

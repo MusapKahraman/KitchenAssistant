@@ -32,7 +32,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class RecipesFragment extends Fragment {
-    private static final String LOG_TAG = RecipesFragment.class.getSimpleName();
     private static final String LAYOUT_STATE = "state";
     private static final String SEARCH_QUERY = "search-query";
     @BindView(R.id.rv_recipe_steps) RecyclerView mRecyclerView;
