@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.kitchen.BuildConfig;
 import com.example.kitchen.R;
+import com.example.kitchen.utility.AppConstants;
 import com.example.kitchen.utility.DeviceUtils;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -32,25 +33,39 @@ import butterknife.ButterKnife;
 public class LoginActivity extends AppCompatActivity implements DeviceUtils.InternetConnectionListener {
     private static final int RC_SIGN_IN = 123;
     private static final String LOG_TAG = LoginActivity.class.getSimpleName();
+    private static final String KEY_APP_WIDGET = "app-widget-key";
     @BindView(R.id.tv_connect_internet_try_again) TextView mNoConnectionTextView;
     @BindView(R.id.progress_bar_connection_check) ProgressBar mProgressBar;
+    boolean mIsStartedByAppWidget;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        Log.v(LOG_TAG, "onCreate");
+        if (savedInstanceState == null) {
+            mIsStartedByAppWidget = getIntent()
+                    .getBooleanExtra(AppConstants.EXTRA_APP_WIDGET, false);
+        } else {
+            mIsStartedByAppWidget = savedInstanceState.getBoolean(KEY_APP_WIDGET);
+        }
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             // already signed in
             Intent intent = new Intent(this, MainActivity.class);
+            if (mIsStartedByAppWidget) intent.putExtra(AppConstants.EXTRA_APP_WIDGET, true);
             startActivity(intent);
             finish();
         } else {
             // not signed in
             DeviceUtils.startConnectionTest(this);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_APP_WIDGET, mIsStartedByAppWidget);
     }
 
     @Override
@@ -85,6 +100,7 @@ public class LoginActivity extends AppCompatActivity implements DeviceUtils.Inte
             if (resultCode == RESULT_OK) {
                 Log.v(LOG_TAG, "Successfully signed in");
                 Intent intent = new Intent(this, MainActivity.class);
+                if (mIsStartedByAppWidget) intent.putExtra(AppConstants.EXTRA_APP_WIDGET, true);
                 startActivity(intent);
                 finish();
             } else {

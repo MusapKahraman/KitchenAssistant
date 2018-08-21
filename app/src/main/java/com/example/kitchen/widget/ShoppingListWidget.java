@@ -9,7 +9,7 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 
 import com.example.kitchen.R;
-import com.example.kitchen.activities.MainActivity;
+import com.example.kitchen.activities.LoginActivity;
 import com.example.kitchen.data.local.entities.Ware;
 import com.example.kitchen.utility.AppConstants;
 
@@ -45,8 +45,8 @@ public class ShoppingListWidget extends AppWidgetProvider {
         sMessage = message;
         views.setTextViewText(R.id.tv_app_widget, message);
 
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra(AppConstants.EXTRA_WIDGET, true);
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.putExtra(AppConstants.EXTRA_APP_WIDGET, true);
         PendingIntent pendingIntent = PendingIntent
                 .getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 

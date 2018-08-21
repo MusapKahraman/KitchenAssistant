@@ -90,9 +90,9 @@ public class MainActivity extends AppCompatActivity
         mRecipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
         mSharedPreferences = getPreferences(Context.MODE_PRIVATE);
         if (savedInstanceState == null) {
-            boolean isStartedByWidget = getIntent()
-                    .getBooleanExtra(AppConstants.EXTRA_WIDGET, false);
-            if (isStartedByWidget) {
+            boolean isStartedByAppWidget = getIntent()
+                    .getBooleanExtra(AppConstants.EXTRA_APP_WIDGET, false);
+            if (isStartedByAppWidget) {
                 mSelectionIndex = INDEX_SHOPPING_LIST;
             } else {
                 mSelectionIndex = mSharedPreferences.getInt(KEY_NAV_INDEX, 0);
