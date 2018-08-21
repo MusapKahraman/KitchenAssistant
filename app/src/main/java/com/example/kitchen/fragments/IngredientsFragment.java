@@ -50,6 +50,8 @@ import butterknife.ButterKnife;
 public class IngredientsFragment extends Fragment
         implements RecyclerViewItemTouchHelper.RecyclerItemTouchHelperListener {
     private static final String LOG_TAG = IngredientsFragment.class.getSimpleName();
+    private static final String KEY_FOOD_SPINNER_SELECTION = "food-spinner-selection-key";
+    private static final String KEY_MEASUREMENT_SPINNER_SELECTION = "measurement-spinner-selection-key";
     @BindView(R.id.rv_ingredients) RecyclerView mRecyclerView;
     @BindView(R.id.btn_link_define_food) Button mDefineFoodLink;
     @BindView(R.id.spinner_food) SearchableSpinner mFoodSpinner;
@@ -64,6 +66,8 @@ public class IngredientsFragment extends Fragment
     private ArrayList<Ingredient> mIngredients;
     private ArrayList<String> mFoods;
     private Recipe mRecipe;
+    private int mFoodSpinnerSelectedPosition;
+    private int mMeasurementSpinnerSelectedPosition;
 
     public IngredientsFragment() {
         // Required empty public constructor
@@ -82,6 +86,8 @@ public class IngredientsFragment extends Fragment
         if (savedInstanceState != null) {
             mRecipe = savedInstanceState.getParcelable(AppConstants.KEY_RECIPE);
             mIngredients = savedInstanceState.getParcelableArrayList(AppConstants.KEY_INGREDIENTS);
+            mFoodSpinnerSelectedPosition = savedInstanceState.getInt(KEY_FOOD_SPINNER_SELECTION);
+            mMeasurementSpinnerSelectedPosition = savedInstanceState.getInt(KEY_MEASUREMENT_SPINNER_SELECTION);
         } else {
             Bundle arguments = getArguments();
             if (arguments != null) {
@@ -121,6 +127,17 @@ public class IngredientsFragment extends Fragment
         foodViewModel.getDataSnapshotLiveData()
                 .observe(this, getFoodViewModelDataSnapshotObserver());
         mFoodSpinner.setOnItemSelectedListener(getFoodSpinnerOnItemSelectedListener());
+        mMeasurementSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mMeasurementSpinnerSelectedPosition = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         mDefineFoodLink.setOnClickListener(getDefineFoodLinkOnClickListener());
         mAddButton.setOnClickListener(getAddButtonOnClickListener());
     }
@@ -130,6 +147,8 @@ public class IngredientsFragment extends Fragment
         super.onSaveInstanceState(outState);
         outState.putParcelable(AppConstants.KEY_RECIPE, mRecipe);
         outState.putParcelableArrayList(AppConstants.KEY_INGREDIENTS, mIngredients);
+        outState.putInt(KEY_FOOD_SPINNER_SELECTION, mFoodSpinnerSelectedPosition);
+        outState.putInt(KEY_MEASUREMENT_SPINNER_SELECTION, mMeasurementSpinnerSelectedPosition);
     }
 
     @Override
@@ -208,6 +227,7 @@ public class IngredientsFragment extends Fragment
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mFoodSpinnerSelectedPosition = position;
                 String food = mFoods.get(position);
                 float value = Float.valueOf(mFoodMap.get(food));
                 if (value == 0) {
@@ -219,6 +239,7 @@ public class IngredientsFragment extends Fragment
                 }
                 mMeasurementAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 mMeasurementSpinner.setAdapter(mMeasurementAdapter);
+                mMeasurementSpinner.setSelection(mMeasurementSpinnerSelectedPosition);
             }
 
             @Override
@@ -247,6 +268,7 @@ public class IngredientsFragment extends Fragment
                     ArrayAdapter<String> foodAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_item, mFoods);
                     foodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     mFoodSpinner.setAdapter(foodAdapter);
+                    mFoodSpinner.setSelection(mFoodSpinnerSelectedPosition);
                 }
             }
         };

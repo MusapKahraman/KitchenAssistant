@@ -47,6 +47,8 @@ import butterknife.ButterKnife;
 public class StorageAddActivity extends AppCompatActivity implements DeviceUtils.InternetConnectionListener {
     private static final String LOG_TAG = StorageAddActivity.class.getSimpleName();
     private static final String KEY_BEST_BEFORE = "best-before-key";
+    private static final String KEY_FOOD_SPINNER_SELECTION = "food-spinner-selection-key";
+    private static final String KEY_MEASUREMENT_SPINNER_SELECTION = "measurement-spinner-selection-key";
     @BindView(R.id.btn_link_define_food) Button mAddFoodLink;
     @BindView(R.id.spinner_food) SearchableSpinner mFoodSpinner;
     @BindView(R.id.edit_text_amount) TextInputEditText mAmountEditText;
@@ -60,6 +62,8 @@ public class StorageAddActivity extends AppCompatActivity implements DeviceUtils
     private Map<String, String> mFoodMap;
     private ArrayList<Food> mFoodList;
     private long mBestBefore;
+    private int mFoodSpinnerSelectedPosition;
+    private int mMeasurementSpinnerSelectedPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +82,8 @@ public class StorageAddActivity extends AppCompatActivity implements DeviceUtils
             });
         } else {
             mBestBefore = savedInstanceState.getLong(KEY_BEST_BEFORE);
+            mFoodSpinnerSelectedPosition = savedInstanceState.getInt(KEY_FOOD_SPINNER_SELECTION);
+            mMeasurementSpinnerSelectedPosition = savedInstanceState.getInt(KEY_MEASUREMENT_SPINNER_SELECTION);
         }
         mAddFoodLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,42 +94,13 @@ public class StorageAddActivity extends AppCompatActivity implements DeviceUtils
         });
         FoodViewModel foodViewModel = ViewModelProviders.of(this).get(FoodViewModel.class);
         mFoodSpinner.setTitle(getString(R.string.select_food));
-        foodViewModel.getDataSnapshotLiveData().observe(this, new Observer<DataSnapshot>() {
-            @Override
-            public void onChanged(@Nullable DataSnapshot dataSnapshot) {
-                if (dataSnapshot != null) {
-                    mFoods = new ArrayList<>();
-                    mFoodMap = new HashMap<>();
-                    for (DataSnapshot foodSnapShot : dataSnapshot.getChildren()) {
-                        try {
-                            if (foodSnapShot.getValue() != null)
-                                mFoodMap.put(foodSnapShot.getKey(), foodSnapShot.getValue().toString());
-                            mFoods.add(foodSnapShot.getKey());
-                        } catch (DatabaseException e) {
-                            Log.e(LOG_TAG, e.getMessage());
-                        }
-                    }
-                    ArrayAdapter<String> foodAdapter = new ArrayAdapter<>(mContext,
-                            android.R.layout.simple_spinner_item, mFoods);
-                    foodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    mFoodSpinner.setAdapter(foodAdapter);
-                }
-            }
-        });
-        mFoodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        foodViewModel.getDataSnapshotLiveData()
+                .observe(this, getFoodViewModelDataSnapshotObserver());
+        mFoodSpinner.setOnItemSelectedListener(getFoodSpinnerOnItemSelectedListener());
+        mMeasurementSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String food = mFoods.get(position);
-                float value = Float.valueOf(mFoodMap.get(food));
-                if (value == 0) {
-                    mMeasurementAdapter = ArrayAdapter.createFromResource(mContext,
-                            R.array.measurement_array_countable, android.R.layout.simple_spinner_item);
-                } else {
-                    mMeasurementAdapter = ArrayAdapter.createFromResource(mContext,
-                            R.array.measurement_array_uncountable, android.R.layout.simple_spinner_item);
-                }
-                mMeasurementAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                mMeasurementSpinner.setAdapter(mMeasurementAdapter);
+                mMeasurementSpinnerSelectedPosition = position;
             }
 
             @Override
@@ -131,7 +108,6 @@ public class StorageAddActivity extends AppCompatActivity implements DeviceUtils
 
             }
         });
-
         mBestBeforeDateText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,8 +116,25 @@ public class StorageAddActivity extends AppCompatActivity implements DeviceUtils
                         calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+        mAddButton.setOnClickListener(getAddButtonOnClickListener());
+    }
 
-        mAddButton.setOnClickListener(new View.OnClickListener() {
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(KEY_BEST_BEFORE, mBestBefore);
+        outState.putInt(KEY_FOOD_SPINNER_SELECTION, mFoodSpinnerSelectedPosition);
+        outState.putInt(KEY_MEASUREMENT_SPINNER_SELECTION, mMeasurementSpinnerSelectedPosition);
+    }
+
+    @Override
+    public void onConnectionResult(boolean success) {
+        if (!success)
+            Snackbar.make(mFoodSpinner, R.string.connect_internet_try_again, Snackbar.LENGTH_LONG).show();
+    }
+
+    private View.OnClickListener getAddButtonOnClickListener() {
+        return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mFoodSpinner.getSelectedItem() == null) return;
@@ -172,19 +165,59 @@ public class StorageAddActivity extends AppCompatActivity implements DeviceUtils
                         String.format(getString(R.string.added_to_storage), amount, amountType, name),
                         Snackbar.LENGTH_SHORT).show();
             }
-        });
+        };
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putLong(KEY_BEST_BEFORE, mBestBefore);
+    private AdapterView.OnItemSelectedListener getFoodSpinnerOnItemSelectedListener() {
+        return new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mFoodSpinnerSelectedPosition = position;
+                String food = mFoods.get(position);
+                float value = Float.valueOf(mFoodMap.get(food));
+                if (value == 0) {
+                    mMeasurementAdapter = ArrayAdapter.createFromResource(mContext,
+                            R.array.measurement_array_countable, android.R.layout.simple_spinner_item);
+                } else {
+                    mMeasurementAdapter = ArrayAdapter.createFromResource(mContext,
+                            R.array.measurement_array_uncountable, android.R.layout.simple_spinner_item);
+                }
+                mMeasurementAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                mMeasurementSpinner.setAdapter(mMeasurementAdapter);
+                mMeasurementSpinner.setSelection(mMeasurementSpinnerSelectedPosition);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        };
     }
 
-    @Override
-    public void onConnectionResult(boolean success) {
-        if (!success)
-            Snackbar.make(mFoodSpinner, R.string.connect_internet_try_again, Snackbar.LENGTH_LONG).show();
+    private Observer<DataSnapshot> getFoodViewModelDataSnapshotObserver() {
+        return new Observer<DataSnapshot>() {
+            @Override
+            public void onChanged(@Nullable DataSnapshot dataSnapshot) {
+                if (dataSnapshot != null) {
+                    mFoods = new ArrayList<>();
+                    mFoodMap = new HashMap<>();
+                    for (DataSnapshot foodSnapShot : dataSnapshot.getChildren()) {
+                        try {
+                            if (foodSnapShot.getValue() != null)
+                                mFoodMap.put(foodSnapShot.getKey(), foodSnapShot.getValue().toString());
+                            mFoods.add(foodSnapShot.getKey());
+                        } catch (DatabaseException e) {
+                            Log.e(LOG_TAG, e.getMessage());
+                        }
+                    }
+                    ArrayAdapter<String> foodAdapter = new ArrayAdapter<>(mContext,
+                            android.R.layout.simple_spinner_item, mFoods);
+                    foodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    mFoodSpinner.setAdapter(foodAdapter);
+                    mFoodSpinner.setSelection(mFoodSpinnerSelectedPosition);
+                }
+            }
+        };
     }
 
     private DatePickerDialog.OnDateSetListener getOnDateSetListener(final Calendar calendar) {
