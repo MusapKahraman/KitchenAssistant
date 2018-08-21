@@ -244,29 +244,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ratingBar" />
 
-        <Button
-            android:id="@+id/btn_finished"
-            android:layout_width="@dimen/recipe_detail_button_widths"
-            android:layout_height="@dimen/recipe_detail_button_heights"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:background="@color/accent"
-            android:text="@string/recipe_finished"
-            android:textAllCaps="false"
-            android:textColor="@color/btn_text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_finish" />
-
-        <View
-            android:id="@+id/divider_end"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/empty_frame_outline_thickness"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:background="@color/divider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_finished" />
-
     </android.support.constraint.ConstraintLayout>
 
 </android.support.v4.widget.NestedScrollView>

@@ -51,11 +51,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.WelcomeActivity"
-            android:label="@string/welcome"
-            android:launchMode="singleTop"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".activities.MainActivity"
             android:label="@string/recipes"
             android:launchMode="singleTop"

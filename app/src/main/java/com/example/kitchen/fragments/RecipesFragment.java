@@ -163,18 +163,4 @@ public class RecipesFragment extends Fragment {
         });
         super.onCreateOptionsMenu(menu, inflater);
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        switch (id) {
-            case R.id.app_bar_filter:
-                return true;
-            case R.id.app_bar_sort:
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

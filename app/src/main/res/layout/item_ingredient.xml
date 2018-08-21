@@ -18,7 +18,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/space_one_unit"
             android:contentDescription="@string/delete"
-            app:srcCompat="@drawable/ic_delete_sweep" />
+            android:src="@android:drawable/ic_menu_delete" />
 
         <TextView
             android:layout_width="wrap_content"

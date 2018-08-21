@@ -36,7 +36,6 @@ import com.example.kitchen.data.local.entities.Food;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.data.local.entities.Ware;
 import com.example.kitchen.fragments.BookmarksFragment;
-import com.example.kitchen.fragments.MealPlanFragment;
 import com.example.kitchen.fragments.OnFragmentScrollListener;
 import com.example.kitchen.fragments.RecipesFragment;
 import com.example.kitchen.fragments.ShoppingFragment;
@@ -68,11 +67,8 @@ public class MainActivity extends AppCompatActivity
     private static final String KEY_ACTIVITY_TITLE = "activity-title-key";
     private static final int INDEX_RECIPES = 0;
     private static final int INDEX_BOOKMARKS = 1;
-    private static final int INDEX_SUGGESTIONS = 2;
-    private static final int INDEX_STORAGE = 3;
-    private static final int INDEX_SHOPPING_LIST = 4;
-    private static final int INDEX_MEAL_PLAN = 5;
-    private static final int INDEX_ROUTINES = 6;
+    private static final int INDEX_STORAGE = 2;
+    private static final int INDEX_SHOPPING_LIST = 3;
     @BindView(R.id.fab) FloatingActionButton mFab;
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
@@ -109,18 +105,7 @@ public class MainActivity extends AppCompatActivity
         }
         mFab.setOnClickListener(getFabClickListener());
         // Set navigation drawer.
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                // Save index in local storage to be able to start from the point where the user leaves the app.
-                SharedPreferences.Editor editor = mSharedPreferences.edit();
-                editor.putInt(KEY_NAV_INDEX, mSelectionIndex);
-                editor.apply();
-                showSelectedContent();
-            }
-        };
+        ActionBarDrawerToggle toggle = getDrawerListener();
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         mNavigationView.setNavigationItemSelectedListener(this);
@@ -170,29 +155,20 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_bookmarks:
                 mSelectionIndex = INDEX_BOOKMARKS;
                 break;
-            case R.id.nav_suggestions:
-                mSelectionIndex = INDEX_SUGGESTIONS;
-                break;
             case R.id.nav_storage:
                 mSelectionIndex = INDEX_STORAGE;
                 break;
             case R.id.nav_shopping_list:
                 mSelectionIndex = INDEX_SHOPPING_LIST;
                 break;
-            case R.id.nav_meal_plan:
-                mSelectionIndex = INDEX_MEAL_PLAN;
-                break;
-            case R.id.nav_routines:
-                mSelectionIndex = INDEX_ROUTINES;
-                break;
             case R.id.nav_logout:
+                final Intent intent = new Intent(this, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 AuthUI.getInstance()
                         .signOut(this)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             public void onComplete(@NonNull Task<Void> task) {
                                 // User is now signed out.
-                                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 finish();
                             }
@@ -269,9 +245,6 @@ public class MainActivity extends AppCompatActivity
                 mFab.show();
                 showShoppingList();
                 break;
-            case INDEX_MEAL_PLAN:
-                showMealPlan();
-                break;
         }
     }
 
@@ -297,10 +270,12 @@ public class MainActivity extends AppCompatActivity
                             float total = (float) fetchedRecipe.totalRating;
                             float count = (float) fetchedRecipe.ratingCount;
                             float rating = count != 0 ? total / count : 0;
-                            localRecipes.add(new Recipe(0, fetchedRecipe.title, fetchedRecipe.imageUrl,
-                                    fetchedRecipe.prepTime, fetchedRecipe.cookTime, fetchedRecipe.language,
-                                    fetchedRecipe.cuisine, fetchedRecipe.course, fetchedRecipe.writerUid,
-                                    fetchedRecipe.writerName, fetchedRecipe.servings, 0,
+                            localRecipes.add(new Recipe(0, fetchedRecipe.title,
+                                    fetchedRecipe.imageUrl, fetchedRecipe.prepTime,
+                                    fetchedRecipe.cookTime, fetchedRecipe.language,
+                                    fetchedRecipe.cuisine, fetchedRecipe.course,
+                                    fetchedRecipe.writerUid, fetchedRecipe.writerName,
+                                    fetchedRecipe.servings, 0,
                                     recipeSnapshot.getKey(), rating));
                         }
                     }
@@ -326,7 +301,8 @@ public class MainActivity extends AppCompatActivity
         args.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
         RecipesFragment recipesFragment = new RecipesFragment();
         recipesFragment.setArguments(args);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, recipesFragment).commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, recipesFragment).commit();
     }
 
     private void showBookmarks(List<Recipe> recipes) {
@@ -337,28 +313,24 @@ public class MainActivity extends AppCompatActivity
         args.putParcelableArrayList(AppConstants.KEY_RECIPES, (ArrayList<Recipe>) recipes);
         BookmarksFragment bookmarksFragment = new BookmarksFragment();
         bookmarksFragment.setArguments(args);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, bookmarksFragment).commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, bookmarksFragment).commit();
     }
 
     private void showStorage() {
         mActivityTitle = getString(R.string.storage);
         if (getSupportActionBar() != null) getSupportActionBar().setTitle(mActivityTitle);
         StorageFragment storageFragment = new StorageFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, storageFragment).commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, storageFragment).commit();
     }
 
     private void showShoppingList() {
         mActivityTitle = getString(R.string.shopping_list);
         if (getSupportActionBar() != null) getSupportActionBar().setTitle(mActivityTitle);
         ShoppingFragment shoppingFragment = new ShoppingFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, shoppingFragment).commit();
-    }
-
-    private void showMealPlan() {
-        mActivityTitle = getString(R.string.meal_plan);
-        if (getSupportActionBar() != null) getSupportActionBar().setTitle(mActivityTitle);
-        MealPlanFragment mealPlanFragment = new MealPlanFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mealPlanFragment).commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, shoppingFragment).commit();
     }
 
     private View.OnClickListener getFabClickListener() {
@@ -381,6 +353,22 @@ public class MainActivity extends AppCompatActivity
                         startActivity(intent);
                         break;
                 }
+            }
+        };
+    }
+
+    private ActionBarDrawerToggle getDrawerListener() {
+        return new ActionBarDrawerToggle(this, mDrawerLayout,
+                mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                // Save index in local storage to be able to start from the point where the user
+                // leaves the app.
+                SharedPreferences.Editor editor = mSharedPreferences.edit();
+                editor.putInt(KEY_NAV_INDEX, mSelectionIndex);
+                editor.apply();
+                showSelectedContent();
             }
         };
     }

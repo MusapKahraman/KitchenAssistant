@@ -84,22 +84,9 @@ public class LoginActivity extends AppCompatActivity implements DeviceUtils.Inte
             IdpResponse idpResponse = IdpResponse.fromResultIntent(data);
             if (resultCode == RESULT_OK) {
                 Log.v(LOG_TAG, "Successfully signed in");
-                // Successfully signed in
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if (user != null) {
-                    if (idpResponse != null) {
-                        Intent intent;
-                        if (idpResponse.isNewUser()) {
-                            // The user is new.
-                            intent = new Intent(this, WelcomeActivity.class);
-                        } else {
-                            // This is an existing user.
-                            intent = new Intent(this, MainActivity.class);
-                        }
-                        startActivity(intent);
-                        finish();
-                    }
-                }
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                finish();
             } else {
                 // Sign in failed
                 if (idpResponse == null) {

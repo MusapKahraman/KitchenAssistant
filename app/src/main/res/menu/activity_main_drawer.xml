@@ -17,15 +17,6 @@
     </group>
 
     <group
-        android:id="@+id/group_suggest"
-        android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_suggestions"
-            android:icon="@drawable/ic_menu_suggest"
-            android:title="@string/suggestions" />
-    </group>
-
-    <group
         android:id="@+id/group_storage"
         android:checkableBehavior="single">
         <item
@@ -36,19 +27,6 @@
             android:id="@+id/nav_shopping_list"
             android:icon="@drawable/ic_menu_shopping"
             android:title="@string/shopping_list" />
-    </group>
-
-    <group
-        android:id="@+id/group_weekly"
-        android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_meal_plan"
-            android:icon="@drawable/ic_menu_calendar"
-            android:title="@string/meal_plan" />
-        <item
-            android:id="@+id/nav_routines"
-            android:icon="@drawable/ic_menu_routines"
-            android:title="@string/routines" />
     </group>
 
     <group>
