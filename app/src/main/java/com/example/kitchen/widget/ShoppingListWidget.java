@@ -32,33 +32,24 @@ public class ShoppingListWidget extends AppWidgetProvider {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
                     new ComponentName(context, ShoppingListWidget.class));
-            ShoppingListWidget.updateRecipeIngredientsWidget(context, appWidgetManager,
-                    shoppingList.toString(), appWidgetIds);
+            updateAppWidget(context, appWidgetManager, shoppingList.toString(), appWidgetIds);
         }
     }
 
     private static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                        String message, int appWidgetId) {
-        // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_shopping_list);
-
+                                        String message, int[] appWidgetIds) {
         sMessage = message;
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_shopping_list);
         views.setTextViewText(R.id.tv_app_widget, message);
-
+        views.setTextColor(R.id.tv_app_widget, context.getResources().getColor(R.color.widget_text));
         Intent intent = new Intent(context, LoginActivity.class);
         intent.putExtra(AppConstants.EXTRA_APP_WIDGET, true);
         PendingIntent pendingIntent = PendingIntent
                 .getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
         views.setOnClickPendingIntent(R.id.frame_app_widget, pendingIntent);
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views);
-    }
-
-    private static void updateRecipeIngredientsWidget(Context context, AppWidgetManager appWidgetManager,
-                                                      String message, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, message, appWidgetId);
+            // Instruct the widget manager to update the widget
+            appWidgetManager.updateAppWidget(appWidgetId, views);
         }
     }
 
@@ -67,7 +58,9 @@ public class ShoppingListWidget extends AppWidgetProvider {
         // When the widget is added for the first time, sMessage is null.
         if (sMessage == null) {
             String message = context.getResources().getString(R.string.widget_default);
-            updateRecipeIngredientsWidget(context, appWidgetManager, message, appWidgetIds);
+            updateAppWidget(context, appWidgetManager, message, appWidgetIds);
+        } else {
+            updateAppWidget(context, appWidgetManager, sMessage, appWidgetIds);
         }
     }
 }

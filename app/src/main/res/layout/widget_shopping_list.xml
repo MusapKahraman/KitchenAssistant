@@ -2,12 +2,12 @@
     android:id="@+id/frame_app_widget"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/AppWidget">
+    android:background="@color/primary"
+    android:padding="@dimen/widget_margin">
 
     <TextView
         android:id="@+id/tv_app_widget"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white" />
+        android:layout_height="match_parent" />
 
 </FrameLayout>
