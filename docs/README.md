@@ -1,24 +1,14 @@
-# Capstone Project
-**Stage 1 :** A [technical specification](Capstone_Stage1.pdf) for my custom app, including UI mocks and a technical breakdown of components.
+# Kitchen Assistant
+_Started as my Capstone Project for the Android Developer Nanodegree Program_
 
-**Stage 2 :** Kitchen Assistant.
+This app is being developed according to a [technical specification](Capstone_Stage1.pdf) which is written in the first stage of the capstone project. The document includes UI mocks and a technical breakdown of components.
 
-_Part of the Android Developer Nanodegree Program_
+![thumbnail](https://raw.githubusercontent.com/MusapKahraman/KitchenAssistant/master/docs/Screenshot_login.png)
 
-## Project Overview
-In the Capstone project, you will build an app of your own design in two stages. In Stage 1, you will design and plan the app, using a template that we provide in the "Instructions" node.
+## Versioning
 
-Creating and building your own app idea can be both exciting and daunting; ultimately, we want the experience to be rewarding. You'll apply a wealth of different concepts and components that you've learned across the Nanodegree to bring your own app idea to life.
+Using [SemVer](http://semver.org/) for versioning.
 
-To keep the process from becoming overwhelming (or simply chaotic), you will design and plan your app, and receive feedback, before you start building. This will help prevent and mitigate pain points you might run into along the way, and also replicates the process of professional Android Developers.
+## License
 
-## Why this Project?
-To become a proficient Android Developer, you need to design apps and make plans for how to implement them. This will involve choices such as how you will store data, how you will display data to the user, and what functionality to include in the app.
-
-## What Will I Learn?
-Through this project, you'll demonstrate the ability to communicate an app idea formally, using:
-
-An app description
-UI flow mocks, similar to what you've seen in other Nanodegree projects, like the Popular Movies overview
-A list of required tasks that you will complete to build the app, in order
-The Capstone project will give you the experience you need to own the full development of an app. This first stage replicates the design and planning experience that proficient Android Developers are expected to demonstrate.
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
