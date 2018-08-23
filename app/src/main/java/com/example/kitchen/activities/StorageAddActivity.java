@@ -128,7 +128,7 @@ public class StorageAddActivity extends AppCompatActivity implements DeviceUtils
     }
 
     @Override
-    public void onConnectionResult(boolean success) {
+    public void onConnectionTestResult(boolean success) {
         if (!success)
             Snackbar.make(mFoodSpinner, R.string.connect_internet_try_again, Snackbar.LENGTH_LONG).show();
     }

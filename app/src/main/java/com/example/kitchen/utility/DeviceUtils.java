@@ -36,7 +36,7 @@ public class DeviceUtils {
         if (isNetworkAvailable(context)) {
             new ConnectionTask(listener).execute();
         } else {
-            listener.onConnectionResult(false);
+            listener.onConnectionTestResult(false);
         }
     }
 
@@ -48,7 +48,7 @@ public class DeviceUtils {
     }
 
     public interface InternetConnectionListener {
-        void onConnectionResult(boolean success);
+        void onConnectionTestResult(boolean success);
     }
 
     private static class ConnectionTask extends AsyncTask<Void, Void, Boolean> {
@@ -79,7 +79,7 @@ public class DeviceUtils {
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
-            listener.onConnectionResult(result);
+            listener.onConnectionTestResult(result);
         }
     }
 }

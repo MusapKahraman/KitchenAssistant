@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onConnectionResult(boolean success) {
+    public void onConnectionTestResult(boolean success) {
         if (!success)
             Snackbar.make(mToolbar, R.string.connect_internet_try_again, Snackbar.LENGTH_LONG).show();
     }

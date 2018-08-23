@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.kitchen.BuildConfig;
 import com.example.kitchen.R;
@@ -69,7 +70,7 @@ public class LoginActivity extends AppCompatActivity implements DeviceUtils.Inte
     }
 
     @Override
-    public void onConnectionResult(boolean success) {
+    public void onConnectionTestResult(boolean success) {
         mProgressBar.setVisibility(View.GONE);
         if (success) {
             // Set night mode on. This will make the password hiding toggle icon visible for darker
@@ -94,7 +95,6 @@ public class LoginActivity extends AppCompatActivity implements DeviceUtils.Inte
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.v(LOG_TAG, "onActivityResult");
         if (requestCode == RC_SIGN_IN) {
             IdpResponse idpResponse = IdpResponse.fromResultIntent(data);
             if (resultCode == RESULT_OK) {
@@ -105,10 +105,10 @@ public class LoginActivity extends AppCompatActivity implements DeviceUtils.Inte
                 finish();
             } else {
                 // Sign in failed
+                Toast.makeText(this, R.string.could_not_sign_in, Toast.LENGTH_LONG).show();
                 if (idpResponse == null) {
                     // User pressed back button
                     Log.v(LOG_TAG, "Sign_in_cancelled");
-                    finish();
                     return;
                 }
                 if (idpResponse.getError() != null
