@@ -63,14 +63,13 @@ public class DeviceUtils {
             Log.v(LOG_TAG, "Checking for internet connection...");
             try {
                 HttpURLConnection connection = (HttpURLConnection)
-                        (new URL("http://clients3.google.com/generate_204")
+                        (new URL("https://github.com/")
                                 .openConnection());
                 connection.setRequestProperty("User-Agent", "Android");
                 connection.setRequestProperty("Connection", "close");
                 connection.setConnectTimeout(1500);
                 connection.connect();
-                return (connection.getResponseCode() == 204 &&
-                        connection.getContentLength() == 0);
+                return (connection.getResponseCode() == 200);
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error checking internet connection", e);
                 return false;
