@@ -5,6 +5,25 @@ This app is being developed according to a [technical specification](Capstone_St
 
 ![thumbnail](https://raw.githubusercontent.com/MusapKahraman/KitchenAssistant/master/docs/Screenshot_login.png)
 
+## Getting Started
+
+This app depends on [Firebase Authentication](https://firebase.google.com/docs/auth/), [Firebase Realtime Database](https://firebase.google.com/docs/database/) and [Cloud Storage](https://firebase.google.com/docs/storage/). Please do the following before running the app:
+1. [Install the Firebase SDK](https://firebase.google.com/docs/android/setup).
+2. Add the app to your Firebase project in the [Firebase console](https://console.firebase.google.com/).
+
+You will need to have:
+1. "google-services.json" file under "app" folder.
+2. "keystore.properties" file in root directory.
+3. "kitchen-assistant.jks" file in root directory.
+
+"keystore.properties" will have the following.
+```
+storePassword=password
+keyPassword=password
+keyAlias=key0
+storeFile=../kitchen-assistant.jks
+```
+
 ## Versioning
 
 Using [SemVer](http://semver.org/) for versioning.
@@ -15,7 +34,7 @@ This project is licensed under the MIT License - see below for details.
 ```
 MIT License
 
-Copyright (c) [year] [fullname]
+Copyright (c) 2018 Musap Kahraman
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
