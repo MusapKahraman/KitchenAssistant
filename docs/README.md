@@ -11,9 +11,11 @@ Using [SemVer](http://semver.org/) for versioning.
 
 ## License
 
-This project is licensed under the MIT License - see the below for details
+This project is licensed under the MIT License - see below for details.
 ```
-Copyright 2018 Musap Kahraman
+MIT License
+
+Copyright (c) [year] [fullname]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
