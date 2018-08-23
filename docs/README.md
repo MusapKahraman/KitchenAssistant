@@ -18,8 +18,8 @@ You will need to have:
 
 "keystore.properties" will have the following.
 ```
-storePassword=password
-keyPassword=password
+storePassword=yourPasswordHere
+keyPassword=yourPasswordHere
 keyAlias=key0
 storeFile=../kitchen-assistant.jks
 ```
