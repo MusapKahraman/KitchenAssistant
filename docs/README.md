@@ -3,6 +3,10 @@ _Capstone Project for the Android Developer Nanodegree Program_
 
 This app is being developed according to a [technical specification](Capstone_Stage1.pdf) which is written in the first stage of the capstone project. The document includes UI mocks and a technical breakdown of components.
 
+## Description
+
+Kitchen Assistant helps you track your food, prepare a meal plan and create a shopping list. In addition to that, you can either select recipes from the public database or add your own and see how much people like it.
+
 ![thumbnail](https://raw.githubusercontent.com/MusapKahraman/KitchenAssistant/master/docs/Screenshot_login.png)
 
 ## Getting Started
