@@ -6,9 +6,6 @@
 
 package com.example.kitchen.data.firebase;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModel;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -23,6 +20,10 @@ import com.google.firebase.database.Transaction;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
 public class RecipeViewModel extends ViewModel {
     private static final String LOG_TAG = RecipeViewModel.class.getSimpleName();

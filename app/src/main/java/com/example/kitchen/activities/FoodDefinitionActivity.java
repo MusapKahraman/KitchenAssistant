@@ -1,10 +1,6 @@
 package com.example.kitchen.activities;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputEditText;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -17,7 +13,11 @@ import com.example.kitchen.R;
 import com.example.kitchen.data.firebase.FoodViewModel;
 import com.example.kitchen.utility.CheckUtils;
 import com.example.kitchen.utility.MeasurementUtils;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

@@ -1,8 +1,6 @@
 package com.example.kitchen.data.local;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
 
 import com.example.kitchen.data.local.entities.Food;
 import com.example.kitchen.data.local.entities.Ingredient;
@@ -11,6 +9,9 @@ import com.example.kitchen.data.local.entities.Step;
 import com.example.kitchen.data.local.entities.Ware;
 
 import java.util.List;
+
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 
 // The ViewModel's role is to provide data to the UI and survive configuration changes.
 // A ViewModel acts as a communication center between the RecipesRepository and the UI.

@@ -1,8 +1,5 @@
 package com.example.kitchen.data.local;
 
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
 import com.example.kitchen.data.local.daos.IngredientsDao;
@@ -15,6 +12,10 @@ import com.example.kitchen.data.local.entities.Ingredient;
 import com.example.kitchen.data.local.entities.Recipe;
 import com.example.kitchen.data.local.entities.Step;
 import com.example.kitchen.data.local.entities.Ware;
+
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
 
 @Database(entities = {Recipe.class, Ingredient.class, Step.class, Food.class, Ware.class},
         version = 1, exportSchema = false)
